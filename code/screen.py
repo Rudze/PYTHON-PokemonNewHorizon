@@ -6,13 +6,17 @@ class Screen:
     Screen class to manage the screen
     """
     def __init__(self) -> None:
-        """
-        Initialize the screen
-        """
-        self.imagescreen: pygame.Surface = pygame.display.get_surface()
-        self.display: pygame.display = pygame.display.set_mode((1280, 720))
+        self.width = 1280
+        self.height = 720
+        self.fullscreen = False
+
+        # Initialisation du mode fenêtré par défaut
+        self.display = pygame.display.set_mode((self.width, self.height), pygame.RESIZABLE)
+
         pygame.display.set_caption("Pokémon")
         pygame.display.set_icon(pygame.image.load("../assets/app/logo_projet_pokemon.png"))
+
+        self.imagescreen: pygame.Surface = pygame.display.get_surface()
         self.clock: pygame.time.Clock = pygame.time.Clock()
         self.framerate: int = 60
         self.deltatime: float = 0.0
@@ -56,3 +60,14 @@ class Screen:
         :return:
         """
         return self.imagescreen
+
+    # Bascule entre plein écran et fenêtré
+    def toggle_fullscreen(self) -> None:
+        self.fullscreen = not self.fullscreen
+
+        if self.fullscreen:
+            # On passe en plein écran (SCALED aide à garder le ratio)
+            self.display = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN | pygame.SCALED)
+        else:
+            # On repasse en mode fenêtré
+            self.display = pygame.display.set_mode((self.width, self.height), pygame.RESIZABLE)

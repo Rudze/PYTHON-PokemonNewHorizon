@@ -12,88 +12,84 @@ from screen import Screen
 from dialogue import Dialogue
 from login_menu import LoginMenu
 from server_select_menu import ServerSelectMenu
+from splash_screen import SplashScreen
 
 AUTH_API_URL = "http://37.59.114.12:8000"
 
 
 class Game:
-    """
-    Game class to manage the game
-    """
-
     def __init__(self) -> None:
         self.running: bool = True
-
         self.screen: Screen = Screen()
 
-        login_menu = LoginMenu(self.screen, AUTH_API_URL)
-        self.account_data = login_menu.run()
+        # 1. On prépare l'état initial
+        self.state = "SPLASH"
+        self.splash = SplashScreen(self.screen)
 
-        if self.account_data is None:
-            self.running = False
-            return
+        # 2. On prépare les variables vides (elles seront remplies plus tard)
+        self.account_data = None
+        self.selected_server = None
+        self.network = None
+        self.player = None
+        self.map = None
+        self._server_map = None
+        # ... initialise ici uniquement les outils de base (Controller, KeyListener)
+        self.controller = Controller()
+        self.keylistener = KeyListener()
 
+    def _setup_game_world(self):
+        """ Cette méthode initialise tout le monde de jeu une fois connecté """
         self.account = self.account_data["account"]
-        self.session = self.account_data["session"]
-
-        server_menu = ServerSelectMenu(self.screen, AUTH_API_URL)
-        self.selected_server = server_menu.run()
-
-        if self.selected_server is None:
-            self.running = False
-            return
-
         server_host = self.selected_server["host"]
         server_port = self.selected_server["port"]
         self.server_url = f"ws://{server_host}:{server_port}"
 
-        print(f"[Auth] Connecté en tant que {self.account['username']}")
-        print(f"[Server] Serveur choisi : {self.selected_server['name']} -> {self.server_url}")
-
-        self.controller = Controller()
-        self.keylistener: KeyListener = KeyListener()
-
-        self.map: Map = Map(self.screen, self.controller)
-        self.player: Player = Player(
-            self.screen,
-            self.controller,
-            512,
-            288,
-            self.keylistener
-        )
-
+        self.map = Map(self.screen, self.controller)
+        self.player = Player(self.screen, self.controller, 512, 288, self.keylistener)
         self.player.name = self.account["username"]
 
-        self.dialogue: Dialogue = Dialogue(self.player, self.screen)
-        self.save: Save = Save(
-            "save_0",
-            self.map,
-            self.player,
-            self.keylistener,
-            self.dialogue
-        )
-
+        self.dialogue = Dialogue(self.player, self.screen)
+        self.save = Save("save_0", self.map, self.player, self.keylistener, self.dialogue)
         self.save.load()
-
-        # Très important :
-        # Après le chargement de la sauvegarde, on vérifie que la map est prête
-        # et que le joueur est bien ajouté au groupe pyscroll.
         self._ensure_map_ready()
 
-        self.option: Option = Option(
-            self.screen,
-            self.controller,
-            self.map,
-            "fr",
-            self.save,
-            self.keylistener,
-            self.dialogue
-        )
+        self.option = Option(self.screen, self.controller, self.map, "fr", self.save, self.keylistener, self.dialogue)
+        self.network = NetworkClient(self.server_url)
+        self.remote_players = {}
 
-        # Multiplayer
-        self.network: NetworkClient = NetworkClient(self.server_url)
-        self.remote_players: dict[str, RemotePlayer] = {}
-        self._server_map: str | None = None
+    def run(self) -> None:
+        while self.running:
+            self.handle_input()
+
+            # --- GESTION DES ÉTATS ---
+            if self.state == "SPLASH":
+                self.splash.update()
+                self.splash.draw()
+                if self.splash.is_finished:
+                    self.state = "LOGIN"
+
+            elif self.state == "LOGIN":
+                login_menu = LoginMenu(self.screen, AUTH_API_URL)
+                self.account_data = login_menu.run()
+                if self.account_data:
+                    self.state = "SERVER_SELECT"
+                else:
+                    self.running = False
+
+            elif self.state == "SERVER_SELECT":
+                server_menu = ServerSelectMenu(self.screen, AUTH_API_URL)
+                self.selected_server = server_menu.run()
+                if self.selected_server:
+                    self._setup_game_world()  # On crée le monde ici !
+                    self.state = "PLAYING"
+                else:
+                    self.running = False
+
+            elif self.state == "PLAYING":
+                # TOUTE la logique de jeu va ici (mouvements, map, réseau)
+                self.update_playing_logic()
+
+            self.screen.update()
 
     def _ensure_map_ready(self) -> None:
         """
@@ -112,33 +108,6 @@ class Game:
         print(f"[Game] Current map: {self.map.current_map.name if self.map.current_map else None}")
         print(f"[Game] Player position: {self.player.position}")
         print(f"[Game] Player collisions: {len(self.player.collisions)}")
-
-    def run(self) -> None:
-        while self.running:
-            self.handle_input()
-
-            prev_walking = self.player.animation_walk
-            prev_pos = (
-                int(self.player.position.x),
-                int(self.player.position.y)
-            )
-            prev_map = self.map.current_map.name if self.map.current_map else None
-
-            if not self.player.menu_option:
-                self.map.update()
-
-                if pygame.K_e in self.keylistener.keys and not self.dialogue.active:
-                    self.dialogue.load_data(1001, 0)
-                    self.keylistener.remove_key(pygame.K_e)
-
-                self.dialogue_controller()
-            else:
-                self.option.update()
-                self.dialogue_controller()
-                self.option.check_inputs()
-
-            self._handle_network(prev_walking, prev_pos, prev_map)
-            self.screen.update()
 
     # ------------------------------------------------------------------
     # Network integration
@@ -275,3 +244,25 @@ class Game:
 
             elif event.type == pygame.KEYUP:
                 self.keylistener.remove_key(event.key)
+
+    def update_playing_logic(self) -> None:
+        # 1. Sauvegarder l'état précédent (pour le réseau)
+        prev_walking = self.player.animation_walk
+        prev_pos = (int(self.player.position.x), int(self.player.position.y))
+        prev_map = self.map.current_map.name if self.map.current_map else None
+
+        # 2. Gérer le mouvement et les menus
+        if not self.player.menu_option:
+            self.map.update()
+            # Touche interaction
+            if pygame.K_e in self.keylistener.keys and not self.dialogue.active:
+                self.dialogue.load_data(1001, 0)
+                self.keylistener.remove_key(pygame.K_e)
+            self.dialogue_controller()
+        else:
+            self.option.update()
+            self.dialogue_controller()
+            self.option.check_inputs()
+
+        # 3. Gérer le réseau
+        self._handle_network(prev_walking, prev_pos, prev_map)
