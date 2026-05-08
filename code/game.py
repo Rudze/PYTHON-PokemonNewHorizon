@@ -1,6 +1,7 @@
 import pygame
 
 from controller import Controller
+from game_api_client import GameApiClient
 from keylistener import KeyListener
 from map import Map
 from network.client import NetworkClient
@@ -13,6 +14,7 @@ from dialogue import Dialogue
 from login_menu import LoginMenu
 from server_select_menu import ServerSelectMenu
 from splash_screen import SplashScreen
+from sound_manager import SoundManager
 
 AUTH_API_URL = "http://37.59.114.12:8000"
 
@@ -26,6 +28,11 @@ class Game:
         self.state = "SPLASH"
         self.splash = SplashScreen(self.screen)
 
+        # --- CHARGEMENT DÈS ELEMENTS ---
+        print("Chargement des SFX !")
+        SoundManager.load_all_sounds()
+        # -----------------------------------------
+
         # 2. On prépare les variables vides (elles seront remplies plus tard)
         self.account_data = None
         self.selected_server = None
@@ -36,6 +43,9 @@ class Game:
         # ... initialise ici uniquement les outils de base (Controller, KeyListener)
         self.controller = Controller()
         self.keylistener = KeyListener()
+        self.mouse_click: tuple[int, int] | None = None
+        self.api_client: GameApiClient | None = None
+        self._saving_started: bool = False
 
     def _setup_game_world(self):
         """ Cette méthode initialise tout le monde de jeu une fois connecté """
@@ -44,14 +54,41 @@ class Game:
         server_port = self.selected_server["port"]
         self.server_url = f"ws://{server_host}:{server_port}"
 
+        # ── API client (données de jeu) ─────────────────────────────────
+        # Le serveur expose "token" au niveau racine ET dans "session.token"
+        account_id = self.account.get("id")
+        token = (
+            self.account_data.get("token")                          # niveau racine (corrigé)
+            or self.account_data.get("session", {}).get("token")    # fallback ancien format
+            or ""
+        )
+        if not token:
+            print("[Game] ATTENTION: token introuvable dans account_data.")
+            print(f"[Game] Clés disponibles: {list(self.account_data.keys())}")
+        if not account_id:
+            print("[Game] ATTENTION: account_id introuvable dans account.")
+            print(f"[Game] Clés disponibles: {list(self.account.keys())}")
+        if token and account_id:
+            self.api_client = GameApiClient(AUTH_API_URL, token)
+            print(f"[Game] GameApiClient initialisé (account_id={account_id})")
+
+        # ── Monde ──────────────────────────────────────────────────────
         self.map = Map(self.screen, self.controller)
         self.player = Player(self.screen, self.controller, 512, 288, self.keylistener)
         self.player.name = self.account["username"]
 
+        # ── Inventaire : wire API client AVANT save.load() ────────────
+        if self.api_client and account_id:
+            self.player.inv.api_client = self.api_client
+            self.player.inv.account_id = int(account_id)
+
         self.dialogue = Dialogue(self.player, self.screen)
         self.save = Save("save_0", self.map, self.player, self.keylistener, self.dialogue)
-        self.save.load()
+        self.save.load()          # charge la sauvegarde locale (position, map…)
         self._ensure_map_ready()
+
+        # ── Charge l'inventaire depuis l'API (priorité sur sauvegarde locale) ──
+        self.player.inv.load_from_api()
 
         self.option = Option(self.screen, self.controller, self.map, "fr", self.save, self.keylistener, self.dialogue)
         self.network = NetworkClient(self.server_url)
@@ -80,6 +117,8 @@ class Game:
                 server_menu = ServerSelectMenu(self.screen, AUTH_API_URL)
                 self.selected_server = server_menu.run()
                 if self.selected_server:
+                    # Coupe la musique
+                    pygame.mixer.music.fadeout(1000)
                     self._setup_game_world()  # On crée le monde ici !
                     self.state = "PLAYING"
                 else:
@@ -89,7 +128,56 @@ class Game:
                 # TOUTE la logique de jeu va ici (mouvements, map, réseau)
                 self.update_playing_logic()
 
+            elif self.state == "SAVING":
+                # 1re frame : dessine l'écran, pygame.display.flip() immédiat
+                # 2e appel  : bloque sur les saves réseau, puis quitte
+                if not self._saving_started:
+                    self._draw_saving_screen()
+                    pygame.display.flip()
+                    self._saving_started = True
+                else:
+                    self._perform_save_and_quit()
+
             self.screen.update()
+
+    # ------------------------------------------------------------------
+    # Saving screen + graceful quit
+    # ------------------------------------------------------------------
+
+    def _draw_saving_screen(self) -> None:
+        disp = self.screen.get_display()
+        W, H = self.screen.get_size()
+
+        # Fond semi-transparent sur le dernier frame de jeu
+        disp.blit(self.screen.image_screen(), (0, 0))
+        overlay = pygame.Surface((W, H), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 180))
+        disp.blit(overlay, (0, 0))
+
+        try:
+            font_big   = pygame.font.SysFont("segoeui", 32, bold=True)
+            font_small = pygame.font.SysFont("segoeui", 18)
+        except Exception:
+            font_big = font_small = pygame.font.Font(None, 30)
+
+        t1 = font_big.render("Sauvegarde en cours…", True, (220, 235, 248))
+        t2 = font_small.render("Envoi des données au serveur. Veuillez patienter.", True, (130, 160, 190))
+
+        disp.blit(t1, t1.get_rect(center=(W // 2, H // 2 - 24)))
+        disp.blit(t2, t2.get_rect(center=(W // 2, H // 2 + 20)))
+
+    def _perform_save_and_quit(self) -> None:
+        print("[Game] Sauvegarde avant fermeture...")
+        if self.save:
+            self.save.save()
+            print("[Game] Sauvegarde locale : OK")
+        if self.player:
+            ok = self.player.inv.save_all()
+            if not ok:
+                print("[Game] ATTENTION: sauvegarde API échouée — données locales préservées.")
+        print("[Game] Fermeture du jeu.")
+        self.running = False
+        pygame.quit()
 
     def _ensure_map_ready(self) -> None:
         """
@@ -236,14 +324,22 @@ class Game:
     def handle_input(self) -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
-                pygame.quit()
+                if self.state == "PLAYING":
+                    # Déclenche la séquence de sauvegarde avant de quitter
+                    self.state = "SAVING"
+                    self._saving_started = False
+                else:
+                    self.running = False
+                    pygame.quit()
 
             elif event.type == pygame.KEYDOWN:
                 self.keylistener.add_key(event.key)
 
             elif event.type == pygame.KEYUP:
                 self.keylistener.remove_key(event.key)
+
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                self.mouse_click = event.pos
 
     def update_playing_logic(self) -> None:
         # 1. Sauvegarder l'état précédent (pour le réseau)
@@ -259,8 +355,10 @@ class Game:
                 self.dialogue.load_data(1001, 0)
                 self.keylistener.remove_key(pygame.K_e)
             self.dialogue_controller()
+            self.mouse_click = None
         else:
-            self.option.update()
+            self.option.update(self.mouse_click)
+            self.mouse_click = None
             self.dialogue_controller()
             self.option.check_inputs()
 

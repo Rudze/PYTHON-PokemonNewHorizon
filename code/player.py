@@ -4,6 +4,7 @@ import pygame
 
 from controller import Controller
 from entity import Entity
+from inventory_manager import InventoryManager
 from keylistener import KeyListener
 from pokemon import Pokemon
 from screen import Screen
@@ -33,7 +34,7 @@ class Player(Entity):
         self.controller: Controller = controller
 
         self.pokemons: list[Pokemon] = []
-        self.inventory: None = None
+        self.inv: InventoryManager = InventoryManager(self.pokemons)
         self.pokedex: None = None
 
         self.name: str = "Lucas"
@@ -66,10 +67,13 @@ class Player(Entity):
         self.position = pygame.math.Vector2(data["position"]["x"], data["position"]["y"])
         self.align_hitbox()
         self.direction = data["direction"]
-        self.pokemons = [Pokemon.from_dict(pokemon) for pokemon in data["pokemons"]]
-        self.inventory = data["inventory"]
-        self.pokedex = data["pokedex"]
-        self.pokedollars = data["pokedollars"]
+        self.pokemons.clear()
+        for p in data["pokemons"]:
+            self.pokemons.append(Pokemon.from_dict(p))
+        if "inventory" in data and isinstance(data["inventory"], dict):
+            self.inv.load_from_dict(data["inventory"])
+        self.pokedex = data.get("pokedex")
+        self.pokedollars = data.get("pokedollars", 0)
         self.ingame_time = datetime.timedelta(seconds=data["ingame_time"])
 
     def update(self) -> None:

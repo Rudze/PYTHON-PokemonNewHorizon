@@ -1,6 +1,8 @@
 import pygame
 
+from sound_manager import SoundManager
 from auth_client import AuthClient, AuthError
+from config import LOGIN_MENU_SETTINGS
 
 
 class TextBox:
@@ -77,6 +79,17 @@ class LoginMenu:
         self.display = screen.get_display()
         self.auth = AuthClient(api_url)
 
+        # --- GESTION DU SON ---
+        # On vérifie si la musique joue déjà pour ne pas la relancer en boucle
+        if not pygame.mixer.music.get_busy():
+            try:
+                pygame.mixer.music.load(LOGIN_MENU_SETTINGS["music"])
+                pygame.mixer.music.set_volume(LOGIN_MENU_SETTINGS["volume"])  # Volume à 50%
+                pygame.mixer.music.play(-1)  # -1 signifie "boucle infinie"
+            except pygame.error as e:
+                print(f"Impossible de charger la musique : {e}")
+        # ----------------------
+
         self.clock = pygame.time.Clock()
 
         self.title_font = pygame.font.SysFont("arial", 44, bold=True)
@@ -134,6 +147,7 @@ class LoginMenu:
                         self._switch_box()
 
                     elif event.key == pygame.K_RETURN:
+                        SoundManager.play("click")
                         result = self._login()
                         if result is not None:
                             return result
@@ -143,11 +157,13 @@ class LoginMenu:
                         return None
 
                 if self.login_button.clicked(event):
+                    SoundManager.play("click")
                     result = self._login()
                     if result is not None:
                         return result
 
                 if self.register_button.clicked(event):
+                    SoundManager.play("click")
                     result = self._register()
                     if result is not None:
                         return result

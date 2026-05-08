@@ -41,7 +41,7 @@ class Save:
             },
             "direction": self.map.player.direction,
             "pokemons": [pokemon.to_dict() for pokemon in self.player.pokemons],
-            "inventory": self.map.player.inventory,
+            "inventory": self.player.inv.to_dict(),
             "pokedex": self.map.player.pokedex,
             "pokedollars": self.map.player.pokedollars,
             "ingame_time": self.map.player.ingame_time.seconds
