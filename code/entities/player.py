@@ -2,7 +2,7 @@ import datetime
 
 import pygame
 
-from code.config import SPRITES_DIR
+from code.config import SPRITES_CHARACTER_DIR
 from code.core.controller import Controller
 from code.core.keylistener import KeyListener
 from code.core.screen import Screen
@@ -27,9 +27,8 @@ class Player(Entity):
         y: int,
         keylistener: KeyListener,
         ingame_time: datetime.timedelta = datetime.timedelta(seconds=0),
-        gender: str = "red_m"
     ) -> None:
-        super().__init__(screen, x, y, f"hero_01_{gender}")
+        super().__init__(screen, x, y, "character")
 
         self.keylistener: KeyListener = keylistener
         self.controller: Controller = controller
@@ -39,17 +38,12 @@ class Player(Entity):
         self.pokedex: None = None
 
         self.name: str = "Lucas"
-        self.gender: str = gender
         self.pokedollars: int = 0
 
         self.pokemons.append(Pokemon.create_pokemon("Bulbasaur", 5))
         self.ingame_time: datetime.timedelta = ingame_time
 
         self.can_move = True
-
-        self.spritesheet_bike: pygame.Surface = pygame.image.load(
-            str(SPRITES_DIR / "hero_01_red_m_cycle_roll.png")
-        ).convert_alpha()
 
         self.menu_option: bool = False
 
@@ -63,19 +57,10 @@ class Player(Entity):
         self.on_move = None
 
     def from_dict(self, data: dict) -> None:
-        self.name = data["name"]
-        self.gender = data["gender"]
         self.position = pygame.math.Vector2(data["position"]["x"], data["position"]["y"])
         self.align_hitbox()
         self.direction = data["direction"]
-        self.pokemons.clear()
-        for p in data["pokemons"]:
-            self.pokemons.append(Pokemon.from_dict(p))
-        if "inventory" in data and isinstance(data["inventory"], dict):
-            self.inv.load_from_dict(data["inventory"])
         self.pokedex = data.get("pokedex")
-        self.pokedollars = data.get("pokedollars", 0)
-        self.ingame_time = datetime.timedelta(seconds=data["ingame_time"])
 
     def update(self) -> None:
         self.update_ingame_time()

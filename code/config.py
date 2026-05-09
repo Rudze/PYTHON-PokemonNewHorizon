@@ -17,6 +17,7 @@ ROOT_DIR = Path(__file__).parent.parent
 ASSETS_DIR      = ROOT_DIR / "assets"
 SAVES_DIR       = ASSETS_DIR / "saves"
 SPRITES_DIR     = ASSETS_DIR / "sprite"
+SPRITES_CHARACTER_DIR     = SPRITES_DIR / "character"
 SOUNDS_DIR      = ASSETS_DIR / "sounds"
 FONTS_DIR       = ASSETS_DIR / "fonts"
 JSON_DIR        = ASSETS_DIR / "json"
@@ -25,6 +26,7 @@ DIALOGUES_DIR   = ASSETS_DIR / "dialogues"
 INTERFACES_DIR  = ASSETS_DIR / "interfaces"
 APP_DIR         = ASSETS_DIR / "app"
 DB_PATH         = ASSETS_DIR / "base.db"
+CREDENTIALS_FILE = SAVES_DIR / "credentials.json"
 
 
 # ---------------------------------------------------------------------------
@@ -42,7 +44,7 @@ AUTH_API_URL = "http://37.59.114.12:8000"
 # Splash screen
 # ---------------------------------------------------------------------------
 SPLASH_SETTINGS = {
-    "image_path":    str(ASSETS_DIR / "splash_screen.png"),
+    "image_path":    str(ASSETS_DIR / "interfaces" / "backgrounds" / "splash_screen.png"),
     "duration_ms":   4000,
     "fade_duration": 2000,
 }
@@ -53,7 +55,7 @@ SPLASH_SETTINGS = {
 LOGIN_MENU_SETTINGS = {
     "music":  str(SOUNDS_DIR / "Lake.mp3"),
     "volume": 0.01,
-    "background_image": str(ASSETS_DIR / "backgrounds" / "arceus.jpg"),
+    "background_image": str(ASSETS_DIR / "interfaces" / "backgrounds" / "arceus.jpg"),
     "font": str(ASSETS_DIR / "fonts" / "pokemon.ttf"),
 }
 

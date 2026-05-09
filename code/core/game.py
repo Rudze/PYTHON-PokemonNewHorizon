@@ -248,7 +248,7 @@ class Game:
             "x": int(self.player.position.x),
             "y": int(self.player.position.y),
             "dir": self.player.direction,
-            "sprite": f"hero_01_{self.player.gender}",
+            "sprite": "character",
             "name": self.player.name,
         })
 

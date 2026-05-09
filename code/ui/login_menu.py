@@ -1,7 +1,9 @@
+import json
+
 import pygame
 
 from code.api.auth_client import AuthClient, AuthError
-from code.config import LOGIN_MENU_SETTINGS
+from code.config import LOGIN_MENU_SETTINGS, CREDENTIALS_FILE
 from code.managers.sound_manager import SoundManager
 
 
@@ -50,6 +52,26 @@ class TextBox:
 
         text_y = self.rect.centery - text_surface.get_height() // 2
         surface.blit(text_surface, (self.rect.x + 14, text_y))
+
+
+class Checkbox:
+    def __init__(self, x: int, y: int, size: int, label: str, checked: bool = False) -> None:
+        self.rect = pygame.Rect(x, y, size, size)
+        self.label = label
+        self.checked = checked
+
+    def handle_event(self, event: pygame.event.Event) -> None:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.rect.collidepoint(event.pos):
+                self.checked = not self.checked
+
+    def draw(self, surface: pygame.Surface, font: pygame.font.Font) -> None:
+        pygame.draw.rect(surface, (15, 18, 26), self.rect, border_radius=3)
+        pygame.draw.rect(surface, (45, 145, 255), self.rect, 2, border_radius=3)
+        if self.checked:
+            pygame.draw.rect(surface, (45, 145, 255), self.rect.inflate(-6, -6), border_radius=2)
+        label_surface = font.render(self.label, True, (200, 205, 220))
+        surface.blit(label_surface, (self.rect.right + 10, self.rect.centery - label_surface.get_height() // 2))
 
 
 class Button:
@@ -106,6 +128,7 @@ class LoginMenu:
 
         self.username_box: TextBox | None = None
         self.password_box: TextBox | None = None
+        self.remember_checkbox: Checkbox | None = None
         self.login_button: Button | None = None
         self.register_button: Button | None = None
         self.music_button: Button | None = None
@@ -117,6 +140,7 @@ class LoginMenu:
 
         self._start_music()
         self._build_layout()
+        self._load_saved_credentials()
 
     def _load_font(self, size: int, bold: bool = False) -> pygame.font.Font:
         font_path = LOGIN_MENU_SETTINGS.get("font")
@@ -184,15 +208,23 @@ class LoginMenu:
             max_length=72,
         )
 
+        checkbox_size = 22
+        self.remember_checkbox = Checkbox(
+            form_x,
+            input_y + 146,
+            checkbox_size,
+            "Se souvenir de moi",
+        )
+
         self.login_button = Button(
-            pygame.Rect(form_x, input_y + 158, form_w, 56),
+            pygame.Rect(form_x, input_y + 186, form_w, 56),
             "Connexion",
             color=(25, 105, 220),
             hover_color=(45, 145, 255),
         )
 
         self.register_button = Button(
-            pygame.Rect(form_x, input_y + 270, form_w, 50),
+            pygame.Rect(form_x, input_y + 298, form_w, 50),
             "Créer un compte",
             color=(10, 35, 70),
             hover_color=(20, 80, 150),
@@ -229,6 +261,9 @@ class LoginMenu:
 
                 if self.password_box:
                     self.password_box.handle_event(event)
+
+                if self.remember_checkbox:
+                    self.remember_checkbox.handle_event(event)
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_TAB:
@@ -307,10 +342,15 @@ class LoginMenu:
         self.screen.update()
 
         try:
-            return self.auth.login(
+            result = self.auth.login(
                 self.username_box.text.strip(),
                 self.password_box.text,
             )
+            if self.remember_checkbox and self.remember_checkbox.checked:
+                self._save_credentials(self.username_box.text.strip(), self.password_box.text)
+            else:
+                self._delete_credentials()
+            return result
         except AuthError as error:
             self.status_message = str(error)
             self.status_color = (255, 90, 90)
@@ -337,6 +377,35 @@ class LoginMenu:
             self.status_message = str(error)
             self.status_color = (255, 90, 90)
             return None
+
+    def _load_saved_credentials(self) -> None:
+        try:
+            if CREDENTIALS_FILE.exists():
+                with open(CREDENTIALS_FILE, "r") as f:
+                    data = json.load(f)
+                if self.username_box:
+                    self.username_box.text = data.get("username", "")
+                if self.password_box:
+                    self.password_box.text = data.get("password", "")
+                if self.remember_checkbox:
+                    self.remember_checkbox.checked = True
+        except Exception:
+            pass
+
+    def _save_credentials(self, username: str, password: str) -> None:
+        try:
+            CREDENTIALS_FILE.parent.mkdir(parents=True, exist_ok=True)
+            with open(CREDENTIALS_FILE, "w") as f:
+                json.dump({"username": username, "password": password}, f)
+        except Exception as exc:
+            print(f"[Login] Impossible de sauvegarder les identifiants : {exc}")
+
+    def _delete_credentials(self) -> None:
+        try:
+            if CREDENTIALS_FILE.exists():
+                CREDENTIALS_FILE.unlink()
+        except Exception:
+            pass
 
     def _toggle_music(self) -> None:
         self.music_muted = not self.music_muted
@@ -413,6 +482,9 @@ class LoginMenu:
 
         if self.password_box:
             self.password_box.draw(self.display, self.font)
+
+        if self.remember_checkbox:
+            self.remember_checkbox.draw(self.display, self.small_font)
 
         if self.login_button:
             self.login_button.draw(self.display, self.font)

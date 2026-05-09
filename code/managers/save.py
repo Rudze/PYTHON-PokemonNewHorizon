@@ -32,27 +32,16 @@ class Save:
         :return:
         """
         position = self.map.player.position
-        player_info = {
-            "name": self.map.player.name,
-            "gender": self.player.gender,
-            "position": {
-                "x": position[0],
-                "y": position[1]
-            },
-            "direction": self.map.player.direction,
-            "pokemons": [pokemon.to_dict() for pokemon in self.player.pokemons],
-            "inventory": self.player.inv.to_dict(),
-            "pokedex": self.map.player.pokedex,
-            "pokedollars": self.map.player.pokedollars,
-            "ingame_time": self.map.player.ingame_time.seconds
-        }
-        map_info = {
-            "path": self.map.current_map.name,
-            "map_name": self.map.map_name
-        }
         data = {
-            "player": player_info,
-            "map": map_info
+            "player": {
+                "position": {"x": position[0], "y": position[1]},
+                "direction": self.map.player.direction,
+                "pokedex": self.map.player.pokedex,
+            },
+            "map": {
+                "path": self.map.current_map.name,
+                "map_name": self.map.map_name,
+            },
         }
 
         save_file = SAVES_DIR / self.path / "data.pkmn"
