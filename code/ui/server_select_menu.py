@@ -1,6 +1,6 @@
 import pygame
 
-from auth_client import AuthClient, AuthError
+from code.api.auth_client import AuthClient, AuthError
 
 
 class ServerSelectMenu:

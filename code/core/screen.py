@@ -1,5 +1,9 @@
 import pygame
 
+from code.config import APP_DIR
+from code.config import GAME_TITLE
+from code.config import GAME_ICONE
+
 
 class Screen:
     """
@@ -13,8 +17,8 @@ class Screen:
         # Initialisation du mode fenêtré par défaut
         self.display = pygame.display.set_mode((self.width, self.height), pygame.RESIZABLE)
 
-        pygame.display.set_caption("Pokémon")
-        pygame.display.set_icon(pygame.image.load("../assets/app/logo_projet_pokemon.png"))
+        pygame.display.set_caption(GAME_TITLE)
+        pygame.display.set_icon(pygame.image.load(str(GAME_ICONE)))
 
         self.imagescreen: pygame.Surface = pygame.display.get_surface()
         self.clock: pygame.time.Clock = pygame.time.Clock()

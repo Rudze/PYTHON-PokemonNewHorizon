@@ -4,8 +4,9 @@ import time
 import pandas as pd
 import pygame.font
 
-from player import Player
-from screen import Screen
+from code.config import DIALOGUES_DIR, FONTS_DIR, INTERFACES_DIR
+from code.core.screen import Screen
+from code.entities.player import Player
 
 
 class Dialogue:
@@ -112,7 +113,7 @@ class DialogueData:
         :param id:
         :return:
         """
-        file_path = f"../../assets/dialogues/{number}.csv"
+        file_path = str(DIALOGUES_DIR / f"{number}.csv")
 
         df = pd.read_csv(file_path)
 
@@ -174,18 +175,18 @@ class DialogueScreen:
         self.speed: int = speed
         self.speakers: list[str] = speakers
 
-        self.font: pygame.font.Font = pygame.font.Font("../../assets/fonts/OakSans-Regular.ttf", 22)
+        self.font: pygame.font.Font = pygame.font.Font(str(FONTS_DIR / "OakSans-Regular.ttf"), 22)
         self.surface: pygame.Surface = pygame.Surface((1280, 131), pygame.SRCALPHA)
-        self.background: pygame.Surface = pygame.image.load("../../assets/interfaces/dialogues/message_box_0.png").convert_alpha()
-        self.background_name: pygame.Surface = pygame.image.load("../../assets/interfaces/dialogues/name_box_0.png").convert_alpha()
+        self.background: pygame.Surface = pygame.image.load(str(INTERFACES_DIR / "dialogues" / "message_box_0.png")).convert_alpha()
+        self.background_name: pygame.Surface = pygame.image.load(str(INTERFACES_DIR / "dialogues" / "name_box_0.png")).convert_alpha()
 
         self.speaker_name: pygame.Surface = self.font.render(self.dialogue_data.speaker_name, True, (255, 255, 255))
         if self.dialogue_data.speaker_image:
             self.speaker_image: pygame.Surface = pygame.image.load(
-                f"../../assets/interfaces/characters/battlers/{self.dialogue_data.speaker_image[1]}.png").convert_alpha()
+                str(INTERFACES_DIR / "characters" / "battlers" / f"{self.dialogue_data.speaker_image[1]}.png")).convert_alpha()
         try:
             self.player_image: pygame.Surface = pygame.image.load(
-                f"../../assets/interfaces/characters/battlers/heros_swan_big.png").convert_alpha()
+                str(INTERFACES_DIR / "characters" / "battlers" / "heros_swan_big.png")).convert_alpha()
         except FileNotFoundError:
             pass
 

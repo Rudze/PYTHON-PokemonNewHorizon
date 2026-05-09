@@ -2,12 +2,13 @@ import pygame
 import pyscroll
 import pytmx
 
-from controller import Controller
-from player import Player
-from screen import Screen
-from sql import SQL
-from switch import Switch
-from tool import Tool
+from code.config import INTERFACES_DIR, MAPS_DIR
+from code.core.controller import Controller
+from code.core.screen import Screen
+from code.data.sql import SQL
+from code.entities.player import Player
+from code.utils.tool import Tool
+from code.world.switch import Switch
 
 
 class Map:
@@ -35,7 +36,7 @@ class Map:
         self.map_name_text: pygame.Surface | None = None
 
         self.image_change_map: pygame.Surface = pygame.image.load(
-            "../assets/interfaces/maps/frame_map.png"
+            str(INTERFACES_DIR / "maps" / "frame_map.png")
         ).convert_alpha()
 
         self.animation_change_map: int = 0
@@ -47,7 +48,7 @@ class Map:
         """
         old_map = self.current_map
 
-        self.tmx_data = pytmx.load_pygame(f"../assets/map/{switch.name}.tmx")
+        self.tmx_data = pytmx.load_pygame(str(MAPS_DIR / f"{switch.name}.tmx"))
 
         map_data = pyscroll.data.TiledMapData(self.tmx_data)
         self.map_layer = pyscroll.BufferedRenderer(map_data, self.screen.get_size())

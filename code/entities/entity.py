@@ -1,7 +1,8 @@
 import pygame
 
-from screen import Screen
-from tool import Tool
+from code.config import SPRITES_DIR
+from code.core.screen import Screen
+from code.utils.tool import Tool
 
 
 class Entity(pygame.sprite.Sprite):
@@ -17,7 +18,7 @@ class Entity(pygame.sprite.Sprite):
         """
         super().__init__()
         self.screen: Screen = screen
-        self.spritesheet: pygame.image = pygame.image.load(f"../assets/sprite/{spritesheet}_walk.png")
+        self.spritesheet: pygame.image = pygame.image.load(str(SPRITES_DIR / f"{spritesheet}_walk.png"))
         self.image: pygame.image = Tool.split_image(self.spritesheet, 0, 0, 24, 32)
         self.position: pygame.math.Vector2 = pygame.math.Vector2(x, y)
         self.rect: pygame.Rect = self.image.get_rect()

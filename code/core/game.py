@@ -1,22 +1,21 @@
 import pygame
 
-from controller import Controller
-from game_api_client import GameApiClient
-from keylistener import KeyListener
-from map import Map
-from network.client import NetworkClient
-from option import Option
-from player import Player
-from remote_player import RemotePlayer
-from save import Save
-from screen import Screen
-from dialogue import Dialogue
-from login_menu import LoginMenu
-from server_select_menu import ServerSelectMenu
-from splash_screen import SplashScreen
-from sound_manager import SoundManager
-
-AUTH_API_URL = "http://37.59.114.12:8000"
+from code.api.game_api_client import GameApiClient
+from code.config import AUTH_API_URL
+from code.core.controller import Controller
+from code.core.keylistener import KeyListener
+from code.core.screen import Screen
+from code.entities.player import Player
+from code.entities.remote_player import RemotePlayer
+from code.managers.save import Save
+from code.managers.sound_manager import SoundManager
+from code.network.client import NetworkClient
+from code.ui.dialogue import Dialogue
+from code.ui.login_menu import LoginMenu
+from code.ui.option import Option
+from code.ui.server_select_menu import ServerSelectMenu
+from code.ui.splash_screen import SplashScreen
+from code.world.map import Map
 
 
 class Game:

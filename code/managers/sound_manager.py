@@ -1,5 +1,6 @@
 import pygame
-from config import SFX_SETTINGS
+
+from code.config import SFX_SETTINGS
 
 
 class SoundManager:

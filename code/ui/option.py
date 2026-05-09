@@ -2,18 +2,18 @@ from __future__ import annotations
 
 import pygame
 
-from controller import Controller
-from inventory_manager import (
+from code.core.controller import Controller
+from code.managers.inventory_manager import (
     POCKET_ITEMS, POCKET_POKEBALLS, POCKET_TM_HM, POCKET_KEY_ITEMS
 )
-from keylistener import KeyListener
-from map import Map
-from player import Player
-from pokemon import Pokemon
-from save import Save
-from screen import Screen
-from tool import Tool
-from dialogue import Dialogue
+from code.core.keylistener import KeyListener
+from code.entities.player import Player
+from code.entities.pokemon import Pokemon
+from code.managers.save import Save
+from code.core.screen import Screen
+from code.ui.dialogue import Dialogue
+from code.utils.tool import Tool
+from code.world.map import Map
 
 # ---------------------------------------------------------------------------
 # Palette

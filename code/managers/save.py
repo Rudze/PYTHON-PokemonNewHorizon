@@ -1,12 +1,12 @@
-import os
 import json
-import pathlib
+import os
 
-from map import Map
-from player import Player
-from sql import SQL
-from keylistener import KeyListener
-from dialogue import Dialogue
+from code.config import SAVES_DIR
+from code.core.keylistener import KeyListener
+from code.data.sql import SQL
+from code.entities.player import Player
+from code.ui.dialogue import Dialogue
+from code.world.map import Map
 
 
 class Save:
@@ -55,11 +55,12 @@ class Save:
             "map": map_info
         }
 
-        if not pathlib.Path(f"../../assets/saves/{self.path}/data.pkmn").exists():
-            os.makedirs(f"../../assets/saves/{self.path}")
-            pathlib.Path(f"../../assets/saves/{self.path}/data.pkmn").touch()
+        save_file = SAVES_DIR / self.path / "data.pkmn"
+        if not save_file.exists():
+            os.makedirs(save_file.parent, exist_ok=True)
+            save_file.touch()
 
-        with open(f"../../assets/saves/{self.path}/data.pkmn", "w") as file:
+        with open(save_file, "w") as file:
             file.write(self.dump(data))
 
         self.dialogue.load_data(100, 0)
@@ -69,8 +70,9 @@ class Save:
         Load the game from the save
         :return:
         """
-        if pathlib.Path(f"../assets/saves/{self.path}/data.pkmn").exists():
-            with open(f"../assets/saves/{self.path}/data.pkmn", "r") as file:
+        save_file = SAVES_DIR / self.path / "data.pkmn"
+        if save_file.exists():
+            with open(save_file, "r") as file:
                 data = json.load(file)
             self.map.load_map(data["map"]["path"])
             self.player.from_dict(data["player"])

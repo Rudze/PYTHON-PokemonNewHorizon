@@ -3,7 +3,7 @@ This is the main file of the game. It initializes the game and runs it.
 """
 import pygame
 
-from game import Game
+from code.core.game import Game
 
 pygame.init()
 

@@ -1,12 +1,14 @@
 import sqlite3
 
+from code.config import DB_PATH
+
 
 class SQL:
     def __init__(self):
         """
         Initialize the SQL connection
         """
-        self.connection: sqlite3.Connection = sqlite3.connect("../assets/base.db")
+        self.connection: sqlite3.Connection = sqlite3.connect(str(DB_PATH))
         self.cursor: sqlite3.Cursor = self.connection.cursor()
 
     def get_connection(self) -> sqlite3.Connection:

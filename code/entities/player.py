@@ -2,13 +2,14 @@ import datetime
 
 import pygame
 
-from controller import Controller
-from entity import Entity
-from inventory_manager import InventoryManager
-from keylistener import KeyListener
-from pokemon import Pokemon
-from screen import Screen
-from switch import Switch
+from code.config import SPRITES_DIR
+from code.core.controller import Controller
+from code.core.keylistener import KeyListener
+from code.core.screen import Screen
+from code.entities.entity import Entity
+from code.entities.pokemon import Pokemon
+from code.managers.inventory_manager import InventoryManager
+from code.world.switch import Switch
 
 
 class Player(Entity):
@@ -47,7 +48,7 @@ class Player(Entity):
         self.can_move = True
 
         self.spritesheet_bike: pygame.Surface = pygame.image.load(
-            "../assets/sprite/hero_01_red_m_cycle_roll.png"
+            str(SPRITES_DIR / "hero_01_red_m_cycle_roll.png")
         ).convert_alpha()
 
         self.menu_option: bool = False

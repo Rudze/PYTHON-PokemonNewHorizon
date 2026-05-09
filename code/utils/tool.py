@@ -1,5 +1,8 @@
 import pygame
 
+from code.config import FONTS_DIR
+
+
 class Tool:
 
     @staticmethod
@@ -26,7 +29,7 @@ class Tool:
         """
         Create the text surface from the text
         """
-        font = pygame.font.Font(f"../assets/fonts/{font}.ttf", size)
+        font = pygame.font.Font(str(FONTS_DIR / f"{font}.ttf"), size)
         if bold:
             font.set_bold(True)
         return font.render(text, True, color)

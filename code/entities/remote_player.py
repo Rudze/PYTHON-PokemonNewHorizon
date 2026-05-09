@@ -1,5 +1,5 @@
-from entity import Entity
-from screen import Screen
+from code.core.screen import Screen
+from code.entities.entity import Entity
 
 
 class RemotePlayer(Entity):

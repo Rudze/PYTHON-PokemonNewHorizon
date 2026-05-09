@@ -1,5 +1,6 @@
 import pygame
-from config import SPLASH_SETTINGS  # On importe les réglages
+
+from code.config import SPLASH_SETTINGS
 
 class SplashScreen:
     def __init__(self, screen) -> None:

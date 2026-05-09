@@ -2,7 +2,8 @@ import json
 import math
 import random
 
-from move import Move
+from code.config import JSON_DIR
+from code.entities.move import Move
 
 
 class Pokemon:
@@ -227,4 +228,4 @@ class Pokemon:
         :param level:
         :return:
         """
-        return Pokemon(json.load(open(f"../assets/json/pokemon/{name.lower()}.json")), level)
+        return Pokemon(json.load(open(str(JSON_DIR / "pokemon" / f"{name.lower()}.json"))), level)

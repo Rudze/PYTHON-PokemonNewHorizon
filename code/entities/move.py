@@ -1,5 +1,7 @@
 import json
 
+from code.config import JSON_DIR
+
 
 class Move:
     """
@@ -58,7 +60,7 @@ class Move:
         :param name:
         :return:
         """
-        return Move(json.load(open(f"../assets/json/moves/{name.lower()}.json")))
+        return Move(json.load(open(str(JSON_DIR / "moves" / f"{name.lower()}.json"))))
 
     def to_dict(self):
         """
