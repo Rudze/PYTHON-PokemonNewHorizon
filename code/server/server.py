@@ -6,20 +6,45 @@ Run: python server.py
 
 import asyncio
 import json
+import random
 import uuid
 
 import websockets
 from websockets.exceptions import ConnectionClosed
 
-TILE_SIZE = 16
-VALID_DIRECTIONS = {"left", "right", "up", "down"}
+TILE_SIZE         = 16
+VALID_DIRECTIONS  = {"left", "right", "up", "down"}
 
-# pid -> {ws, map, x, y, dir, sprite, name}
+# ── Spawn config — MIRROR de config.py POKEMON_SPAWNS ─────────────────────
+# Pour ajouter une zone : ajouter une entrée ici ET dans config.py côté client.
+POKEMON_SPAWNS: dict[str, list[dict]] = {
+    "route_1": [
+        {"pokemon_id": 19, "rarity": 70, "min_level": 2, "max_level": 4},  # Rattata
+        {"pokemon_id": 16, "rarity": 30, "min_level": 3, "max_level": 5},  # Roucool
+    ],
+}
+
+# ── État serveur ────────────────────────────────────────────────────────────
+
+# pid → {ws, map, x, y, dir, sprite, name}
 players: dict[str, dict] = {}
 
-# ws -> pid
+# ws → pid
 ws_to_pid: dict = {}
 
+# map_name → {wpid → {wpid, pokemon_id, level, shiny, x, y, dir, zone_name}}
+wild_pokemons: dict[str, dict[str, dict]] = {}
+
+# map_name → [{name, x, y, w, h, max_pokemon}]  (envoyé par les clients au JOIN)
+spawn_zones_by_map: dict[str, list[dict]] = {}
+
+_wpid_counter = 0
+
+AI_TICK_INTERVAL = 2.0   # secondes entre chaque tick d'IA
+MOVE_CHANCE      = 0.40  # probabilité qu'un Pokémon bouge par tick
+
+
+# ── Utilitaires ────────────────────────────────────────────────────────────
 
 def safe_int(value, default: int = 0) -> int:
     try:
@@ -31,68 +56,193 @@ def safe_int(value, default: int = 0) -> int:
 def safe_str(value, default: str = "", max_length: int = 64) -> str:
     if value is None:
         return default
-
     value = str(value)
-
-    if len(value) > max_length:
-        value = value[:max_length]
-
-    return value
+    return value[:max_length]
 
 
-def is_valid_direction(direction: str) -> bool:
-    return direction in VALID_DIRECTIONS
+def is_valid_direction(d: str) -> bool:
+    return d in VALID_DIRECTIONS
 
 
-def is_valid_one_tile_move(old_x: int, old_y: int, new_x: int, new_y: int, direction: str) -> bool:
-    dx = new_x - old_x
-    dy = new_y - old_y
-
-    if direction == "left":
-        return dx == -TILE_SIZE and dy == 0
-
-    if direction == "right":
-        return dx == TILE_SIZE and dy == 0
-
-    if direction == "up":
-        return dx == 0 and dy == -TILE_SIZE
-
-    if direction == "down":
-        return dx == 0 and dy == TILE_SIZE
-
-    return False
+def is_valid_one_tile_move(ox: int, oy: int, nx: int, ny: int, d: str) -> bool:
+    dx, dy = nx - ox, ny - oy
+    return {
+        "left":  (-TILE_SIZE, 0),
+        "right": (TILE_SIZE,  0),
+        "up":    (0, -TILE_SIZE),
+        "down":  (0,  TILE_SIZE),
+    }.get(d) == (dx, dy)
 
 
 async def broadcast(map_name: str, msg: dict, exclude_ws=None) -> None:
     raw = json.dumps(msg)
-
     targets = [
-        p["ws"]
-        for p in players.values()
+        p["ws"] for p in players.values()
         if p.get("map") == map_name and p["ws"] is not exclude_ws
     ]
-
     if targets:
         await asyncio.gather(
             *[ws.send(raw) for ws in targets],
-            return_exceptions=True
+            return_exceptions=True,
         )
 
 
+# ── IA des Pokémon sauvages ─────────────────────────────────────────────────
+
+def _next_wpid() -> str:
+    global _wpid_counter
+    _wpid_counter += 1
+    return f"wp_{_wpid_counter}"
+
+
+def _pick_spawn_entry(zone_name: str) -> dict | None:
+    entries = POKEMON_SPAWNS.get(zone_name, [])
+    if not entries:
+        return None
+    total = sum(e["rarity"] for e in entries)
+    roll  = random.uniform(0, total)
+    cumul = 0.0
+    for e in entries:
+        cumul += e["rarity"]
+        if roll <= cumul:
+            return e
+    return entries[-1]
+
+
+def _random_tile_in_zone(zone: dict) -> tuple[int, int]:
+    """Position aléatoire alignée sur la grille de tuiles dans la zone."""
+    x0 = (zone["x"] // TILE_SIZE) * TILE_SIZE
+    y0 = (zone["y"] // TILE_SIZE) * TILE_SIZE
+    x1 = ((zone["x"] + zone["w"]) // TILE_SIZE) * TILE_SIZE
+    y1 = ((zone["y"] + zone["h"]) // TILE_SIZE) * TILE_SIZE
+
+    xs = list(range(x0, max(x0 + TILE_SIZE, x1), TILE_SIZE))
+    ys = list(range(y0, max(y0 + TILE_SIZE, y1), TILE_SIZE))
+
+    return random.choice(xs), random.choice(ys)
+
+
+def _pick_move(wp: dict, zone: dict) -> tuple[int | None, int | None, str | None]:
+    """Choisit une direction aléatoire valide dans la zone pour ce Pokémon."""
+    candidates = [
+        ("left",  wp["x"] - TILE_SIZE, wp["y"]),
+        ("right", wp["x"] + TILE_SIZE, wp["y"]),
+        ("up",    wp["x"],             wp["y"] - TILE_SIZE),
+        ("down",  wp["x"],             wp["y"] + TILE_SIZE),
+    ]
+    random.shuffle(candidates)
+
+    for direction, nx, ny in candidates:
+        if (zone["x"] <= nx < zone["x"] + zone["w"] and
+                zone["y"] <= ny < zone["y"] + zone["h"]):
+            return nx, ny, direction
+
+    return None, None, None
+
+
+async def pokemon_ai_loop() -> None:
+    """
+    Boucle d'IA côté serveur : spawn et déplacement tile-by-tile des Pokémon.
+    Tourne en tâche asyncio en parallèle du serveur WebSocket.
+    """
+    while True:
+        await asyncio.sleep(AI_TICK_INTERVAL)
+
+        for map_name, zones in list(spawn_zones_by_map.items()):
+            # Ne pas traiter les maps sans joueurs
+            if not any(p.get("map") == map_name for p in players.values()):
+                continue
+
+            if map_name not in wild_pokemons:
+                wild_pokemons[map_name] = {}
+
+            current = wild_pokemons[map_name]
+
+            for zone in zones:
+                zone_name = zone.get("name", "")
+                max_poke  = int(zone.get("max_pokemon", 3))
+
+                # ── Spawn jusqu'au plafond ─────────────────────────────
+                zone_count = sum(1 for wp in current.values()
+                                 if wp["zone_name"] == zone_name)
+
+                while zone_count < max_poke:
+                    entry = _pick_spawn_entry(zone_name)
+                    if entry is None:
+                        break
+
+                    x, y  = _random_tile_in_zone(zone)
+                    level = random.randint(entry["min_level"], entry["max_level"])
+                    shiny = random.random() < 0.01
+                    wpid  = _next_wpid()
+
+                    wp = {
+                        "wpid":       wpid,
+                        "pokemon_id": entry["pokemon_id"],
+                        "level":      level,
+                        "shiny":      shiny,
+                        "x":          x,
+                        "y":          y,
+                        "dir":        "down",
+                        "zone_name":  zone_name,
+                    }
+                    current[wpid] = wp
+
+                    await broadcast(map_name, {
+                        "type":       "pokemon_spawned",
+                        "wpid":       wpid,
+                        "pokemon_id": wp["pokemon_id"],
+                        "level":      wp["level"],
+                        "shiny":      wp["shiny"],
+                        "x":          wp["x"],
+                        "y":          wp["y"],
+                        "dir":        wp["dir"],
+                    })
+                    zone_count += 1
+
+            # ── Déplacement aléatoire tile-by-tile ────────────────────
+            for wpid, wp in list(current.items()):
+                if random.random() > MOVE_CHANCE:
+                    continue
+
+                zone = next(
+                    (z for z in zones if z.get("name") == wp["zone_name"]),
+                    None,
+                )
+                if zone is None:
+                    continue
+
+                nx, ny, direction = _pick_move(wp, zone)
+                if nx is None:
+                    continue
+
+                wp["x"]   = nx
+                wp["y"]   = ny
+                wp["dir"] = direction
+
+                await broadcast(map_name, {
+                    "type": "pokemon_moved",
+                    "wpid": wpid,
+                    "x":    nx,
+                    "y":    ny,
+                    "dir":  direction,
+                })
+
+
+# ── Gestionnaire WebSocket ──────────────────────────────────────────────────
+
 async def handler(ws) -> None:
     pid = str(uuid.uuid4())[:8]
-
     ws_to_pid[ws] = pid
-    players[pid] = {
-        "ws": ws,
-        "map": None,
-        "x": 0,
-        "y": 0,
-        "dir": "down",
+    players[pid]  = {
+        "ws":   ws,
+        "map":  None,
+        "x":    0,
+        "y":    0,
+        "dir":  "down",
         "sprite": "",
         "name": "",
     }
-
     print(f"[+] {pid} connected ({len(players)} online)")
 
     try:
@@ -107,109 +257,122 @@ async def handler(ws) -> None:
 
             msg_type = msg.get("type")
 
+            # ── JOIN ───────────────────────────────────────────────────
             if msg_type == "join":
                 old_map = players[pid]["map"]
                 new_map = safe_str(msg.get("map"), max_length=128)
-
                 if not new_map:
                     continue
 
-                x = safe_int(msg.get("x"))
-                y = safe_int(msg.get("y"))
+                x         = safe_int(msg.get("x"))
+                y         = safe_int(msg.get("y"))
                 direction = safe_str(msg.get("dir"), default="down", max_length=16)
-                sprite = safe_str(msg.get("sprite"), max_length=128)
-                name = safe_str(msg.get("name"), default="Player", max_length=32)
+                sprite    = safe_str(msg.get("sprite"), max_length=128)
+                name      = safe_str(msg.get("name"), default="Player", max_length=32)
 
                 if not is_valid_direction(direction):
                     direction = "down"
 
-                # Notify old map of departure
+                # Notifier l'ancienne map du départ
                 if old_map and old_map != new_map:
-                    await broadcast(old_map, {
-                        "type": "player_left",
-                        "pid": pid,
-                    })
+                    await broadcast(old_map, {"type": "player_left", "pid": pid})
 
                 players[pid].update({
-                    "map": new_map,
-                    "x": x,
-                    "y": y,
-                    "dir": direction,
-                    "sprite": sprite,
-                    "name": name,
+                    "map": new_map, "x": x, "y": y,
+                    "dir": direction, "sprite": sprite, "name": name,
                 })
 
-                # Send snapshot of players already on this map, excluding self
-                snapshot = [
-                    {
-                        "pid": other_pid,
-                        "x": data["x"],
-                        "y": data["y"],
-                        "dir": data["dir"],
-                        "sprite": data["sprite"],
-                        "name": data["name"],
-                    }
-                    for other_pid, data in players.items()
-                    if data.get("map") == new_map and other_pid != pid
-                ]
+                # Stocker les zones de spawn envoyées par ce client
+                zones_data = msg.get("spawn_zones")
+                if isinstance(zones_data, list) and zones_data:
+                    spawn_zones_by_map[new_map] = zones_data
 
+                # Snapshot joueurs déjà présents
+                snapshot = [
+                    {"pid": op, "x": d["x"], "y": d["y"], "dir": d["dir"],
+                     "sprite": d["sprite"], "name": d["name"]}
+                    for op, d in players.items()
+                    if d.get("map") == new_map and op != pid
+                ]
+                await ws.send(json.dumps({"type": "snapshot", "players": snapshot}))
+
+                # Snapshot Pokémon sauvages déjà présents
+                existing_poke = [
+                    {"wpid": wp["wpid"], "pokemon_id": wp["pokemon_id"],
+                     "level": wp["level"], "shiny": wp["shiny"],
+                     "x": wp["x"], "y": wp["y"], "dir": wp["dir"]}
+                    for wp in wild_pokemons.get(new_map, {}).values()
+                ]
                 await ws.send(json.dumps({
-                    "type": "snapshot",
-                    "players": snapshot,
+                    "type":    "pokemon_snapshot",
+                    "pokemons": existing_poke,
                 }))
 
-                # Announce arrival to the rest of the map
+                # Annoncer l'arrivée aux autres joueurs de la map
                 await broadcast(new_map, {
-                    "type": "player_joined",
-                    "pid": pid,
-                    "x": x,
-                    "y": y,
-                    "dir": direction,
-                    "sprite": sprite,
-                    "name": name,
+                    "type": "player_joined", "pid": pid,
+                    "x": x, "y": y, "dir": direction,
+                    "sprite": sprite, "name": name,
                 }, exclude_ws=ws)
 
-                print(f"    {pid} joined map '{new_map}' at ({x}, {y})")
+                print(f"    {pid} joined '{new_map}' at ({x}, {y})")
 
+            # ── MOVE (joueur) ──────────────────────────────────────────
             elif msg_type == "move":
                 player = players.get(pid)
-
-                if not player:
+                if not player or not player.get("map"):
                     continue
 
-                current_map = player.get("map")
-
-                if not current_map:
-                    continue
-
-                new_x = safe_int(msg.get("x"), default=player["x"])
-                new_y = safe_int(msg.get("y"), default=player["y"])
-                new_dir = safe_str(msg.get("dir"), default=player["dir"], max_length=16)
+                current_map = player["map"]
+                new_x  = safe_int(msg.get("x"), player["x"])
+                new_y  = safe_int(msg.get("y"), player["y"])
+                new_dir = safe_str(msg.get("dir"), player["dir"], max_length=16)
 
                 if not is_valid_direction(new_dir):
                     continue
-
-                old_x = int(player["x"])
-                old_y = int(player["y"])
-
-                if not is_valid_one_tile_move(old_x, old_y, new_x, new_y, new_dir):
-                    print(
-                        f"[!] Invalid move ignored from {pid}: "
-                        f"old=({old_x}, {old_y}) new=({new_x}, {new_y}) dir={new_dir}"
-                    )
+                if not is_valid_one_tile_move(player["x"], player["y"], new_x, new_y, new_dir):
+                    print(f"[!] Invalid move from {pid}: "
+                          f"({player['x']},{player['y']}) → ({new_x},{new_y}) {new_dir}")
                     continue
 
-                player["x"] = new_x
-                player["y"] = new_y
-                player["dir"] = new_dir
+                player["x"], player["y"], player["dir"] = new_x, new_y, new_dir
 
                 await broadcast(current_map, {
-                    "type": "player_moved",
-                    "pid": pid,
-                    "x": new_x,
-                    "y": new_y,
-                    "dir": new_dir,
+                    "type": "player_moved", "pid": pid,
+                    "x": new_x, "y": new_y, "dir": new_dir,
                 }, exclude_ws=ws)
+
+            # ── POKEMON_ENCOUNTER ──────────────────────────────────────
+            elif msg_type == "pokemon_encounter":
+                player = players.get(pid)
+                if not player or not player.get("map"):
+                    continue
+
+                current_map = player["map"]
+                wpid        = safe_str(msg.get("wpid"))
+                map_poke    = wild_pokemons.get(current_map, {})
+
+                if wpid not in map_poke:
+                    continue  # déjà capturé par quelqu'un d'autre
+
+                wp_data = map_poke.pop(wpid)
+
+                # Tous les clients retirent ce Pokémon
+                await broadcast(current_map, {
+                    "type": "pokemon_despawned",
+                    "wpid": wpid,
+                })
+
+                # Le client qui a déclenché l'encounter reçoit les données pour le combat
+                await ws.send(json.dumps({
+                    "type":       "pokemon_encounter_start",
+                    "wpid":       wpid,
+                    "pokemon_id": wp_data["pokemon_id"],
+                    "level":      wp_data["level"],
+                    "shiny":      wp_data["shiny"],
+                }))
+
+                print(f"[Encounter] {pid} × Pokémon #{wp_data['pokemon_id']} ({wpid})")
 
     except ConnectionClosed:
         pass
@@ -219,13 +382,12 @@ async def handler(ws) -> None:
         ws_to_pid.pop(ws, None)
 
         if player and player.get("map"):
-            await broadcast(player["map"], {
-                "type": "player_left",
-                "pid": pid,
-            })
+            await broadcast(player["map"], {"type": "player_left", "pid": pid})
 
         print(f"[-] {pid} disconnected ({len(players)} online)")
 
+
+# ── Point d'entrée ──────────────────────────────────────────────────────────
 
 async def main() -> None:
     host = "0.0.0.0"
@@ -233,6 +395,7 @@ async def main() -> None:
 
     async with websockets.serve(handler, host, port):
         print(f"PokeWorld server listening on {host}:{port}")
+        asyncio.create_task(pokemon_ai_loop())
         await asyncio.Future()
 
 

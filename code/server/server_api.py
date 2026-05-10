@@ -1,14 +1,5 @@
 """
-Pokemon New Horizon — API serveur (Auth + Inventaire)
-
-Prérequis SQL (à lancer une fois sur le serveur si pas déjà fait) :
-─────────────────────────────────────────────────────────────────────
-  ALTER TABLE inventory
-    ADD UNIQUE KEY uq_account_item_pocket (account_id, item_db_symbol, pocket);
-
-  -- player_data doit avoir account_id comme PRIMARY KEY (ou UNIQUE)
-  -- ALTER TABLE player_data ADD PRIMARY KEY (account_id);
-─────────────────────────────────────────────────────────────────────
+Pokemon New Horizon — API serveur
 """
 from __future__ import annotations
 
@@ -174,6 +165,20 @@ class PlayerDataSync(BaseModel):
     money:     int   = 0
     badges:    list  = []
     play_time: float = 0.0
+
+
+class CharacterCustomization(BaseModel):
+    skin:    str = "default"
+    back:    str = "default"
+    bicycle: str = "default"
+    eyes:    str = "default"
+    face:    str = "default"
+    gloves:  str = "default"
+    hair:    str = "none"
+    legs:    str = "default"
+    shoes:   str = "default"
+    shirt:   str = "default"
+    hair_color: list[int] | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -589,6 +594,87 @@ def delete_item(
         cursor.close(); db.close()
 
     return {"ok": True}
+
+# ---------------------------------------------------------------------------
+# GET  /accounts/{id}/character   — récupère la customisation du personnage
+# ---------------------------------------------------------------------------
+
+@app.get("/accounts/{account_id}/character")
+def get_character(account_id: int, auth_id: int = Depends(require_auth)):
+    check_ownership(account_id, auth_id)
+
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute(
+        "SELECT skin, back, bicycle, eyes, face, gloves, hair, legs, shoes, shirt, hair_color"
+        " FROM character_customization WHERE account_id = %s",
+        (account_id,),
+    )
+    row = cursor.fetchone()
+    cursor.close(); db.close()
+
+    if row is None:
+        raise HTTPException(status_code=404, detail="Personnage pas créé.")
+
+    # Désérialiser hair_color depuis JSON string "[R, G, B]" → liste Python [R, G, B]
+    if row.get("hair_color"):
+        row["hair_color"] = json.loads(row["hair_color"])
+
+    print(f"[API] get_character account={account_id}")
+    return {"ok": True, "character": row}
+
+
+# ---------------------------------------------------------------------------
+# POST /accounts/{id}/character   — crée ou met à jour la customisation
+# ---------------------------------------------------------------------------
+
+@app.post("/accounts/{account_id}/character")
+def save_character(
+    account_id: int,
+    body: CharacterCustomization,
+    auth_id: int = Depends(require_auth),
+):
+    check_ownership(account_id, auth_id)
+
+    # Sérialiser hair_color (liste Python [R, G, B]) → JSON string pour le stockage
+    hair_color_json = json.dumps(body.hair_color) if body.hair_color else None
+
+    db = get_db()
+    cursor = db.cursor()
+
+    try:
+        cursor.execute(
+            """
+            INSERT INTO character_customization
+                (account_id, skin, back, bicycle, eyes, face, gloves, hair, legs, shoes, shirt,
+                 hair_color)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                    %s)
+            ON DUPLICATE KEY UPDATE
+                skin = %s, back = %s, bicycle = %s, eyes = %s, face = %s,
+                gloves = %s, hair = %s, legs = %s, shoes = %s, shirt = %s,
+                hair_color = %s
+            """,
+            (
+                account_id,
+                body.skin, body.back, body.bicycle, body.eyes, body.face,
+                body.gloves, body.hair, body.legs, body.shoes, body.shirt,
+                hair_color_json,
+                # valeurs pour ON DUPLICATE KEY UPDATE
+                body.skin, body.back, body.bicycle, body.eyes, body.face,
+                body.gloves, body.hair, body.legs, body.shoes, body.shirt,
+                hair_color_json,
+            ),
+        )
+        db.commit()
+        print(f"[API] save_character account={account_id} hair={body.hair} color={body.hair_color}")
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Erreur sauvegarde personnage : {exc}")
+    finally:
+        cursor.close(); db.close()
+
+    return {"ok": True, "message": "Personnage sauvegardé."}
 
 
 # ---------------------------------------------------------------------------

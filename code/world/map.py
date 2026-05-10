@@ -8,6 +8,7 @@ from code.core.screen import Screen
 from code.data.sql import SQL
 from code.entities.player import Player
 from code.utils.tool import Tool
+from code.world.spawn_zone import SpawnZone
 from code.world.switch import Switch
 
 
@@ -25,9 +26,10 @@ class Map:
         self.group: pyscroll.PyscrollGroup | None = None
 
         self.player: Player | None = None
-        self.switchs: list[Switch] = []
-        self.collisions: list[pygame.Rect] = []
-        self.stairs: dict[str, pygame.Rect] = {}
+        self.switchs:     list[Switch]      = []
+        self.collisions:  list[pygame.Rect] = []
+        self.stairs:      dict[str, pygame.Rect] = {}
+        self.spawn_zones: list[SpawnZone]   = []
 
         self.sql: SQL = SQL()
 
@@ -63,9 +65,10 @@ class Map:
         else:
             self.map_layer.zoom = 4
 
-        self.switchs = []
-        self.collisions = []
-        self.stairs = {}
+        self.switchs     = []
+        self.collisions  = []
+        self.stairs      = {}
+        self.spawn_zones = []   # recréée ici → SpawnManager détecte le changement de map
 
         self._load_tmx_objects()
 
@@ -92,23 +95,46 @@ class Map:
 
     def _load_tmx_objects(self) -> None:
         """
-        Load collisions, switches and stairs from the TMX objects.
+        Load collisions, switches, stairs and Pokémon spawn zones from the TMX.
+
+        Spawn zones : objets dans le layer nommé "pokemonspawn".
+            - Le nom de la zone vient de la custom property "spawn_zone"
+              ou, à défaut, du nom de l'objet lui-même.
+            - Le plafond vient de la custom property "max_pokemon" (défaut 3).
         """
         if self.tmx_data is None:
             return
 
-        for obj in self.tmx_data.objects:
-            obj_name = (obj.name or "").strip()
-            obj_type = (getattr(obj, "type", "") or "").strip()
+        # ── Spawn zones : lire par nom de layer ───────────────────────
+        # On parcourt les objectgroups séparément pour identifier le bon layer.
+        for layer in self.tmx_data.objectgroups:
+            if not layer.name.lower().startswith("pokemonspawn"):
+                continue
+            for obj in layer:
+                props       = dict(obj.properties) if obj.properties else {}
+                zone_name   = str(props.get("spawn_zone", obj.name or "")).strip()
+                max_pokemon = int(props.get("max_pokemon", 3))
+                if not zone_name:
+                    continue
+                self.spawn_zones.append(SpawnZone(
+                    name        = zone_name,
+                    rect        = pygame.Rect(int(obj.x), int(obj.y),
+                                             int(obj.width), int(obj.height)),
+                    max_pokemon = max_pokemon,
+                ))
+        print(f"[Map] Spawn zones loaded: {len(self.spawn_zones)}"
+              + (f" {[z.name for z in self.spawn_zones]}" if self.spawn_zones else ""))
 
+        # ── Collisions, switches, stairs ──────────────────────────────
+        for obj in self.tmx_data.objects:
+            obj_name   = (obj.name or "").strip()
+            obj_type   = (getattr(obj, "type", "") or "").strip()
             first_word = obj_name.split(" ")[0].lower() if obj_name else ""
             tiled_type = obj_type.lower()
 
             rect = pygame.Rect(
-                int(obj.x),
-                int(obj.y),
-                int(obj.width),
-                int(obj.height)
+                int(obj.x), int(obj.y),
+                int(obj.width), int(obj.height),
             )
 
             if first_word == "collision" or tiled_type == "collision":
@@ -117,31 +143,17 @@ class Map:
 
             if first_word == "switch":
                 parts = obj_name.split(" ")
-
                 if len(parts) >= 3:
                     try:
-                        switch_type = parts[0]
-                        switch_name = parts[1]
-                        switch_port = int(parts[-1])
-
-                        self.switchs.append(Switch(
-                            switch_type,
-                            switch_name,
-                            rect,
-                            switch_port
-                        ))
+                        self.switchs.append(Switch(parts[0], parts[1], rect, int(parts[-1])))
                     except ValueError:
                         print(f"[Map] Invalid switch object ignored: {obj_name}")
-
                 continue
 
             if first_word == "stairs":
                 parts = obj_name.split(" ")
-
                 if len(parts) >= 2:
-                    stair_key = parts[-1]
-                    self.stairs[stair_key] = rect
-
+                    self.stairs[parts[-1]] = rect
                 continue
 
     def add_player(self, player: Player) -> None:

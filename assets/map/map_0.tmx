@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="105" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="30" nextobjectid="680">
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="105" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="31" nextobjectid="684">
  <tileset firstgid="1" source="tileset/tileset_pokemon_sdk.tsx"/>
  <tileset firstgid="4257" source="tileset/tileset4g.tsx"/>
  <group id="13" name="layer0">
@@ -647,6 +647,15 @@
   </layer>
  </group>
  <group id="21" name="Object">
+  <objectgroup color="#00aa00" id="30" name="pokemonspawns">
+   <object id="682" x="369.5" y="0.75" width="62.75" height="78.75">
+    <properties>
+     <property name="max_pokemon" type="int" value="5"/>
+     <property name="spawn_zone" value="route_1"/>
+    </properties>
+   </object>
+   <object id="683" x="635" y="331.667" width="120" height="54"/>
+  </objectgroup>
   <objectgroup id="29" name="collisions" visible="0">
    <object id="485" name="collision" type="collision" x="448" y="272" width="48" height="16"/>
    <object id="486" name="collision" type="collision" x="448" y="208" width="16" height="64"/>

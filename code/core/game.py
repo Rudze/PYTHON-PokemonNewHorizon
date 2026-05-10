@@ -2,6 +2,8 @@ import pygame
 
 from code.api.game_api_client import GameApiClient
 from code.config import AUTH_API_URL
+from code.managers.wild_pokemon_manager import WildPokemonManager
+from code.utils.sprite_composer import compose_player_spritesheet
 from code.core.controller import Controller
 from code.core.keylistener import KeyListener
 from code.core.screen import Screen
@@ -11,6 +13,7 @@ from code.managers.save import Save
 from code.managers.sound_manager import SoundManager
 from code.network.client import NetworkClient
 from code.ui.dialogue import Dialogue
+from code.ui.character_creation_menu import CharacterCreationMenu
 from code.ui.login_menu import LoginMenu
 from code.ui.option import Option
 from code.ui.server_select_menu import ServerSelectMenu
@@ -43,8 +46,10 @@ class Game:
         self.controller = Controller()
         self.keylistener = KeyListener()
         self.mouse_click: tuple[int, int] | None = None
-        self.api_client: GameApiClient | None = None
-        self._saving_started: bool = False
+        self.api_client:            GameApiClient      | None = None
+        self._cached_character:     dict               | None = None
+        self.wild_pokemon_manager:  WildPokemonManager | None = None
+        self._saving_started:       bool                      = False
 
     def _setup_game_world(self):
         """ Cette méthode initialise tout le monde de jeu une fois connecté """
@@ -53,28 +58,28 @@ class Game:
         server_port = self.selected_server["port"]
         self.server_url = f"ws://{server_host}:{server_port}"
 
-        # ── API client (données de jeu) ─────────────────────────────────
-        # Le serveur expose "token" au niveau racine ET dans "session.token"
+        # ── account_id (api_client déjà créé dans run() après le login) ──
         account_id = self.account.get("id")
-        token = (
-            self.account_data.get("token")                          # niveau racine (corrigé)
-            or self.account_data.get("session", {}).get("token")    # fallback ancien format
-            or ""
-        )
-        if not token:
-            print("[Game] ATTENTION: token introuvable dans account_data.")
-            print(f"[Game] Clés disponibles: {list(self.account_data.keys())}")
         if not account_id:
             print("[Game] ATTENTION: account_id introuvable dans account.")
-            print(f"[Game] Clés disponibles: {list(self.account.keys())}")
-        if token and account_id:
-            self.api_client = GameApiClient(AUTH_API_URL, token)
-            print(f"[Game] GameApiClient initialisé (account_id={account_id})")
+        else:
+            print(f"[Game] GameApiClient actif (account_id={account_id})")
 
         # ── Monde ──────────────────────────────────────────────────────
         self.map = Map(self.screen, self.controller)
         self.player = Player(self.screen, self.controller, 512, 288, self.keylistener)
         self.player.name = self.account["username"]
+
+        # ── Customisation du personnage (cheveux, couleurs…) ───────────
+        # Réutilise le résultat mis en cache lors du LOGIN (évite un 2e appel API).
+        # Après CHARACTER_CREATION, _cached_character est None — on recharge alors.
+        if self.api_client and account_id:
+            character_data = self._cached_character or self.api_client.get_character(int(account_id))
+            self._cached_character = None   # libère la référence
+            if character_data:
+                customization = character_data.get("character", {})
+                composed = compose_player_spritesheet(customization)
+                self.player.reload_spritesheet(composed)
 
         # ── Inventaire : wire API client AVANT save.load() ────────────
         if self.api_client and account_id:
@@ -93,6 +98,8 @@ class Game:
         self.network = NetworkClient(self.server_url)
         self.remote_players = {}
 
+        self.spawn_manager = SpawnManager(self.map)
+
     def run(self) -> None:
         while self.running:
             self.handle_input()
@@ -108,6 +115,25 @@ class Game:
                 login_menu = LoginMenu(self.screen, AUTH_API_URL)
                 self.account_data = login_menu.run()
                 if self.account_data:
+                    token = self.account_data.get("token", "")
+                    account_id = self.account_data.get("account", {}).get("id")
+                    if token and account_id:
+                        self.api_client = GameApiClient(AUTH_API_URL, token)
+                        self._cached_character = self.api_client.get_character(int(account_id))
+                        if self._cached_character is None:
+                            self.state = "CHARACTER_CREATION"
+                        else:
+                            self.state = "SERVER_SELECT"
+                    else:
+                        self.state = "SERVER_SELECT"
+                else:
+                    self.running = False
+
+            elif self.state == "CHARACTER_CREATION":
+                account_id = self.account_data.get("account", {}).get("id")
+                creation_menu = CharacterCreationMenu(self.screen, self.api_client, int(account_id))
+                success = creation_menu.run()
+                if success:
                     self.state = "SERVER_SELECT"
                 else:
                     self.running = False
@@ -242,14 +268,21 @@ class Game:
             self._dispatch(msg)
 
     def _send_join(self, map_name: str) -> None:
+        zones = [
+            {"name": z.name, "x": z.rect.x, "y": z.rect.y,
+             "w": z.rect.width, "h": z.rect.height,
+             "max_pokemon": z.max_pokemon}
+            for z in (self.map.spawn_zones or [])
+        ]
         self.network.send({
-            "type": "join",
-            "map": map_name,
-            "x": int(self.player.position.x),
-            "y": int(self.player.position.y),
-            "dir": self.player.direction,
-            "sprite": "character",
-            "name": self.player.name,
+            "type":        "join",
+            "map":         map_name,
+            "x":           int(self.player.position.x),
+            "y":           int(self.player.position.y),
+            "dir":         self.player.direction,
+            "sprite":      "character",
+            "name":        self.player.name,
+            "spawn_zones": zones,
         })
 
     def _dispatch(self, msg: dict) -> None:
@@ -274,6 +307,30 @@ class Game:
                     int(msg["y"]),
                     msg["dir"]
                 )
+
+        elif t == "pokemon_snapshot":
+            if self.wild_pokemon_manager:
+                self.wild_pokemon_manager.on_snapshot(msg.get("pokemons", []))
+
+        elif t == "pokemon_spawned":
+            if self.wild_pokemon_manager:
+                self.wild_pokemon_manager.on_spawned(msg)
+
+        elif t == "pokemon_moved":
+            if self.wild_pokemon_manager:
+                self.wild_pokemon_manager.on_moved(msg)
+
+        elif t == "pokemon_despawned":
+            if self.wild_pokemon_manager:
+                self.wild_pokemon_manager.on_despawned(msg)
+
+        elif t == "pokemon_encounter_start":
+            # TODO: démarrer le système de combat avec ces données
+            print(
+                f"[Encounter] Pokémon #{msg['pokemon_id']} "
+                f"nv.{msg['level']}"
+                + (" ✨ Shiny !" if msg.get("shiny") else "")
+            )
 
     def _add_remote_player(self, data: dict) -> None:
         pid = data["pid"]
@@ -349,6 +406,22 @@ class Game:
         # 2. Gérer le mouvement et les menus
         if not self.player.menu_option:
             self.map.update()
+
+            # ── Pokémon sauvages — détection d'encounter ─────────────
+            if self.wild_pokemon_manager:
+                result = self.wild_pokemon_manager.check_encounter(self.player.hitbox)
+                if result:
+                    wpid, entity = result
+                    current_map  = self.map.current_map.name if self.map.current_map else ""
+                    # Retirer localement immédiatement (le serveur broadcastera pokemon_despawned)
+                    self.wild_pokemon_manager.on_despawned({"wpid": wpid})
+                    # Informer le serveur → il enverra pokemon_encounter_start
+                    self.network.send({
+                        "type": "pokemon_encounter",
+                        "wpid": wpid,
+                        "map":  current_map,
+                    })
+
             # Touche interaction
             if pygame.K_e in self.keylistener.keys and not self.dialogue.active:
                 self.dialogue.load_data(1001, 0)

@@ -179,5 +179,18 @@ class Entity(pygame.sprite.Sprite):
         self.rect.center = self.position
         self.hitbox.midbottom = self.rect.midbottom
 
+    def reload_spritesheet(self, spritesheet: pygame.Surface) -> None:
+        """
+        Recharge all_images depuis un spritesheet composé (customisation du personnage).
+
+        À appeler une fois au démarrage, après que le spritesheet a été
+        composé par sprite_composer.compose_player_spritesheet().
+        """
+        if spritesheet is None:
+            return
+        self.spritesheet = spritesheet
+        self.all_images  = self.get_all_images(spritesheet)
+        self.image       = self.all_images[self.direction][self.index_image]
+
     def move_stairs(self):
         self.position.y += self.speed if self.direction == "right" else -self.speed
