@@ -122,8 +122,38 @@ def _random_tile_in_zone(zone: dict) -> tuple[int, int]:
     return random.choice(xs), random.choice(ys)
 
 
-def _pick_move(wp: dict, zone: dict) -> tuple[int | None, int | None, str | None]:
-    """Choisit une direction aléatoire valide dans la zone pour ce Pokémon."""
+def _is_tile_free(current: dict, exclude_wpid: str, x: int, y: int, buffer: int = 1) -> bool:
+    """
+    True si aucun autre Pokémon n'est dans un rayon de `buffer` tuiles.
+    buffer=1 → empêche la superposition exacte.
+    buffer=2 → empêche aussi les tuiles adjacentes (sprites 32×32 sur tuiles 16×16).
+    """
+    half = TILE_SIZE * buffer
+    return not any(
+        abs(int(wp["x"]) - x) < half and abs(int(wp["y"]) - y) < half
+        for wpid, wp in current.items()
+        if wpid != exclude_wpid
+    )
+
+
+def _tile_has_player(map_name: str, x: int, y: int) -> bool:
+    """True si un joueur se trouve sur la tuile logique (x, y)."""
+    tx = x // TILE_SIZE
+    ty = y // TILE_SIZE
+    return any(
+        int(p["x"]) // TILE_SIZE == tx and int(p["y"]) // TILE_SIZE == ty
+        for p in players.values()
+        if p.get("map") == map_name
+    )
+
+
+def _pick_move(
+    wp: dict, zone: dict, current: dict, map_name: str
+) -> tuple[int | None, int | None, str | None]:
+    """
+    Choisit une direction aléatoire valide dans la zone pour ce Pokémon.
+    Refuse les cases occupées par un autre Pokémon ou un joueur.
+    """
     candidates = [
         ("left",  wp["x"] - TILE_SIZE, wp["y"]),
         ("right", wp["x"] + TILE_SIZE, wp["y"]),
@@ -134,7 +164,9 @@ def _pick_move(wp: dict, zone: dict) -> tuple[int | None, int | None, str | None
 
     for direction, nx, ny in candidates:
         if (zone["x"] <= nx < zone["x"] + zone["w"] and
-                zone["y"] <= ny < zone["y"] + zone["h"]):
+                zone["y"] <= ny < zone["y"] + zone["h"] and
+                _is_tile_free(current, wp["wpid"], nx, ny) and
+                not _tile_has_player(map_name, nx, ny)):
             return nx, ny, direction
 
     return None, None, None
@@ -162,43 +194,48 @@ async def pokemon_ai_loop() -> None:
                 zone_name = zone.get("name", "")
                 max_poke  = int(zone.get("max_pokemon", 3))
 
-                # ── Spawn jusqu'au plafond ─────────────────────────────
+                # ── Spawn progressif : 1 max par zone par tick ────────
                 zone_count = sum(1 for wp in current.values()
                                  if wp["zone_name"] == zone_name)
 
-                while zone_count < max_poke:
+                if zone_count < max_poke and random.random() < 0.4:
                     entry = _pick_spawn_entry(zone_name)
-                    if entry is None:
-                        break
+                    if entry is not None:
+                        x, y, found = 0, 0, False
+                        for _ in range(10):
+                            x, y = _random_tile_in_zone(zone)
+                            if (_is_tile_free(current, "", x, y, buffer=2) and
+                                    not _tile_has_player(map_name, x, y)):
+                                found = True
+                                break
 
-                    x, y  = _random_tile_in_zone(zone)
-                    level = random.randint(entry["min_level"], entry["max_level"])
-                    shiny = random.random() < 0.01
-                    wpid  = _next_wpid()
+                        if found:
+                            level = random.randint(entry["min_level"], entry["max_level"])
+                            shiny = random.random() < 0.01
+                            wpid  = _next_wpid()
 
-                    wp = {
-                        "wpid":       wpid,
-                        "pokemon_id": entry["pokemon_id"],
-                        "level":      level,
-                        "shiny":      shiny,
-                        "x":          x,
-                        "y":          y,
-                        "dir":        "down",
-                        "zone_name":  zone_name,
-                    }
-                    current[wpid] = wp
+                            wp = {
+                                "wpid":       wpid,
+                                "pokemon_id": entry["pokemon_id"],
+                                "level":      level,
+                                "shiny":      shiny,
+                                "x":          x,
+                                "y":          y,
+                                "dir":        "down",
+                                "zone_name":  zone_name,
+                            }
+                            current[wpid] = wp
 
-                    await broadcast(map_name, {
-                        "type":       "pokemon_spawned",
-                        "wpid":       wpid,
-                        "pokemon_id": wp["pokemon_id"],
-                        "level":      wp["level"],
-                        "shiny":      wp["shiny"],
-                        "x":          wp["x"],
-                        "y":          wp["y"],
-                        "dir":        wp["dir"],
-                    })
-                    zone_count += 1
+                            await broadcast(map_name, {
+                                "type":       "pokemon_spawned",
+                                "wpid":       wpid,
+                                "pokemon_id": wp["pokemon_id"],
+                                "level":      wp["level"],
+                                "shiny":      wp["shiny"],
+                                "x":          wp["x"],
+                                "y":          wp["y"],
+                                "dir":        wp["dir"],
+                            })
 
             # ── Déplacement aléatoire tile-by-tile ────────────────────
             for wpid, wp in list(current.items()):
@@ -212,7 +249,7 @@ async def pokemon_ai_loop() -> None:
                 if zone is None:
                     continue
 
-                nx, ny, direction = _pick_move(wp, zone)
+                nx, ny, direction = _pick_move(wp, zone, current, map_name)
                 if nx is None:
                     continue
 

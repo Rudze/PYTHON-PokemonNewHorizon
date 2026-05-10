@@ -98,7 +98,7 @@ class Game:
         self.network = NetworkClient(self.server_url)
         self.remote_players = {}
 
-        self.spawn_manager = SpawnManager(self.map)
+        self.wild_pokemon_manager = WildPokemonManager(self.map)
 
     def run(self) -> None:
         while self.running:
@@ -408,7 +408,10 @@ class Game:
             self.map.update()
 
             # ── Pokémon sauvages — détection d'encounter ─────────────
-            if self.wild_pokemon_manager:
+            # On vérifie uniquement quand le joueur est immobile sur sa tuile
+            # (step == 0), sinon le hitbox déclenche l'encounter pendant
+            # l'animation d'approche, avant même d'arriver sur la case.
+            if self.wild_pokemon_manager and not self.player.animation_walk:
                 result = self.wild_pokemon_manager.check_encounter(self.player.hitbox)
                 if result:
                     wpid, entity = result
