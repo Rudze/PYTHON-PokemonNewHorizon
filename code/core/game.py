@@ -73,12 +73,13 @@ class Game:
         # ── Customisation du personnage (cheveux, couleurs…) ───────────
         # Réutilise le résultat mis en cache lors du LOGIN (évite un 2e appel API).
         # Après CHARACTER_CREATION, _cached_character est None — on recharge alors.
+        self._player_customization: dict = {}
         if self.api_client and account_id:
             character_data = self._cached_character or self.api_client.get_character(int(account_id))
             self._cached_character = None   # libère la référence
             if character_data:
-                customization = character_data.get("character", {})
-                composed = compose_player_spritesheet(customization)
+                self._player_customization = character_data.get("character", {})
+                composed = compose_player_spritesheet(self._player_customization)
                 self.player.reload_spritesheet(composed)
 
         # ── Inventaire : wire API client AVANT save.load() ────────────
@@ -275,14 +276,15 @@ class Game:
             for z in (self.map.spawn_zones or [])
         ]
         self.network.send({
-            "type":        "join",
-            "map":         map_name,
-            "x":           int(self.player.position.x),
-            "y":           int(self.player.position.y),
-            "dir":         self.player.direction,
-            "sprite":      "character",
-            "name":        self.player.name,
-            "spawn_zones": zones,
+            "type":          "join",
+            "map":           map_name,
+            "x":             int(self.player.position.x),
+            "y":             int(self.player.position.y),
+            "dir":           self.player.direction,
+            "sprite":        "character",
+            "name":          self.player.name,
+            "spawn_zones":   zones,
+            "customization": self._player_customization,
         })
 
     def _dispatch(self, msg: dict) -> None:
@@ -347,6 +349,11 @@ class Game:
             data["sprite"],
             data["name"],
         )
+
+        customization = data.get("customization")
+        if customization:
+            composed = compose_player_spritesheet(customization)
+            rp.reload_spritesheet(composed)
 
         self.remote_players[pid] = rp
 
@@ -423,22 +430,19 @@ class Game:
 
         # 2. Gérer le mouvement et les menus
         if not self.player.menu_option:
-            # ── Pokémon sauvages : bloquer + encounter au contact ─────────
-            encounter_wpid = None
+            # ── Pokémon sauvages : bloquer le mouvement ───────────────────
             if self.wild_pokemon_manager and not self.player.animation_walk and self.player.can_move:
                 facing = self._find_facing_pokemon()
                 if facing:
-                    direction, encounter_wpid = facing
-                    self.player.direction = direction   # faire face au Pokémon
-                    self.player.can_move  = False       # bloquer le mouvement ce frame
+                    direction, _ = facing
+                    self.player.direction = direction
+                    self.player.can_move  = False
 
             self.map.update()
 
-            if encounter_wpid:
+            # Restaurer can_move si on l'a bloqué pour un Pokémon
+            if self.player and not self.player.can_move and not self.player.animation_walk:
                 self.player.can_move = True
-                current_map = self.map.current_map.name if self.map.current_map else ""
-                self.wild_pokemon_manager.on_despawned({"wpid": encounter_wpid})
-                self.network.send({"type": "pokemon_encounter", "wpid": encounter_wpid, "map": current_map})
 
             # Touche interaction
             if pygame.K_e in self.keylistener.keys and not self.dialogue.active:

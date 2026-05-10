@@ -272,13 +272,14 @@ async def handler(ws) -> None:
     pid = str(uuid.uuid4())[:8]
     ws_to_pid[ws] = pid
     players[pid]  = {
-        "ws":   ws,
-        "map":  None,
-        "x":    0,
-        "y":    0,
-        "dir":  "down",
-        "sprite": "",
-        "name": "",
+        "ws":            ws,
+        "map":           None,
+        "x":             0,
+        "y":             0,
+        "dir":           "down",
+        "sprite":        "",
+        "name":          "",
+        "customization": {},
     }
     print(f"[+] {pid} connected ({len(players)} online)")
 
@@ -314,9 +315,14 @@ async def handler(ws) -> None:
                 if old_map and old_map != new_map:
                     await broadcast(old_map, {"type": "player_left", "pid": pid})
 
+                customization = msg.get("customization", {})
+                if not isinstance(customization, dict):
+                    customization = {}
+
                 players[pid].update({
                     "map": new_map, "x": x, "y": y,
                     "dir": direction, "sprite": sprite, "name": name,
+                    "customization": customization,
                 })
 
                 # Stocker les zones de spawn envoyées par ce client
@@ -324,10 +330,11 @@ async def handler(ws) -> None:
                 if isinstance(zones_data, list) and zones_data:
                     spawn_zones_by_map[new_map] = zones_data
 
-                # Snapshot joueurs déjà présents
+                # Snapshot joueurs déjà présents (avec leurs cosmétiques)
                 snapshot = [
                     {"pid": op, "x": d["x"], "y": d["y"], "dir": d["dir"],
-                     "sprite": d["sprite"], "name": d["name"]}
+                     "sprite": d["sprite"], "name": d["name"],
+                     "customization": d.get("customization", {})}
                     for op, d in players.items()
                     if d.get("map") == new_map and op != pid
                 ]
@@ -345,11 +352,12 @@ async def handler(ws) -> None:
                     "pokemons": existing_poke,
                 }))
 
-                # Annoncer l'arrivée aux autres joueurs de la map
+                # Annoncer l'arrivée aux autres joueurs (avec cosmétiques)
                 await broadcast(new_map, {
                     "type": "player_joined", "pid": pid,
                     "x": x, "y": y, "dir": direction,
                     "sprite": sprite, "name": name,
+                    "customization": customization,
                 }, exclude_ws=ws)
 
                 print(f"    {pid} joined '{new_map}' at ({x}, {y})")
