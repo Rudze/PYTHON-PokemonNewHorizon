@@ -397,6 +397,24 @@ class Game:
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 self.mouse_click = event.pos
 
+    def _find_facing_pokemon(self):
+        """
+        Retourne (direction, wpid) si le joueur appuie vers une tuile avec un Pokémon.
+        Comparaison par indice de tuile — aucune hitbox impliquée.
+        """
+        TILE = 16
+        ctrl = self.controller
+        keys = self.keylistener
+        px   = int(self.player.position.x) // TILE
+        py   = int(self.player.position.y) // TILE
+
+        for direction, (dx, dy) in [("left",  (-1, 0)), ("right", (1, 0)),
+                                     ("up",    (0, -1)), ("down",  (0, 1))]:
+            if keys.key_pressed(ctrl.get_key(direction)):
+                result = self.wild_pokemon_manager.get_pokemon_at_tile(px + dx, py + dy)
+                return (direction, result[0]) if result else None
+        return None
+
     def update_playing_logic(self) -> None:
         # 1. Sauvegarder l'état précédent (pour le réseau)
         prev_walking = self.player.animation_walk
@@ -405,25 +423,22 @@ class Game:
 
         # 2. Gérer le mouvement et les menus
         if not self.player.menu_option:
+            # ── Pokémon sauvages : bloquer + encounter au contact ─────────
+            encounter_wpid = None
+            if self.wild_pokemon_manager and not self.player.animation_walk and self.player.can_move:
+                facing = self._find_facing_pokemon()
+                if facing:
+                    direction, encounter_wpid = facing
+                    self.player.direction = direction   # faire face au Pokémon
+                    self.player.can_move  = False       # bloquer le mouvement ce frame
+
             self.map.update()
 
-            # ── Pokémon sauvages — détection d'encounter ─────────────
-            # On vérifie uniquement quand le joueur est immobile sur sa tuile
-            # (step == 0), sinon le hitbox déclenche l'encounter pendant
-            # l'animation d'approche, avant même d'arriver sur la case.
-            if self.wild_pokemon_manager and not self.player.animation_walk:
-                result = self.wild_pokemon_manager.check_encounter(self.player.hitbox)
-                if result:
-                    wpid, entity = result
-                    current_map  = self.map.current_map.name if self.map.current_map else ""
-                    # Retirer localement immédiatement (le serveur broadcastera pokemon_despawned)
-                    self.wild_pokemon_manager.on_despawned({"wpid": wpid})
-                    # Informer le serveur → il enverra pokemon_encounter_start
-                    self.network.send({
-                        "type": "pokemon_encounter",
-                        "wpid": wpid,
-                        "map":  current_map,
-                    })
+            if encounter_wpid:
+                self.player.can_move = True
+                current_map = self.map.current_map.name if self.map.current_map else ""
+                self.wild_pokemon_manager.on_despawned({"wpid": encounter_wpid})
+                self.network.send({"type": "pokemon_encounter", "wpid": encounter_wpid, "map": current_map})
 
             # Touche interaction
             if pygame.K_e in self.keylistener.keys and not self.dialogue.active:
