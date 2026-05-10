@@ -98,6 +98,7 @@ class Game:
         self.option = Option(self.screen, self.controller, self.map, "fr", self.save, self.keylistener, self.dialogue)
         self.network = NetworkClient(self.server_url)
         self.remote_players = {}
+        self._prev_player_dir: str = self.player.direction
 
         self.wild_pokemon_manager = WildPokemonManager(self.map)
 
@@ -264,6 +265,16 @@ class Game:
                 "y": target_y,
                 "dir": self.player.direction,
             })
+
+        elif (not self.player.animation_walk and not prev_walking
+              and self.player.direction != self._prev_player_dir
+              and self.network.connected and current_map):
+            self.network.send({
+                "type": "turn",
+                "dir":  self.player.direction,
+            })
+
+        self._prev_player_dir = self.player.direction
 
         for msg in self.network.poll():
             self._dispatch(msg)

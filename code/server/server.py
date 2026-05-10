@@ -387,6 +387,24 @@ async def handler(ws) -> None:
                     "x": new_x, "y": new_y, "dir": new_dir,
                 }, exclude_ws=ws)
 
+            # ── TURN (rotation sur place) ──────────────────────────────
+            elif msg_type == "turn":
+                player = players.get(pid)
+                if not player or not player.get("map"):
+                    continue
+
+                new_dir = safe_str(msg.get("dir"), default="down", max_length=16)
+                if not is_valid_direction(new_dir):
+                    continue
+
+                player["dir"] = new_dir
+
+                await broadcast(player["map"], {
+                    "type": "player_turned",
+                    "pid":  pid,
+                    "dir":  new_dir,
+                }, exclude_ws=ws)
+
             # ── POKEMON_ENCOUNTER ──────────────────────────────────────
             elif msg_type == "pokemon_encounter":
                 player = players.get(pid)
