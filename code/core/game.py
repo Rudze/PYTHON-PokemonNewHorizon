@@ -98,7 +98,6 @@ class Game:
         self.option = Option(self.screen, self.controller, self.map, "fr", self.save, self.keylistener, self.dialogue)
         self.network = NetworkClient(self.server_url)
         self.remote_players = {}
-        self._prev_player_dir: str = self.player.direction
 
         self.wild_pokemon_manager = WildPokemonManager(self.map)
 
@@ -231,8 +230,8 @@ class Game:
     def _handle_network(
         self,
         prev_walking: bool,
-        prev_pos: tuple[int, int],
-        prev_map: str | None
+        prev_pos:     tuple[int, int],
+        prev_map:     str | None,
     ) -> None:
         current_map = self.map.current_map.name if self.map.current_map else None
 
@@ -265,16 +264,6 @@ class Game:
                 "y": target_y,
                 "dir": self.player.direction,
             })
-
-        elif (not self.player.animation_walk and not prev_walking
-              and self.player.direction != self._prev_player_dir
-              and self.network.connected and current_map):
-            self.network.send({
-                "type": "turn",
-                "dir":  self.player.direction,
-            })
-
-        self._prev_player_dir = self.player.direction
 
         for msg in self.network.poll():
             self._dispatch(msg)
@@ -408,12 +397,30 @@ class Game:
 
             elif event.type == pygame.KEYDOWN:
                 self.keylistener.add_key(event.key)
+                self._send_turn_on_keydown(event.key)
 
             elif event.type == pygame.KEYUP:
                 self.keylistener.remove_key(event.key)
 
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 self.mouse_click = event.pos
+
+    def _send_turn_on_keydown(self, key: int) -> None:
+        """Envoie 'turn' une seule fois par appui de touche directionnelle."""
+        if (self.state != "PLAYING" or not self.player
+                or self.player.animation_walk or self.player.menu_option):
+            return
+        if not self.network or not self.network.connected:
+            return
+        current_map = self.map.current_map.name if self.map and self.map.current_map else None
+        if not current_map:
+            return
+
+        ctrl = self.controller
+        for direction in ("left", "right", "up", "down"):
+            if key == ctrl.get_key(direction):
+                self.network.send({"type": "turn", "dir": direction})
+                return
 
     def _find_facing_pokemon(self):
         """
@@ -436,8 +443,8 @@ class Game:
     def update_playing_logic(self) -> None:
         # 1. Sauvegarder l'état précédent (pour le réseau)
         prev_walking = self.player.animation_walk
-        prev_pos = (int(self.player.position.x), int(self.player.position.y))
-        prev_map = self.map.current_map.name if self.map.current_map else None
+        prev_pos     = (int(self.player.position.x), int(self.player.position.y))
+        prev_map     = self.map.current_map.name if self.map.current_map else None
 
         # 2. Gérer le mouvement et les menus
         if not self.player.menu_option:

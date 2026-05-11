@@ -3,11 +3,6 @@ from code.entities.entity import Entity
 
 
 class RemotePlayer(Entity):
-    """
-    Représentation visuelle d'un autre joueur.
-    Le serveur envoie la position finale cible.
-    Le RemotePlayer anime vers cette position sans décider lui-même des collisions.
-    """
 
     TILE_SIZE = 16
 
@@ -28,9 +23,6 @@ class RemotePlayer(Entity):
         self._pending: list[tuple[int, int, str]] = []
 
     def apply_move(self, x: int, y: int, direction: str) -> None:
-        """
-        x/y = position finale validée/reçue.
-        """
         self._pending.append((x, y, direction))
 
     def update(self) -> None:
