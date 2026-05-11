@@ -6,6 +6,14 @@ class RemotePlayer(Entity):
 
     TILE_SIZE = 16
 
+    # Offset pour retrouver la tuile source depuis la tuile cible
+    _SOURCE_OFFSET = {
+        "right": (-16,  0),
+        "left":  ( 16,  0),
+        "up":    (  0, 16),
+        "down":  (  0,-16),
+    }
+
     def __init__(
         self,
         screen: Screen,
@@ -34,7 +42,6 @@ class RemotePlayer(Entity):
 
             self.direction = direction
 
-            # Mouvement normal d'une seule case
             if dx == -self.TILE_SIZE and dy == 0:
                 self.move_left()
             elif dx == self.TILE_SIZE and dy == 0:
@@ -44,8 +51,16 @@ class RemotePlayer(Entity):
             elif dx == 0 and dy == self.TILE_SIZE:
                 self.move_down()
             else:
-                # Si le remote est désynchronisé, on le replace proprement
-                self.set_position(target_x, target_y)
-                self.align_hitbox()
+                # Desync : recaler sur la tuile source puis animer
+                ox, oy = self._SOURCE_OFFSET.get(direction, (0, 0))
+                self.set_position(target_x + ox, target_y + oy)
+                if direction == "left":
+                    self.move_left()
+                elif direction == "right":
+                    self.move_right()
+                elif direction == "up":
+                    self.move_up()
+                elif direction == "down":
+                    self.move_down()
 
         super().update()
