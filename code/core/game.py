@@ -310,6 +310,11 @@ class Game:
                     msg["dir"]
                 )
 
+        elif t == "player_turned":
+            pid = msg.get("pid")
+            if pid in self.remote_players:
+                self.remote_players[pid].direction = msg["dir"]
+
         elif t == "pokemon_snapshot":
             if self.wild_pokemon_manager:
                 self.wild_pokemon_manager.on_snapshot(msg.get("pokemons", []))
@@ -417,12 +422,6 @@ class Game:
         if direction is None:
             return
 
-        print(f"[Turn] keydown dir={direction} state={self.state} "
-              f"player={self.player is not None} "
-              f"walking={self.player.animation_walk if self.player else '?'} "
-              f"connected={self.network.connected if self.network else '?'} "
-              f"map={self.map.current_map.name if self.map and self.map.current_map else None}")
-
         if self.state != "PLAYING" or not self.player or self.player.menu_option:
             return
         if not self.network or not self.network.connected:
@@ -432,7 +431,6 @@ class Game:
             return
 
         self.network.send({"type": "turn", "dir": direction})
-        print(f"[Turn] Sent turn={direction}")
 
     def _find_facing_pokemon(self):
         """
