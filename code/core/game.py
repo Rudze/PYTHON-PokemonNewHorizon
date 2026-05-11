@@ -245,6 +245,7 @@ class Game:
             self._server_map = current_map
 
         if self.player.animation_walk and not prev_walking and self.network.connected and current_map:
+            # Début d'une marche : envoyer la destination
             target_x = prev_pos[0]
             target_y = prev_pos[1]
 
@@ -264,6 +265,12 @@ class Game:
                 "y": target_y,
                 "dir": self.player.direction,
             })
+
+        elif (not self.player.animation_walk and not prev_walking
+              and self.player.direction != prev_direction
+              and self.network.connected and current_map):
+            # Rotation sur place (bloqué par mur ou Pokémon)
+            self.network.send({"type": "turn", "dir": self.player.direction})
 
         for msg in self.network.poll():
             self._dispatch(msg)
@@ -402,35 +409,12 @@ class Game:
 
             elif event.type == pygame.KEYDOWN:
                 self.keylistener.add_key(event.key)
-                self._send_turn_on_keydown(event.key)
 
             elif event.type == pygame.KEYUP:
                 self.keylistener.remove_key(event.key)
 
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 self.mouse_click = event.pos
-
-    def _send_turn_on_keydown(self, key: int) -> None:
-        """Envoie 'turn' une seule fois par appui de touche directionnelle."""
-        ctrl = self.controller
-        # Vérifier si c'est bien une touche directionnelle avant tout
-        direction = None
-        for d in ("left", "right", "up", "down"):
-            if key == ctrl.get_key(d):
-                direction = d
-                break
-        if direction is None:
-            return
-
-        if self.state != "PLAYING" or not self.player or self.player.menu_option:
-            return
-        if not self.network or not self.network.connected:
-            return
-        current_map = self.map.current_map.name if self.map and self.map.current_map else None
-        if not current_map:
-            return
-
-        self.network.send({"type": "turn", "dir": direction})
 
     def _find_facing_pokemon(self):
         """

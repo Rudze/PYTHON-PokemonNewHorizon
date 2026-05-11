@@ -6,8 +6,7 @@ class RemotePlayer(Entity):
 
     TILE_SIZE = 16
 
-    # Offset pour retrouver la tuile source depuis la tuile cible
-    _SOURCE_OFFSET = {
+    _SRC = {
         "right": (-16,  0),
         "left":  ( 16,  0),
         "up":    (  0, 16),
@@ -36,31 +35,18 @@ class RemotePlayer(Entity):
     def update(self) -> None:
         if not self.animation_walk and self._pending:
             target_x, target_y, direction = self._pending.pop(0)
-
-            dx = target_x - int(self.position.x)
-            dy = target_y - int(self.position.y)
-
             self.direction = direction
 
-            if dx == -self.TILE_SIZE and dy == 0:
+            ox, oy = self._SRC.get(direction, (0, 0))
+            self.set_position(target_x + ox, target_y + oy)
+
+            if direction == "left":
                 self.move_left()
-            elif dx == self.TILE_SIZE and dy == 0:
+            elif direction == "right":
                 self.move_right()
-            elif dx == 0 and dy == -self.TILE_SIZE:
+            elif direction == "up":
                 self.move_up()
-            elif dx == 0 and dy == self.TILE_SIZE:
+            elif direction == "down":
                 self.move_down()
-            else:
-                # Desync : recaler sur la tuile source puis animer
-                ox, oy = self._SOURCE_OFFSET.get(direction, (0, 0))
-                self.set_position(target_x + ox, target_y + oy)
-                if direction == "left":
-                    self.move_left()
-                elif direction == "right":
-                    self.move_right()
-                elif direction == "up":
-                    self.move_up()
-                elif direction == "down":
-                    self.move_down()
 
         super().update()
