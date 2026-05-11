@@ -398,6 +398,7 @@ async def handler(ws) -> None:
                     continue
 
                 player["dir"] = new_dir
+                print(f"[Turn] {pid} turned {new_dir}")
 
                 await broadcast(player["map"], {
                     "type": "player_turned",

@@ -407,8 +407,23 @@ class Game:
 
     def _send_turn_on_keydown(self, key: int) -> None:
         """Envoie 'turn' une seule fois par appui de touche directionnelle."""
-        if (self.state != "PLAYING" or not self.player
-                or self.player.animation_walk or self.player.menu_option):
+        ctrl = self.controller
+        # Vérifier si c'est bien une touche directionnelle avant tout
+        direction = None
+        for d in ("left", "right", "up", "down"):
+            if key == ctrl.get_key(d):
+                direction = d
+                break
+        if direction is None:
+            return
+
+        print(f"[Turn] keydown dir={direction} state={self.state} "
+              f"player={self.player is not None} "
+              f"walking={self.player.animation_walk if self.player else '?'} "
+              f"connected={self.network.connected if self.network else '?'} "
+              f"map={self.map.current_map.name if self.map and self.map.current_map else None}")
+
+        if self.state != "PLAYING" or not self.player or self.player.menu_option:
             return
         if not self.network or not self.network.connected:
             return
@@ -416,11 +431,8 @@ class Game:
         if not current_map:
             return
 
-        ctrl = self.controller
-        for direction in ("left", "right", "up", "down"):
-            if key == ctrl.get_key(direction):
-                self.network.send({"type": "turn", "dir": direction})
-                return
+        self.network.send({"type": "turn", "dir": direction})
+        print(f"[Turn] Sent turn={direction}")
 
     def _find_facing_pokemon(self):
         """
