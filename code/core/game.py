@@ -229,9 +229,10 @@ class Game:
 
     def _handle_network(
         self,
-        prev_walking: bool,
-        prev_pos:     tuple[int, int],
-        prev_map:     str | None,
+        prev_walking:  bool,
+        prev_pos:      tuple[int, int],
+        prev_map:      str | None,
+        prev_dir:      str,
     ) -> None:
         current_map = self.map.current_map.name if self.map.current_map else None
 
@@ -244,32 +245,26 @@ class Game:
             self._send_join(current_map)
             self._server_map = current_map
 
-        if self.player.animation_walk and not prev_walking and self.network.connected and current_map:
-            # Début d'une marche : envoyer la destination
-            target_x = prev_pos[0]
-            target_y = prev_pos[1]
+        if not self.network.connected or not current_map:
+            for msg in self.network.poll():
+                self._dispatch(msg)
+            return
 
-            if self.player.direction == "left":
-                target_x -= 16
-            elif self.player.direction == "right":
-                target_x += 16
-            elif self.player.direction == "up":
-                target_y -= 16
-            elif self.player.direction == "down":
-                target_y += 16
+        walk_started = self.player.animation_walk and not prev_walking
+        turned       = (not self.player.animation_walk and not prev_walking
+                        and self.player.direction != prev_dir)
 
+        if walk_started:
+            offsets = {"left": (-16, 0), "right": (16, 0), "up": (0, -16), "down": (0, 16)}
+            dx, dy  = offsets.get(self.player.direction, (0, 0))
             self.network.send({
                 "type": "move",
-                "map": current_map,
-                "x": target_x,
-                "y": target_y,
-                "dir": self.player.direction,
+                "map":  current_map,
+                "x":    prev_pos[0] + dx,
+                "y":    prev_pos[1] + dy,
+                "dir":  self.player.direction,
             })
-
-        elif (not self.player.animation_walk and not prev_walking
-              and self.player.direction != prev_direction
-              and self.network.connected and current_map):
-            # Rotation sur place (bloqué par mur ou Pokémon)
+        elif turned:
             self.network.send({"type": "turn", "dir": self.player.direction})
 
         for msg in self.network.poll():
@@ -439,6 +434,7 @@ class Game:
         prev_walking = self.player.animation_walk
         prev_pos     = (int(self.player.position.x), int(self.player.position.y))
         prev_map     = self.map.current_map.name if self.map.current_map else None
+        prev_dir     = self.player.direction
 
         # 2. Gérer le mouvement et les menus
         if not self.player.menu_option:
@@ -469,4 +465,4 @@ class Game:
             self.option.check_inputs()
 
         # 3. Gérer le réseau
-        self._handle_network(prev_walking, prev_pos, prev_map)
+        self._handle_network(prev_walking, prev_pos, prev_map, prev_dir)
