@@ -115,28 +115,10 @@ SPLASH_SETTINGS = {
 LOGIN_MENU_SETTINGS = {
     "music":  str(SOUNDS_DIR / "Lake.mp3"),
     "volume": 0.01,
-    "background_image": str(ASSETS_DIR / "interfaces" / "backgrounds" / "arceus.jpg"),
+    "background_image": str(ASSETS_DIR / "interfaces" / "backgrounds" / "dracaufeu.jpg"),
     "font": str(ASSETS_DIR / "fonts" / "pokemon.ttf"),
 }
 
-# ---------------------------------------------------------------------------
-# Catalogue de customisation du personnage
-# ---------------------------------------------------------------------------
-# C'est ICI que l'on définit TOUS les éléments customisables du jeu.
-#
-# Structure de chaque entrée :
-#   label         : nom de la catégorie affiché dans les menus
-#   sprite_dir    : dossier contenant les sprites de cette catégorie
-#   view_suffix   : suffixe du fichier pour la vue topdown
-#   overlay_order : ordre de dessin (0 = dessiné en premier, sous les autres)
-#   variants      : dict de TOUS les variants disponibles pour cette catégorie
-#
-# Structure de chaque variant (dans "variants") :
-#   label         : nom du variant affiché dans les menus (ex: "Feathered")
-#   colorable     : True  → ce variant peut être recoloré dynamiquement
-#                   False → ce variant a une couleur fixe dans son PNG (pas de tinting)
-#   default_color : couleur RGB par défaut si colorable=True, None sinon
-# ---------------------------------------------------------------------------
 CUSTOMIZATION_CATALOG: dict[str, dict] = {
 
     "skin": {

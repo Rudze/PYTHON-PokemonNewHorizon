@@ -1,0 +1,316 @@
+{
+  "19": {
+    "id": 19,
+    "name": "rattata",
+    "name_fr": "Rattata",
+    "types": [
+      "normal"
+    ],
+    "stats": {
+      "hp": 30,
+      "attack": 56,
+      "defense": 35,
+      "sp_attack": 25,
+      "sp_defense": 35,
+      "speed": 72
+    },
+    "abilities": [
+      {
+        "name": "run-away",
+        "hidden": false
+      },
+      {
+        "name": "guts",
+        "hidden": false
+      },
+      {
+        "name": "hustle",
+        "hidden": true
+      }
+    ],
+    "learnset": [
+      {
+        "move": "tackle",
+        "level": 1
+      },
+      {
+        "move": "tail-whip",
+        "level": 1
+      },
+      {
+        "move": "quick-attack",
+        "level": 7
+      },
+      {
+        "move": "bite",
+        "level": 10
+      },
+      {
+        "move": "laser-focus",
+        "level": 13
+      },
+      {
+        "move": "hyper-fang",
+        "level": 14
+      },
+      {
+        "move": "take-down",
+        "level": 16
+      },
+      {
+        "move": "sucker-punch",
+        "level": 19
+      },
+      {
+        "move": "crunch",
+        "level": 22
+      },
+      {
+        "move": "focus-energy",
+        "level": 23
+      },
+      {
+        "move": "assurance",
+        "level": 25
+      },
+      {
+        "move": "pursuit",
+        "level": 27
+      },
+      {
+        "move": "double-edge",
+        "level": 31
+      },
+      {
+        "move": "super-fang",
+        "level": 34
+      },
+      {
+        "move": "endeavor",
+        "level": 41
+      }
+    ]
+  },
+  "16": {
+    "id": 16,
+    "name": "pidgey",
+    "name_fr": "Roucool",
+    "types": [
+      "normal",
+      "flying"
+    ],
+    "stats": {
+      "hp": 40,
+      "attack": 45,
+      "defense": 40,
+      "sp_attack": 35,
+      "sp_defense": 35,
+      "speed": 56
+    },
+    "abilities": [
+      {
+        "name": "keen-eye",
+        "hidden": false
+      },
+      {
+        "name": "tangled-feet",
+        "hidden": false
+      },
+      {
+        "name": "big-pecks",
+        "hidden": true
+      }
+    ],
+    "learnset": [
+      {
+        "move": "gust",
+        "level": 1
+      },
+      {
+        "move": "tackle",
+        "level": 1
+      },
+      {
+        "move": "sand-attack",
+        "level": 5
+      },
+      {
+        "move": "quick-attack",
+        "level": 12
+      },
+      {
+        "move": "whirlwind",
+        "level": 19
+      },
+      {
+        "move": "twister",
+        "level": 21
+      },
+      {
+        "move": "wing-attack",
+        "level": 28
+      },
+      {
+        "move": "razor-wind",
+        "level": 29
+      },
+      {
+        "move": "feather-dance",
+        "level": 31
+      },
+      {
+        "move": "agility",
+        "level": 36
+      },
+      {
+        "move": "roost",
+        "level": 37
+      },
+      {
+        "move": "tailwind",
+        "level": 41
+      },
+      {
+        "move": "mirror-move",
+        "level": 44
+      },
+      {
+        "move": "aerial-ace",
+        "level": 45
+      },
+      {
+        "move": "air-slash",
+        "level": 49
+      },
+      {
+        "move": "hurricane",
+        "level": 53
+      }
+    ]
+  },
+  "25": {
+    "id": 25,
+    "name": "pikachu",
+    "name_fr": "Pikachu",
+    "types": [
+      "electric"
+    ],
+    "stats": {
+      "hp": 35,
+      "attack": 55,
+      "defense": 40,
+      "sp_attack": 50,
+      "sp_defense": 50,
+      "speed": 90
+    },
+    "abilities": [
+      {
+        "name": "static",
+        "hidden": false
+      },
+      {
+        "name": "lightning-rod",
+        "hidden": true
+      }
+    ],
+    "learnset": [
+      {
+        "move": "growl",
+        "level": 1
+      },
+      {
+        "move": "thunder-shock",
+        "level": 1
+      },
+      {
+        "move": "sweet-kiss",
+        "level": 1
+      },
+      {
+        "move": "charm",
+        "level": 1
+      },
+      {
+        "move": "nasty-plot",
+        "level": 1
+      },
+      {
+        "move": "tail-whip",
+        "level": 5
+      },
+      {
+        "move": "play-nice",
+        "level": 7
+      },
+      {
+        "move": "double-kick",
+        "level": 9
+      },
+      {
+        "move": "thunder-wave",
+        "level": 10
+      },
+      {
+        "move": "quick-attack",
+        "level": 13
+      },
+      {
+        "move": "electro-ball",
+        "level": 18
+      },
+      {
+        "move": "double-team",
+        "level": 21
+      },
+      {
+        "move": "nuzzle",
+        "level": 23
+      },
+      {
+        "move": "slam",
+        "level": 26
+      },
+      {
+        "move": "swift",
+        "level": 26
+      },
+      {
+        "move": "spark",
+        "level": 26
+      },
+      {
+        "move": "iron-tail",
+        "level": 28
+      },
+      {
+        "move": "thunderbolt",
+        "level": 29
+      },
+      {
+        "move": "feint",
+        "level": 34
+      },
+      {
+        "move": "agility",
+        "level": 37
+      },
+      {
+        "move": "discharge",
+        "level": 42
+      },
+      {
+        "move": "light-screen",
+        "level": 45
+      },
+      {
+        "move": "thunder",
+        "level": 50
+      },
+      {
+        "move": "wild-charge",
+        "level": 50
+      }
+    ],
+    "learnset_version": "black-white"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "85": {
+    "id": 85,
+    "name": "thunderbolt",
+    "name_fr": "Tonnerre",
+    "type": "electric",
+    "damage_class": "special",
+    "power": 90,
+    "accuracy": 100,
+    "pp": 15,
+    "priority": 0,
+    "effect_chance": 10,
+    "effect": "A une chance de paralyser la cible."
+  },
+  "53": {
+    "id": 53,
+    "name": "flamethrower",
+    "name_fr": "Lance-Flammes",
+    "type": "fire",
+    "damage_class": "special",
+    "power": 90,
+    "accuracy": 100,
+    "pp": 15,
+    "priority": 0,
+    "effect_chance": 10,
+    "effect": "A une chance de brûler la cible."
+  },
+  "57": {
+    "id": 57,
+    "name": "surf",
+    "name_fr": "Surf",
+    "type": "water",
+    "damage_class": "special",
+    "power": 90,
+    "accuracy": 100,
+    "pp": 15,
+    "priority": 0,
+    "effect_chance": null,
+    "effect": "Inflige des dégâts réguliers et peut frapper les utilisateurs de Plongée."
+  }
+}

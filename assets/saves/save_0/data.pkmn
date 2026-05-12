@@ -1,0 +1,14 @@
+{
+    "player": {
+        "position": {
+            "x": 408.0,
+            "y": 32.0
+        },
+        "direction": "down",
+        "pokedex": null
+    },
+    "map": {
+        "path": "map_0",
+        "map_name": "Historia"
+    }
+}
