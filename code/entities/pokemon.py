@@ -228,4 +228,50 @@ class Pokemon:
         :param level:
         :return:
         """
-        return Pokemon(json.load(open(str(JSON_DIR / "pokemon" / f"{name.lower()}.json"))), level)
+        all_pokemon = json.load(open(str(JSON_DIR / "pokemon_data.json")))
+        name_lower = name.lower()
+        entry = next(
+            (p for p in all_pokemon.values()
+             if p["name"].lower() == name_lower
+             or p.get("name_fr", "").lower() == name_lower),
+            None,
+        )
+        if entry is None:
+            raise ValueError(f"Pokémon '{name}' introuvable dans pokemon_data.json")
+
+        types = entry["types"]
+        stats = entry["stats"]
+        forms = [{
+            "type1":          types[0] if types else "normal",
+            "type2":          types[1] if len(types) > 1 else "__undef__",
+            "baseHp":         stats["hp"],
+            "baseAtk":        stats["attack"],
+            "baseDfe":        stats["defense"],
+            "baseSpd":        stats["speed"],
+            "baseAts":        stats["sp_attack"],
+            "baseDfs":        stats["sp_defense"],
+            "evHp": 0, "evAtk": 0, "evDfe": 0,
+            "evSpd": 0, "evAts": 0, "evDfs": 0,
+            "experienceType": 0,
+            "baseExperience": 100,
+            "baseLoyalty":    70,
+            "catchRate":      45,
+            "femaleRate":     50,
+            "breedGroups":    [],
+            "hatchSteps":     0,
+            "babyDbSymbol":   "__undef__",
+            "babyForm":       0,
+            "itemHeld":       [],
+            "abilities":      [a["name"] for a in entry.get("abilities", []) if not a.get("hidden")],
+            "frontOffsetY":   0,
+            "resources":      {},
+            "moveSet":        entry.get("learnset", []),
+            "evolutions":     [],
+        }]
+        legacy = {
+            "klass":    "Pokemon",
+            "id":       entry["id"],
+            "dbSymbol": entry["name"],
+            "forms":    forms,
+        }
+        return Pokemon(legacy, level)

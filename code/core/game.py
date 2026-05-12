@@ -2,6 +2,7 @@ import pygame
 
 from code.api.game_api_client import GameApiClient
 from code.config import AUTH_API_URL
+from code.managers.interaction_manager import Interaction, InteractionManager
 from code.managers.wild_pokemon_manager import WildPokemonManager
 from code.utils.sprite_composer import compose_player_spritesheet
 from code.core.controller import Controller
@@ -12,6 +13,7 @@ from code.entities.remote_player import RemotePlayer
 from code.managers.save import Save
 from code.managers.sound_manager import SoundManager
 from code.network.client import NetworkClient
+from code.ui.battle_screen import BattleScreen
 from code.ui.dialogue import Dialogue
 from code.ui.character_creation_menu import CharacterCreationMenu
 from code.ui.login_menu import LoginMenu
@@ -49,6 +51,7 @@ class Game:
         self.api_client:            GameApiClient      | None = None
         self._cached_character:     dict               | None = None
         self.wild_pokemon_manager:  WildPokemonManager | None = None
+        self.battle_screen:         BattleScreen       | None = None
         self._saving_started:       bool                      = False
 
     def _setup_game_world(self):
@@ -99,7 +102,9 @@ class Game:
         self.network = NetworkClient(self.server_url)
         self.remote_players = {}
 
-        self.wild_pokemon_manager = WildPokemonManager(self.map)
+        self.wild_pokemon_manager  = WildPokemonManager(self.map)
+        self.interaction_manager   = InteractionManager()
+        self.interaction_manager.register(self.wild_pokemon_manager.get_interaction_source())
 
     def run(self) -> None:
         while self.running:
@@ -411,6 +416,42 @@ class Game:
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 self.mouse_click = event.pos
 
+    def _handle_interaction(self) -> None:
+        """
+        Appelé quand le joueur appuie sur E.
+        Interroge l'InteractionManager et dispatche selon le type.
+        Ajouter ici les nouveaux types au fur et à mesure.
+        """
+        result = self.interaction_manager.check(
+            self.player.position,
+            self.player.direction,
+        )
+        if result is None:
+            return
+
+        if result.kind == "battle":
+            self._start_wild_battle(result.data)
+
+        elif result.kind == "dialogue":
+            # TODO: lancer le dialogue avec result.data["id"]
+            pass
+
+    def _start_wild_battle(self, data: dict) -> None:
+        """Déclenche un combat contre un Pokémon sauvage."""
+        wpid        = data["wpid"]
+        current_map = self.map.current_map.name if self.map.current_map else ""
+
+        self.wild_pokemon_manager.on_despawned({"wpid": wpid})
+        self.network.send({
+            "type": "pokemon_encounter",
+            "wpid": wpid,
+            "map":  current_map,
+        })
+
+        player_pokemon = self.player.pokemons[0] if self.player.pokemons else None
+        self.battle_screen = BattleScreen(self.screen, data, player_pokemon, zone=data.get("zone_name", ""))
+        self.player.can_move = False
+
     def _find_facing_pokemon(self):
         """
         Retourne (direction, wpid) si le joueur appuie vers une tuile avec un Pokémon.
@@ -439,7 +480,9 @@ class Game:
         # 2. Gérer le mouvement et les menus
         if not self.player.menu_option:
             # ── Pokémon sauvages : bloquer le mouvement ───────────────────
-            if self.wild_pokemon_manager and not self.player.animation_walk and self.player.can_move:
+            in_battle = self.battle_screen and self.battle_screen.active
+            if (self.wild_pokemon_manager and not self.player.animation_walk
+                    and self.player.can_move and not in_battle):
                 facing = self._find_facing_pokemon()
                 if facing:
                     direction, _ = facing
@@ -448,15 +491,35 @@ class Game:
 
             self.map.update()
 
-            # Restaurer can_move si on l'a bloqué pour un Pokémon
-            if self.player and not self.player.can_move and not self.player.animation_walk:
+            # Restaurer can_move uniquement hors combat
+            if (self.player and not self.player.can_move
+                    and not self.player.animation_walk and not in_battle):
                 self.player.can_move = True
 
-            # Touche interaction
-            if pygame.K_e in self.keylistener.keys and not self.dialogue.active:
-                self.dialogue.load_data(1001, 0)
-                self.keylistener.remove_key(pygame.K_e)
-            self.dialogue_controller()
+            # ── Combat en cours ───────────────────────────────────────────
+            if in_battle:
+                self.battle_screen.handle_input(
+                    self.keylistener,
+                    self.controller,
+                    mouse_pos   = pygame.mouse.get_pos(),
+                    mouse_click = self.mouse_click,
+                )
+                self.mouse_click = None
+                self.battle_screen.update()
+                self.battle_screen.draw(self.screen.get_display())
+                if not self.battle_screen.active:
+                    self.battle_screen   = None
+                    self.player.can_move = True
+            else:
+                # Touche interaction (E)
+                action_key = self.controller.get_key("action")
+                if (self.keylistener.key_pressed(action_key)
+                        and not self.dialogue.active
+                        and not self.player.animation_walk):
+                    self._handle_interaction()
+                    self.keylistener.remove_key(action_key)
+                self.dialogue_controller()
+
             self.mouse_click = None
         else:
             self.option.update(self.mouse_click)

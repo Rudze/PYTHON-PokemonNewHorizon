@@ -16,7 +16,8 @@ ROOT_DIR = Path(__file__).parent.parent
 # ---------------------------------------------------------------------------
 ASSETS_DIR      = ROOT_DIR / "assets"
 SAVES_DIR       = ASSETS_DIR / "saves"
-SPRITES_DIR     = ASSETS_DIR / "sprite"
+SPRITES_DIR         = ASSETS_DIR / "sprite"
+SPRITES_BATTLE_DIR  = SPRITES_DIR / "battlesprites"   # {id}-{front|back}-{n|s}.gif
 SOUNDS_DIR      = ASSETS_DIR / "sounds"
 FONTS_DIR       = ASSETS_DIR / "fonts"
 JSON_DIR        = ASSETS_DIR / "json"
@@ -26,20 +27,8 @@ INTERFACES_DIR  = ASSETS_DIR / "interfaces"
 APP_DIR         = ASSETS_DIR / "app"
 DB_PATH         = ASSETS_DIR / "base.db"
 CREDENTIALS_FILE = SAVES_DIR / "credentials.json"
-
-# ---------------------------------------------------------------------------
-# Dossiers sprites — personnage de base
-# ---------------------------------------------------------------------------
 SPRITES_CHARACTER_DIR = SPRITES_DIR / "character"
 SPRITES_PLAYER_DIR    = SPRITES_DIR / "player"
-
-# ---------------------------------------------------------------------------
-# Dossiers sprites — calques de customisation
-# Chaque dossier contient les variants d'un élément sous la forme :
-#   <nom_variant>_topdown.png   (vue marche 4 directions)
-#   <nom_variant>_battle.png    (vue combat)
-#   <nom_variant>_card.png      (vue carte dresseur)
-# ---------------------------------------------------------------------------
 SPRITES_SKIN_DIR   = SPRITES_DIR / "skin"
 SPRITES_SHOES_DIR  = SPRITES_DIR / "shoes"
 SPRITES_LEGS_DIR   = SPRITES_DIR / "legs"
@@ -49,7 +38,55 @@ SPRITES_FACE_DIR   = SPRITES_DIR / "face"
 SPRITES_EYES_DIR   = SPRITES_DIR / "eyes"
 SPRITES_HAIRS_DIR       = SPRITES_DIR / "hairs"
 SPRITES_BACK_DIR        = SPRITES_DIR / "back"
-SPRITES_FOLLOWERS_DIR   = SPRITES_DIR / "followersprites"   # {id}-b-{n|s}.png
+SPRITES_FOLLOWERS_DIR   = SPRITES_DIR / "followersprites"
+BATTLEBACKS_DIR       = ASSETS_DIR / "Battlebacks"
+BATTLE_INTERFACES_DIR = INTERFACES_DIR / "battle"
+
+# ---------------------------------------------------------------------------
+# Zones de combat — clé "background" uniquement, les bases ont été supprimées
+# ---------------------------------------------------------------------------
+BATTLE_ZONE: dict[str, dict] = {
+    "default": {"background": BATTLEBACKS_DIR / "battlebgField.png"},
+    "route_1": {"background": BATTLEBACKS_DIR / "battlebgField.png"},
+}
+
+# ---------------------------------------------------------------------------
+# Images d'interface du combat
+# ---------------------------------------------------------------------------
+BATTLE_UI: dict[str, object] = {
+    "enemy_box":        BATTLE_INTERFACES_DIR / "battleBox.png",
+    "player_box":       BATTLE_INTERFACES_DIR / "battlePlayerBoxS.png",
+    "command":          BATTLE_INTERFACES_DIR / "battleCommand.png",
+    "fight_buttons":    BATTLE_INTERFACES_DIR / "battleFightButtons.png",
+    "command_buttons":  BATTLE_INTERFACES_DIR / "battleCommandButtons.png",
+    "overlay_message":  INTERFACES_DIR / "overlay_message.png",
+}
+
+# ---------------------------------------------------------------------------
+# Ligne dans battleFightButtons.png pour chaque type de move
+# Chaque ligne = 243×44 px ; colonne gauche = non sélectionné, droite = sélectionné
+# ---------------------------------------------------------------------------
+MOVE_TYPE_ROW: dict[str, int] = {
+    "normal":   0,
+    "fighting": 1,
+    "flying":   2,
+    "poison":   3,
+    "ground":   4,
+    "rock":     5,
+    "bug":      6,
+    "ghost":    7,
+    "steel":    8,
+    "unknown":  9,
+    "fire":     10,
+    "water":    11,
+    "grass":    12,
+    "electric": 13,
+    "psychic":  14,
+    "ice":      15,
+    "dragon":   16,
+    "dark":     17,
+    "fairy":    18,
+}
 
 
 # ---------------------------------------------------------------------------

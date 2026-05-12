@@ -7,7 +7,6 @@ from code.core.controller import Controller
 from code.core.keylistener import KeyListener
 from code.core.screen import Screen
 from code.entities.entity import Entity
-from code.entities.pokemon import Pokemon
 from code.managers.inventory_manager import InventoryManager
 from code.world.switch import Switch
 
@@ -33,14 +32,13 @@ class Player(Entity):
         self.keylistener: KeyListener = keylistener
         self.controller: Controller = controller
 
-        self.pokemons: list[Pokemon] = []
+        self.pokemons: list = []
         self.inv: InventoryManager = InventoryManager(self.pokemons)
         self.pokedex: None = None
 
         self.name: str = "Lucas"
         self.pokedollars: int = 0
 
-        self.pokemons.append(Pokemon.create_pokemon("Bulbasaur", 5))
         self.ingame_time: datetime.timedelta = ingame_time
 
         self.can_move = True

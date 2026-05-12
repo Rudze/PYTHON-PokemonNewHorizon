@@ -37,9 +37,9 @@ class Map:
         self.map_name: str | None = None
         self.map_name_text: pygame.Surface | None = None
 
-        self.image_change_map: pygame.Surface = pygame.image.load(
-            str(INTERFACES_DIR / "maps" / "frame_map.png")
-        ).convert_alpha()
+        #self.image_change_map: pygame.Surface = pygame.image.load(
+            #str(INTERFACES_DIR / "maps" / "frame_map.png")
+        #).convert_alpha()
 
         self.animation_change_map: int = 0
         self.animation_change_map_active: bool = False
@@ -282,11 +282,8 @@ class Map:
             self.map_name_text = Tool.create_text(self.map_name, 30, (255, 255, 255))
 
     def get_surface_change_map(self, alpha: int = 0) -> pygame.Surface:
-        """
-        Get the surface change map
-        """
         surface_change_map = pygame.Surface((215, 53), pygame.SRCALPHA).convert_alpha()
-        surface_change_map.blit(self.image_change_map, (0, 0))
+        surface_change_map.fill((20, 20, 20, 220))
         surface_change_map.set_alpha(alpha)
         return surface_change_map
 

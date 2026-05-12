@@ -60,7 +60,29 @@ class Move:
         :param name:
         :return:
         """
-        return Move(json.load(open(str(JSON_DIR / "moves" / f"{name.lower()}.json"))))
+        all_moves = json.load(open(str(JSON_DIR / "move_data.json")))
+        name_lower = name.lower()
+        entry = next(
+            (m for m in all_moves.values() if m["name"].lower() == name_lower),
+            None,
+        )
+        if entry is None:
+            return Move({
+                "id": 0, "dbSymbol": name_lower, "type": "normal",
+                "power": 40, "accuracy": 100, "pp": 35,
+                "category": "physical", "priority": 0,
+            })
+        return Move({
+            "id":           entry["id"],
+            "dbSymbol":     entry["name"],
+            "type":         entry["type"],
+            "power":        entry.get("power"),
+            "accuracy":     entry.get("accuracy"),
+            "pp":           entry.get("pp"),
+            "category":     entry.get("damage_class"),
+            "priority":     entry.get("priority", 0),
+            "effectChance": entry.get("effect_chance"),
+        })
 
     def to_dict(self):
         """

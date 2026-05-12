@@ -178,6 +178,7 @@ class Entity(pygame.sprite.Sprite):
         self.position = pygame.math.Vector2(x, y)
         self.rect.center = self.position
         self.hitbox.midbottom = self.rect.midbottom
+        self.hitbox.midbottom = self.rect.midbottom
 
     def reload_spritesheet(self, spritesheet: pygame.Surface) -> None:
         """

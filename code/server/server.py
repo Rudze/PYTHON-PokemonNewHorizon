@@ -235,6 +235,7 @@ async def pokemon_ai_loop() -> None:
                                 "x":          wp["x"],
                                 "y":          wp["y"],
                                 "dir":        wp["dir"],
+                                "zone_name":  zone_name,
                             })
 
             # ── Déplacement aléatoire tile-by-tile ────────────────────
@@ -344,7 +345,8 @@ async def handler(ws) -> None:
                 existing_poke = [
                     {"wpid": wp["wpid"], "pokemon_id": wp["pokemon_id"],
                      "level": wp["level"], "shiny": wp["shiny"],
-                     "x": wp["x"], "y": wp["y"], "dir": wp["dir"]}
+                     "x": wp["x"], "y": wp["y"], "dir": wp["dir"],
+                     "zone_name": wp.get("zone_name", "")}
                     for wp in wild_pokemons.get(new_map, {}).values()
                 ]
                 await ws.send(json.dumps({
