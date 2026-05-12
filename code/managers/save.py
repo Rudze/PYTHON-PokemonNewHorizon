@@ -68,6 +68,7 @@ class Save:
         else:
             self.map.load_map("map_0")
             self.player.set_position(512, 288)
+            self.player.align_hitbox()
         self.map.add_player(self.player)
 
     def dump(self, element: dict) -> str:

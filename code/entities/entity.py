@@ -131,6 +131,11 @@ class Entity(pygame.sprite.Sprite):
         Align the hitbox with map grid (16x16)
         :return:
         """
+        # Sync rect/hitbox sur la position courante avant tout test —
+        # sans ça, is_aligned() testerait l'ANCIENNE position et pourrait
+        # renvoyer True alors que la nouvelle position est désalignée.
+        self.rect.center = self.position
+        self.hitbox.midbottom = self.rect.midbottom
         if self.is_aligned():
             return
         self.position.x += 16

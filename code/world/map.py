@@ -268,7 +268,7 @@ class Map:
             )
             return
 
-        self.player.position = pygame.math.Vector2(int(spawn.x), int(spawn.y))
+        self.player.set_position(int(spawn.x), int(spawn.y))
         self.player.align_hitbox()
 
     def set_draw_change_map(self, map_name: str) -> None:
