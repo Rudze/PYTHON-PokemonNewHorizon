@@ -219,7 +219,9 @@ class InventoryManager:
         party_data = data.get("party", [])
         for p in party_data:
             try:
-                self.party.append(Pokemon.from_dict(p))
+                pokemon = Pokemon.from_dict(p)
+                pokemon.check_level_ups()   # traite les XP accumulées pendant l'offline
+                self.party.append(pokemon)
             except Exception as exc:
                 print(f"[INV] load_from_dict: erreur reconstruction Pokémon équipe — {exc}")
 
@@ -278,7 +280,8 @@ class InventoryManager:
     # Internal sync helpers
     # ------------------------------------------------------------------
 
-    def _sync_party(self) -> None:
+    def sync_party(self) -> None:
+        """Envoie l'état actuel de l'équipe à l'API (HP, XP, PP, etc.)."""
         if self.api_client is None or self.account_id is None:
             return
         payload = [
@@ -286,6 +289,9 @@ class InventoryManager:
             for i, p in enumerate(self.party)
         ]
         self.api_client.sync_party(self.account_id, payload)
+
+    def _sync_party(self) -> None:
+        self.sync_party()
 
     def _sync_pc_pokemon(self, pokemon: Pokemon, box: int, slot: int) -> None:
         if self.api_client is None or self.account_id is None:

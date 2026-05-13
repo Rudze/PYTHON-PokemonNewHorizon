@@ -1,5 +1,7 @@
 """BattleScreen — panel dimensionné sur le background, UI assets."""
 from __future__ import annotations
+import math
+import random
 import time
 import pygame
 from PIL import Image
@@ -16,6 +18,67 @@ _CMD_ANIM_FPS = 0.06   # secondes par frame d'animation
 # Boutons d'attaque
 _BTN_CELL_W = 243
 _BTN_CELL_H = 44
+
+# ---------------------------------------------------------------------------
+# Table d'efficacité des types (Gen 6+)
+# Clé externe = type de l'attaque, clé interne = type du défenseur, valeur = multiplicateur
+# ---------------------------------------------------------------------------
+_TYPE_CHART: dict[str, dict[str, float]] = {
+    "normal":   {"rock": 0.5, "ghost": 0.0, "steel": 0.5},
+    "fire":     {"fire": 0.5, "water": 0.5, "grass": 2.0, "ice": 2.0, "bug": 2.0, "rock": 0.5, "dragon": 0.5, "steel": 2.0},
+    "water":    {"fire": 2.0, "water": 0.5, "grass": 0.5, "ground": 2.0, "rock": 2.0, "dragon": 0.5},
+    "electric": {"water": 2.0, "electric": 0.5, "grass": 0.5, "ground": 0.0, "flying": 2.0, "dragon": 0.5},
+    "grass":    {"fire": 0.5, "water": 2.0, "grass": 0.5, "poison": 0.5, "ground": 2.0, "flying": 0.5, "bug": 0.5, "rock": 2.0, "dragon": 0.5, "steel": 0.5},
+    "ice":      {"water": 0.5, "grass": 2.0, "ice": 0.5, "ground": 2.0, "flying": 2.0, "dragon": 2.0, "steel": 0.5},
+    "fighting": {"normal": 2.0, "ice": 2.0, "poison": 0.5, "flying": 0.5, "psychic": 0.5, "bug": 0.5, "rock": 2.0, "ghost": 0.0, "dark": 2.0, "steel": 2.0, "fairy": 0.5},
+    "poison":   {"grass": 2.0, "poison": 0.5, "ground": 0.5, "rock": 0.5, "ghost": 0.5, "steel": 0.0, "fairy": 2.0},
+    "ground":   {"fire": 2.0, "electric": 2.0, "grass": 0.5, "poison": 2.0, "flying": 0.0, "bug": 0.5, "rock": 2.0, "steel": 2.0},
+    "flying":   {"electric": 0.5, "grass": 2.0, "fighting": 2.0, "bug": 2.0, "rock": 0.5, "steel": 0.5},
+    "psychic":  {"fighting": 2.0, "poison": 2.0, "psychic": 0.5, "dark": 0.0, "steel": 0.5},
+    "bug":      {"fire": 0.5, "grass": 2.0, "fighting": 0.5, "poison": 0.5, "flying": 0.5, "psychic": 2.0, "ghost": 0.5, "dark": 2.0, "steel": 0.5, "fairy": 0.5},
+    "rock":     {"fire": 2.0, "ice": 2.0, "fighting": 0.5, "ground": 0.5, "flying": 2.0, "bug": 2.0, "steel": 0.5},
+    "ghost":    {"normal": 0.0, "psychic": 2.0, "ghost": 2.0, "dark": 0.5},
+    "dragon":   {"dragon": 2.0, "steel": 0.5, "fairy": 0.0},
+    "dark":     {"fighting": 0.5, "psychic": 2.0, "ghost": 2.0, "dark": 0.5, "fairy": 0.5},
+    "steel":    {"fire": 0.5, "water": 0.5, "electric": 0.5, "ice": 2.0, "rock": 2.0, "steel": 0.5, "fairy": 2.0},
+    "fairy":    {"fire": 0.5, "fighting": 2.0, "poison": 0.5, "dragon": 2.0, "dark": 2.0, "steel": 0.5},
+}
+
+
+def _type_effectiveness(move_type: str, defender_types: list[str]) -> float:
+    row = _TYPE_CHART.get(move_type, {})
+    mult = 1.0
+    for t in defender_types:
+        mult *= row.get(t, 1.0)
+    return mult
+
+
+def _calc_damage(attacker, move, defender) -> tuple[int, float, bool]:
+    """Formule officielle Gen 5. Retourne (dégâts, multiplicateur_type, coup_critique)."""
+    power = move.power or 0
+    if not power or move.category == "status":
+        return 0, 1.0, False
+
+    if move.category == "special":
+        A, D = attacker.ats, defender.dfs
+    else:
+        A, D = attacker.atk, defender.dfe
+
+    D = max(D, 1)
+    base = math.floor((math.floor(2 * attacker.level / 5 + 2) * power * A / D) / 50) + 2
+
+    if move.type in attacker.type:
+        base = math.floor(base * 1.5)
+
+    eff = _type_effectiveness(move.type, defender.type)
+    base = math.floor(base * eff)
+
+    is_crit = random.randint(1, 16) == 1
+    if is_crit:
+        base = math.floor(base * 1.5)
+
+    base = math.floor(base * random.randint(85, 100) / 100)
+    return (max(1, base) if eff > 0 else 0), eff, is_crit
 
 
 def _mk_font(size: int) -> pygame.font.Font:
@@ -35,15 +98,18 @@ _EXP_COLOR = (80,  140, 220)
 
 class BattleScreen:
 
-    def __init__(self, screen, wild_data: dict, player_pokemon=None, zone: str = None) -> None:
+    def __init__(self, screen, wild_data: dict, player_pokemon=None,
+                 wild_pokemon=None, zone: str = None) -> None:
         self._screen         = screen
         self._wild           = wild_data
+        self._wild_pokemon   = wild_pokemon      # objet Pokemon complet
         self._player_pokemon = player_pokemon
         self._active         = True
-        self._state          = "TEXT"   # TEXT → MENU → MOVE_SELECT
+        self._state          = "TEXT"   # TEXT → MENU → MOVE_SELECT → PLAYER_ATTACK → …
         self._move_idx       = 0
         self._intro_progress = 0.0
         self._last_tick      = time.time()
+        self._pending_enemy_attack = False  # flag pour lancer la contre-attaque
 
         sw, sh = screen.get_size()
 
@@ -92,14 +158,19 @@ class BattleScreen:
         self._cmd_bg   = _load_ui(BATTLE_UI["overlay_message"], (cmd_w, cmd_h))
 
         # --- TextBox (état TEXT) ---
-        pname = player_pokemon.dbSymbol.upper() if player_pokemon else "?"
+        ename = (wild_pokemon.dbSymbol.capitalize() if wild_pokemon
+                 else wild_data.get("name", "???").capitalize())
+        pname = player_pokemon.dbSymbol.capitalize() if player_pokemon else "?"
         self._text_box = TextBox(
             self._cmd_rect,
             bg_surf=self._cmd_bg,
             font=self._f_body,
             text_color=_TEXT,
         )
-        self._text_box.set_messages([f"Que va faire {pname} ?"])
+        self._text_box.set_messages([
+            f"Un {ename} sauvage apparaît !",
+            f"Que va faire {pname} ?",
+        ])
 
         # --- Spritesheet attaques ---
         self._btn_sheet = _load_raw(BATTLE_UI["fight_buttons"])
@@ -110,9 +181,14 @@ class BattleScreen:
         self._wild_sprite   = _load_sprite(pid, shiny, front=True)
         self._player_sprite = _load_sprite(player_pokemon.id, False, front=False) if player_pokemon else None
 
-        hp_max            = wild_data.get("hp_max", 100)
-        self._wild_hp_max = hp_max
-        self._wild_hp     = hp_max
+        # HP depuis l'objet Pokemon si disponible, sinon fallback dict
+        if wild_pokemon:
+            self._wild_hp_max = wild_pokemon.maxhp
+            self._wild_hp     = wild_pokemon.hp
+        else:
+            hp_max            = wild_data.get("hp_max", 100)
+            self._wild_hp_max = hp_max
+            self._wild_hp     = hp_max
 
     # ------------------------------------------------------------------
     def handle_input(self, keylistener, controller, mouse_pos=None, mouse_click=None) -> None:
@@ -122,35 +198,31 @@ class BattleScreen:
         down   = controller.get_key("down")
         action = controller.get_key("action")
 
-        # Coordonnées souris converties en repère panel
         hover = self._to_panel(mouse_pos)
         click = self._to_panel(mouse_click)
 
-        if self._state == "TEXT":
-            # Touche E OU clic n'importe où dans la fenêtre
+        if self._state in ("TEXT", "PLAYER_ATTACK", "ENEMY_ATTACK",
+                           "WILD_FAINTED", "PLAYER_FAINTED"):
             if keylistener.key_pressed(action) or click:
                 self._text_box.action()
                 if self._text_box.done:
-                    self._state = "MENU"
+                    self._on_textbox_done()
                 if keylistener.key_pressed(action):
                     keylistener.remove_key(action)
 
         elif self._state == "MENU":
             rects = self._get_cmd_rects()
-            # Survol → sélectionne + lance l'animation
             if hover:
                 for i, r in enumerate(rects):
                     if r.collidepoint(hover) and i != self._cmd_idx:
                         self._cmd_idx        = i
                         self._cmd_anim_frame = 1
-            # Clic sur un bouton → confirme
             if click:
                 for i, r in enumerate(rects):
                     if r.collidepoint(click):
                         self._cmd_idx = i
                         self._confirm()
-            # Clavier
-            if   keylistener.key_pressed(up):
+            if keylistener.key_pressed(up):
                 self._cmd_idx = (self._cmd_idx - 1) % 4
                 self._cmd_anim_frame = 1
                 keylistener.remove_key(up)
@@ -168,26 +240,176 @@ class BattleScreen:
             if n == 0:
                 return
             rects = self._get_move_rects(n)
-            # Survol → sélectionne
             if hover:
                 for i, r in enumerate(rects):
                     if r.collidepoint(hover):
                         self._move_idx = i
-            # Clic → TODO utiliser l'attaque
             if click:
                 for i, r in enumerate(rects):
                     if r.collidepoint(click):
                         self._move_idx = i
-                        # TODO: déclencher l'attaque
-            # Clavier
-            if   keylistener.key_pressed(up):     self._move_idx = (self._move_idx - 1) % n; keylistener.remove_key(up)
-            elif keylistener.key_pressed(down):   self._move_idx = (self._move_idx + 1) % n; keylistener.remove_key(down)
-            elif keylistener.key_pressed(action): keylistener.remove_key(action)  # TODO: utiliser l'attaque
+                        self._use_player_move()
+            if keylistener.key_pressed(up):
+                self._move_idx = (self._move_idx - 1) % n
+                keylistener.remove_key(up)
+            elif keylistener.key_pressed(down):
+                self._move_idx = (self._move_idx + 1) % n
+                keylistener.remove_key(down)
+            elif keylistener.key_pressed(action):
+                self._use_player_move()
+                keylistener.remove_key(action)
 
+    # ------------------------------------------------------------------
     def _confirm(self) -> None:
-        if   self._cmd_idx == 0: self._state = "MOVE_SELECT"; self._move_idx = 0  # Fight
-        elif self._cmd_idx == 3: self._active = False                               # Run
+        if   self._cmd_idx == 0: self._state = "MOVE_SELECT"; self._move_idx = 0
+        elif self._cmd_idx == 3: self._active = False   # Run
         # Party (1) et Bag (2) : TODO
+
+    # ------------------------------------------------------------------
+    def _use_player_move(self) -> None:
+        """Exécute l'attaque du joueur et prépare les messages."""
+        if not self._player_pokemon or not self._wild_pokemon:
+            return
+        moves = self._player_pokemon.moves
+        if not moves:
+            return
+        move = moves[self._move_idx]
+
+        # Vérification PP
+        if move.pp <= 0:
+            self._text_box.set_messages(["Plus de PP pour cette attaque !"])
+            self._state = "PLAYER_ATTACK"
+            self._pending_enemy_attack = False
+            return
+
+        move.pp -= 1
+
+        # Vérification précision
+        acc = move.accuracy or 100
+        hit = random.randint(1, 100) <= acc
+
+        pname = self._player_pokemon.dbSymbol.capitalize()
+        ename = self._wild_pokemon.dbSymbol.capitalize()
+        mname = move.dbSymbol.replace("-", " ").replace("_", " ").title()
+
+        if not hit:
+            msgs = [f"{pname} utilise {mname} !", f"L'attaque échoue !"]
+            self._pending_enemy_attack = True
+        else:
+            dmg, eff, crit = _calc_damage(self._player_pokemon, move, self._wild_pokemon)
+            self._wild_pokemon.hp = max(0, self._wild_pokemon.hp - dmg)
+            self._wild_hp         = self._wild_pokemon.hp
+
+            msgs = [f"{pname} utilise {mname} !"]
+            if crit:
+                msgs.append("Coup critique !")
+            if eff == 0:
+                msgs.append("Ça n'affecte pas l'ennemi…")
+            elif eff >= 2:
+                msgs.append("C'est super efficace !")
+            elif eff < 1:
+                msgs.append("Ce n'est pas très efficace…")
+            if dmg > 0:
+                msgs.append(f"{ename} perd {dmg} PV !")
+
+            self._pending_enemy_attack = (self._wild_pokemon.hp > 0)
+
+        self._text_box.set_messages(msgs)
+        self._state = "PLAYER_ATTACK"
+
+    # ------------------------------------------------------------------
+    def _enemy_counter_attack(self) -> None:
+        """L'ennemi choisit et exécute une attaque aléatoire."""
+        if not self._wild_pokemon or not self._player_pokemon:
+            self._state = "MENU"
+            return
+        moves = [m for m in self._wild_pokemon.moves if m.pp > 0]
+        if not moves:
+            # L'ennemi n'a plus de PP → Lutte
+            from code.entities.move import Move
+            moves = [Move({"dbSymbol": "struggle", "type": "normal",
+                           "power": 50, "accuracy": 100, "pp": 1,
+                           "maxpp": 1, "category": "physical", "priority": 0})]
+        move = random.choice(moves)
+        if move.pp is not None:
+            move.pp = max(0, move.pp - 1)
+
+        ename = self._wild_pokemon.dbSymbol.capitalize()
+        pname = self._player_pokemon.dbSymbol.capitalize()
+        mname = move.dbSymbol.replace("-", " ").replace("_", " ").title()
+
+        acc = move.accuracy or 100
+        hit = random.randint(1, 100) <= acc
+
+        if not hit:
+            msgs = [f"Le {ename} ennemi utilise {mname} !", "L'attaque échoue !"]
+        else:
+            dmg, eff, crit = _calc_damage(self._wild_pokemon, move, self._player_pokemon)
+            self._player_pokemon.hp = max(0, self._player_pokemon.hp - dmg)
+
+            msgs = [f"Le {ename} ennemi utilise {mname} !"]
+            if crit:
+                msgs.append("Coup critique !")
+            if eff == 0:
+                msgs.append("Ça n'affecte pas…")
+            elif eff >= 2:
+                msgs.append("C'est super efficace !")
+            elif eff < 1:
+                msgs.append("Ce n'est pas très efficace…")
+            if dmg > 0:
+                msgs.append(f"{pname} perd {dmg} PV !")
+
+        self._text_box.set_messages(msgs)
+        self._state = "ENEMY_ATTACK"
+
+    # ------------------------------------------------------------------
+    def _on_textbox_done(self) -> None:
+        """Transition d'état après confirmation du TextBox."""
+        if self._state == "TEXT":
+            self._state = "MENU"
+
+        elif self._state == "PLAYER_ATTACK":
+            if self._wild_pokemon and self._wild_pokemon.hp <= 0:
+                # Ennemi KO
+                ename   = self._wild_pokemon.dbSymbol.capitalize()
+                xp_gain = self._calc_xp_gain()
+                pname   = self._player_pokemon.dbSymbol.capitalize() if self._player_pokemon else "?"
+                msgs    = [f"{ename} ennemi est mis KO !"]
+                if xp_gain > 0 and self._player_pokemon:
+                    self._player_pokemon.xp += xp_gain
+                    msgs.append(f"{pname} gagne {xp_gain} points d'EXP !")
+                    # Vérifie les montées de niveau
+                    old_level = self._player_pokemon.level
+                    learned   = self._player_pokemon.check_level_ups()
+                    if self._player_pokemon.level > old_level:
+                        msgs.append(f"{pname} monte au niveau {self._player_pokemon.level} !")
+                    for move_name in learned:
+                        display = move_name.replace("-", " ").replace("_", " ").title()
+                        msgs.append(f"{pname} apprend {display} !")
+                self._text_box.set_messages(msgs)
+                self._state = "WILD_FAINTED"
+            elif self._pending_enemy_attack:
+                self._enemy_counter_attack()
+            else:
+                self._state = "MENU"
+
+        elif self._state == "ENEMY_ATTACK":
+            if self._player_pokemon and self._player_pokemon.hp <= 0:
+                pname = self._player_pokemon.dbSymbol.capitalize()
+                self._text_box.set_messages([f"{pname} est mis KO !"])
+                self._state = "PLAYER_FAINTED"
+            else:
+                self._state = "MENU"
+
+        elif self._state in ("WILD_FAINTED", "PLAYER_FAINTED"):
+            self._active = False
+
+    # ------------------------------------------------------------------
+    def _calc_xp_gain(self) -> int:
+        if not self._wild_pokemon or not self._player_pokemon:
+            return 0
+        base_exp = getattr(self._wild_pokemon, "baseExperience", 100) or 100
+        return max(1, math.floor(base_exp * self._wild_pokemon.level / 7))
 
     # ------------------------------------------------------------------
     # Helpers souris / rects
@@ -242,13 +464,13 @@ class BattleScreen:
         if self._player_sprite:
             self._player_sprite.update(dt)
 
-        if self._state == "TEXT":
+        if self._state in ("TEXT", "PLAYER_ATTACK", "ENEMY_ATTACK",
+                           "WILD_FAINTED", "PLAYER_FAINTED"):
             self._text_box.update()
 
         elif self._state == "MENU":
             if now - self._cmd_anim_tick >= _CMD_ANIM_FPS:
                 self._cmd_anim_tick  = now
-                # Cycle frames 1→9→1→...
                 self._cmd_anim_frame = (self._cmd_anim_frame % 9) + 1
 
     # ------------------------------------------------------------------
@@ -270,7 +492,8 @@ class BattleScreen:
         self._draw_enemy_box(p)
         self._draw_player_box(p)
 
-        if self._state == "TEXT":
+        if self._state in ("TEXT", "PLAYER_ATTACK", "ENEMY_ATTACK",
+                           "WILD_FAINTED", "PLAYER_FAINTED"):
             self._text_box.draw(p)
         elif self._state == "MENU":
             self._draw_cmd_buttons(p)
@@ -312,15 +535,21 @@ class BattleScreen:
         bar_x, bar_y, bar_w = bx + 22, by + int(bh * 0.70), bw - 73
 
         # Nom centré verticalement entre le haut de la boîte et la barre HP
-        name = self._wild.get("name", "???").capitalize()
+        if self._wild_pokemon:
+            name  = self._wild_pokemon.dbSymbol.capitalize()
+            level = self._wild_pokemon.level
+        else:
+            name  = self._wild.get("name", "???").capitalize()
+            level = self._wild.get("level", "?")
         name_h = self._f_title.get_height()
         name_y = by + (bar_y - by - name_h) // 2
         surf.blit(self._f_title.render(name, True, _TEXT), (bx + 10, name_y))
 
-        lv = self._f_small.render(f"Nv.{self._wild['level']}", True, _TEXT_DIM)
+        lv = self._f_small.render(f"Nv.{level}", True, _TEXT_DIM)
         surf.blit(lv, (bx + bw - lv.get_width() - 8, name_y))
 
-        ratio = self._wild_hp / self._wild_hp_max if self._wild_hp_max else 0
+        hp_cur = self._wild_pokemon.hp if self._wild_pokemon else self._wild_hp
+        ratio  = hp_cur / self._wild_hp_max if self._wild_hp_max else 0
         pygame.draw.rect(surf, _HP_BG, (bar_x, bar_y, bar_w, 6))
         color = _HP_OK if ratio >= 0.5 else (_HP_MED if ratio >= 0.25 else _HP_LOW)
         pygame.draw.rect(surf, color, (bar_x, bar_y, int(bar_w * ratio), 6))
@@ -355,9 +584,10 @@ class BattleScreen:
         color = _HP_OK if ratio >= 0.5 else (_HP_MED if ratio >= 0.25 else _HP_LOW)
         pygame.draw.rect(surf, color, (bar_x, bar_y, int(bar_w * ratio), 6))
 
-        # Barre EXP — position entièrement indépendante
+        # Barre EXP — progression depuis le niveau actuel vers le suivant
         exp_x, exp_y, exp_w = r.x + 89, r.y + int(bh * 0.75), bw - 148
-        exp_ratio = (pp.xp / pp.xp_to_next_level) if pp.xp_to_next_level else 0
+        earned, needed = pp.xp_progress()
+        exp_ratio = min(1.0, earned / needed) if needed else 0.0
         pygame.draw.rect(surf, _HP_BG,     (exp_x, exp_y, exp_w, 4))
         pygame.draw.rect(surf, _EXP_COLOR, (exp_x, exp_y, int(exp_w * exp_ratio), 4))
 

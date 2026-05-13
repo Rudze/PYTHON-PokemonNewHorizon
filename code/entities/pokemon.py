@@ -115,30 +115,76 @@ class Pokemon:
             return math.floor(((2 * base_stat + iv + math.floor(ev / 4)) * level / 100) + level / 10)
         return math.floor((((2 * base_stat + iv + math.floor(ev / 4)) * level / 100) + 5) * nature)
 
-    def xp_to_next_level(self):
-        """
-        Get the experience to the next level
-        :return:
-        """
-        if self.level == 100:
+    @staticmethod
+    def _calc_xp_for_level(level: int, experience_type: int) -> int:
+        """XP totale cumulée requise pour atteindre 'level'."""
+        if level <= 1:
             return 0
-        if self.experienceType == 1:
-            return math.floor((4 * (self.level ** 3)) / 5)
-        elif self.experienceType == 3:
-            return math.floor(((6 / 5) * (self.level ** 3)) - (15 * (self.level ** 2)) + (100 * self.level) - 140)
-        elif self.experienceType == 0:
-            return self.level ** 3
-        elif self.experienceType == 2:
-            return 5 * (self.level ** 3) / 4
-        elif self.experienceType == 4:
-            if self.level <= 50:
-                return math.floor((self.level ** 3) * (100 - self.level) / 50)
-            elif self.level <= 68:
-                return math.floor((self.level ** 3) * (150 - self.level) / 100)
-            elif self.level <= 98:
-                return math.floor((self.level ** 3) * math.floor((1911 - 10 * self.level) / 3) / 500)
-            elif self.level <= 100:
-                return math.floor((self.level ** 3) * (160 - self.level) / 100)
+        if level >= 100:
+            level = 100
+        if experience_type == 0:   # Medium Fast (cubique)
+            return level ** 3
+        elif experience_type == 1:  # Medium Slow
+            return math.floor((4 * (level ** 3)) / 5)
+        elif experience_type == 2:  # Slow
+            return math.floor(5 * (level ** 3) / 4)
+        elif experience_type == 3:  # Erratic
+            return math.floor(((6 / 5) * (level ** 3)) - (15 * (level ** 2)) + (100 * level) - 140)
+        elif experience_type == 4:  # Fluctuating
+            if level <= 50:
+                return math.floor((level ** 3) * (100 - level) / 50)
+            elif level <= 68:
+                return math.floor((level ** 3) * (150 - level) / 100)
+            elif level <= 98:
+                return math.floor((level ** 3) * math.floor((1911 - 10 * level) / 3) / 500)
+            else:
+                return math.floor((level ** 3) * (160 - level) / 100)
+        return level ** 3
+
+    def xp_to_next_level(self):
+        """Rétro-compatibilité — retourne le seuil XP du niveau actuel."""
+        return Pokemon._calc_xp_for_level(self.level, self.experienceType)
+
+    def xp_progress(self) -> tuple[int, int]:
+        """Retourne (XP gagnée depuis le dernier niveau, XP nécessaire pour le prochain)."""
+        if self.level >= 100:
+            return 0, 1
+        xp_this  = Pokemon._calc_xp_for_level(self.level,     self.experienceType)
+        xp_next  = Pokemon._calc_xp_for_level(self.level + 1, self.experienceType)
+        return max(0, self.xp - xp_this), max(1, xp_next - xp_this)
+
+    def check_level_ups(self) -> list[str]:
+        """
+        Vérifie si l'XP accumulée permet un ou plusieurs montées de niveau.
+        Recalcule tous les stats, et retourne la liste des noms de moves appris.
+        """
+        new_moves: list[str] = []
+        while self.level < 100:
+            xp_needed = Pokemon._calc_xp_for_level(self.level + 1, self.experienceType)
+            if self.xp < xp_needed:
+                break
+            self.level += 1
+            # Recalcule les stats avec le nouveau niveau
+            old_maxhp  = self.maxhp
+            self.maxhp = self.update_stats("hp")
+            # HP augmente de la même valeur que le maxhp
+            self.hp    = min(self.hp + (self.maxhp - old_maxhp), self.maxhp)
+            self.atk   = self.update_stats("atk")
+            self.dfe   = self.update_stats("dfe")
+            self.ats   = self.update_stats("ats")
+            self.dfs   = self.update_stats("dfs")
+            self.spd   = self.update_stats("spd")
+            self.xp_to_next_level = Pokemon._calc_xp_for_level(self.level, self.experienceType)
+            # Apprentissage de nouvelles attaques
+            for entry in self.moveSet:
+                if entry.get("level") == self.level and len(self.moves) < 4:
+                    try:
+                        new_move = Move.createMove(entry["move"])
+                        self.moves.append(new_move)
+                        new_moves.append(new_move.dbSymbol)
+                    except Exception:
+                        pass
+        return new_moves
 
     def set_moves(self):
         """
@@ -219,6 +265,50 @@ class Pokemon:
         pokemon.__dict__.update(data)
         pokemon.moves = [Move.from_dict(move_data) for move_data in data["moves"]]
         return pokemon
+
+    @staticmethod
+    def create_from_id(pokemon_id: int, level: int) -> "Pokemon":
+        """Create a Pokémon from its national Pokédex ID."""
+        all_pokemon = json.load(open(str(JSON_DIR / "pokemon_data.json")))
+        entry = all_pokemon.get(str(pokemon_id))
+        if entry is None:
+            raise ValueError(f"Pokémon id={pokemon_id} introuvable dans pokemon_data.json")
+        types = entry["types"]
+        stats = entry["stats"]
+        forms = [{
+            "type1":          types[0] if types else "normal",
+            "type2":          types[1] if len(types) > 1 else "__undef__",
+            "baseHp":         stats["hp"],
+            "baseAtk":        stats["attack"],
+            "baseDfe":        stats["defense"],
+            "baseSpd":        stats["speed"],
+            "baseAts":        stats["sp_attack"],
+            "baseDfs":        stats["sp_defense"],
+            "evHp": 0, "evAtk": 0, "evDfe": 0,
+            "evSpd": 0, "evAts": 0, "evDfs": 0,
+            "experienceType": 0,
+            "baseExperience": entry.get("base_experience", 100),
+            "baseLoyalty":    70,
+            "catchRate":      entry.get("capture_rate", 45),
+            "femaleRate":     50,
+            "breedGroups":    [],
+            "hatchSteps":     0,
+            "babyDbSymbol":   "__undef__",
+            "babyForm":       0,
+            "itemHeld":       [],
+            "abilities":      [a["name"] for a in entry.get("abilities", []) if not a.get("hidden")],
+            "frontOffsetY":   0,
+            "resources":      {},
+            "moveSet":        entry.get("learnset", []),
+            "evolutions":     [],
+        }]
+        legacy = {
+            "klass":    "Pokemon",
+            "id":       entry["id"],
+            "dbSymbol": entry["name"],
+            "forms":    forms,
+        }
+        return Pokemon(legacy, level)
 
     @staticmethod
     def create_pokemon(name: str, level: int) -> "Pokemon":

@@ -9,6 +9,7 @@ from code.core.controller import Controller
 from code.core.keylistener import KeyListener
 from code.core.screen import Screen
 from code.entities.player import Player
+from code.entities.pokemon import Pokemon
 from code.entities.remote_player import RemotePlayer
 from code.managers.save import Save
 from code.managers.sound_manager import SoundManager
@@ -448,8 +449,23 @@ class Game:
             "map":  current_map,
         })
 
+        # Sync complète avant combat : push local → API, puis reload pour valider
+        if self.player.inv.api_client:
+            print("[Battle] Sync inventaire avant combat...")
+            self.player.inv.save_all()
+            self.player.inv.load_from_api()
+
+        try:
+            wild_pokemon = Pokemon.create_from_id(data["pokemon_id"], data["level"])
+        except Exception as e:
+            print(f"[Battle] Impossible de créer le Pokémon sauvage: {e}")
+            wild_pokemon = None
+
         player_pokemon = self.player.pokemons[0] if self.player.pokemons else None
-        self.battle_screen = BattleScreen(self.screen, data, player_pokemon, zone=data.get("zone_name", ""))
+        self.battle_screen = BattleScreen(
+            self.screen, data, player_pokemon,
+            wild_pokemon=wild_pokemon, zone=data.get("zone_name", "")
+        )
         self.player.can_move = False
 
     def _find_facing_pokemon(self):
@@ -508,6 +524,9 @@ class Game:
                 self.battle_screen.update()
                 self.battle_screen.draw(self.screen.get_display())
                 if not self.battle_screen.active:
+                    # Sauvegarde HP/XP/PP de l'équipe après le combat
+                    print("[Battle] Combat terminé — synchronisation de l'équipe vers l'API...")
+                    self.player.inv.sync_party()
                     self.battle_screen   = None
                     self.player.can_move = True
             else:
