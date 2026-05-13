@@ -52,6 +52,9 @@ class WildPokemonManager:
                 return wpid, entity
         return None
 
+    def get_entity(self, wpid: str) -> "WildPokemonEntity | None":
+        return self._entities.get(wpid)
+
     def get_interaction_source(self):
         """
         Retourne une source compatible InteractionManager.

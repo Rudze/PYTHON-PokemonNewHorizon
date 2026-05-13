@@ -16,7 +16,8 @@ class Move:
         self.dbSymbol = move_data.get('dbSymbol')
         self.klass = move_data.get('klass')
         self.mapUse = move_data.get('mapUse')
-        self.type = move_data.get('type')
+        raw_type   = move_data.get('type') or "normal"
+        self.type  = raw_type.lower()
         self.power = move_data.get('power')
         self.accuracy = move_data.get('accuracy')
         self.maxpp = move_data.get('pp')

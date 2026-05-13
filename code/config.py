@@ -63,29 +63,31 @@ BATTLE_UI: dict[str, object] = {
 }
 
 # ---------------------------------------------------------------------------
-# Ligne dans battleFightButtons.png pour chaque type de move
-# Chaque ligne = 243×44 px ; colonne gauche = non sélectionné, droite = sélectionné
+# Ligne (0-indexée) dans battleFightButtons.png pour chaque type de move.
+# Layout : largeur 243 px × hauteur 44 px par cellule.
+#          colonne gauche (src_x=0)   = bouton non sélectionné
+#          colonne droite (src_x=243) = bouton sélectionné
 # ---------------------------------------------------------------------------
 MOVE_TYPE_ROW: dict[str, int] = {
-    "normal":   0,
-    "fighting": 1,
-    "flying":   2,
-    "poison":   3,
-    "ground":   4,
-    "rock":     5,
-    "bug":      6,
-    "ghost":    7,
-    "steel":    8,
-    "unknown":  9,
-    "fire":     10,
-    "water":    11,
-    "grass":    12,
-    "electric": 13,
-    "psychic":  14,
-    "ice":      15,
-    "dragon":   16,
-    "dark":     17,
-    "fairy":    18,
+    "normal":   0,   # ligne  1
+    "fighting": 1,   # ligne  2
+    "flying":   2,   # ligne  3
+    "poison":   3,   # ligne  4
+    "ground":   4,   # ligne  5
+    "rock":     5,   # ligne  6
+    "bug":      6,   # ligne  7
+    "ghost":    7,   # ligne  8
+    "steel":    8,   # ligne  9
+    "unknown":  9,   # ligne 10
+    "fire":     10,  # ligne 11
+    "water":    11,  # ligne 12
+    "grass":    12,  # ligne 13
+    "electric": 13,  # ligne 14
+    "psychic":  14,  # ligne 15
+    "ice":      15,  # ligne 16
+    "dragon":   16,  # ligne 17
+    "dark":     17,  # ligne 18
+    "fairy":    18,  # ligne 19
 }
 
 

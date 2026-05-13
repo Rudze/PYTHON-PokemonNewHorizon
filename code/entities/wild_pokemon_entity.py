@@ -76,12 +76,15 @@ class WildPokemonEntity(pygame.sprite.Sprite):
 
         self._bob_time  = random.uniform(0.0, math.tau)
         self._last_tick = pygame.time.get_ticks()
+        self.frozen = False   # True pendant un combat, bloque apply_move
 
     # ------------------------------------------------------------------
     # API publique — appelée par WildPokemonManager
     # ------------------------------------------------------------------
 
     def apply_move(self, x: int, y: int, direction: str) -> None:
+        if self.frozen:
+            return
         self._from_pos     = pygame.Vector2(self.position)
         self._to_pos       = pygame.Vector2(*tile_to_center(x, y))
         self._move_dir     = direction

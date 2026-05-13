@@ -53,6 +53,8 @@ class Game:
         self._cached_character:     dict               | None = None
         self.wild_pokemon_manager:  WildPokemonManager | None = None
         self.battle_screen:         BattleScreen       | None = None
+        self._battle_wpid:   str | None = None
+        self._battle_entity = None
         self._saving_started:       bool                      = False
 
     def _setup_game_world(self):
@@ -442,7 +444,12 @@ class Game:
         wpid        = data["wpid"]
         current_map = self.map.current_map.name if self.map.current_map else ""
 
-        self.wild_pokemon_manager.on_despawned({"wpid": wpid})
+        # Freeze l'entité (ne la despawn PAS — on attend la fin du combat)
+        self._battle_entity = self.wild_pokemon_manager.get_entity(wpid)
+        self._battle_wpid   = wpid
+        if self._battle_entity:
+            self._battle_entity.frozen = True
+
         self.network.send({
             "type": "pokemon_encounter",
             "wpid": wpid,
@@ -455,13 +462,20 @@ class Game:
             self.player.inv.save_all()
             self.player.inv.load_from_api()
 
+        # Vérifie qu'au moins un Pokémon est apte au combat (HP > 0)
+        able = [p for p in self.player.pokemons if p.hp > 0]
+        if not able:
+            print("[Battle] Aucun Pokémon apte — combat annulé.")
+            self.player.can_move = True
+            return
+
         try:
             wild_pokemon = Pokemon.create_from_id(data["pokemon_id"], data["level"])
         except Exception as e:
             print(f"[Battle] Impossible de créer le Pokémon sauvage: {e}")
             wild_pokemon = None
 
-        player_pokemon = self.player.pokemons[0] if self.player.pokemons else None
+        player_pokemon = able[0]  # premier Pokémon avec HP > 0
         self.battle_screen = BattleScreen(
             self.screen, data, player_pokemon,
             wild_pokemon=wild_pokemon, zone=data.get("zone_name", "")
@@ -524,10 +538,15 @@ class Game:
                 self.battle_screen.update()
                 self.battle_screen.draw(self.screen.get_display())
                 if not self.battle_screen.active:
-                    # Sauvegarde HP/XP/PP de l'équipe après le combat
                     print("[Battle] Combat terminé — synchronisation de l'équipe vers l'API...")
                     self.player.inv.sync_party()
-                    self.battle_screen   = None
+                    if self.battle_screen.outcome == "won":
+                        self.wild_pokemon_manager.on_despawned({"wpid": self._battle_wpid})
+                    elif self._battle_entity:
+                        self._battle_entity.frozen = False
+                    self._battle_wpid   = None
+                    self._battle_entity = None
+                    self.battle_screen  = None
                     self.player.can_move = True
             else:
                 # Touche interaction (E)

@@ -37,5 +37,83 @@
     "priority": 0,
     "effect_chance": null,
     "effect": "Inflige des dégâts réguliers et peut frapper les utilisateurs de Plongée."
+  },
+  "84": {
+    "id": 84,
+    "name": "thunder-shock",
+    "name_fr": "Éclair",
+    "type": "electric",
+    "damage_class": "special",
+    "power": 40,
+    "accuracy": 100,
+    "pp": 30,
+    "priority": 0,
+    "effect_chance": 10,
+    "effect": "A une chance de paralyser la cible."
+  },
+  "45": {
+    "id": 45,
+    "name": "growl",
+    "name_fr": "Rugissement",
+    "type": "normal",
+    "damage_class": "status",
+    "power": null,
+    "accuracy": 100,
+    "pp": 40,
+    "priority": 0,
+    "effect_chance": null,
+    "effect": "Diminue l'Attaque de la cible d'un niveau."
+  },
+  "39": {
+    "id": 39,
+    "name": "tail-whip",
+    "name_fr": "Mimi-Queue",
+    "type": "normal",
+    "damage_class": "status",
+    "power": null,
+    "accuracy": 100,
+    "pp": 30,
+    "priority": 0,
+    "effect_chance": null,
+    "effect": "Diminue la Défense de la cible d'un niveau."
+  },
+  "98": {
+    "id": 98,
+    "name": "quick-attack",
+    "name_fr": "Vive-Attaque",
+    "type": "normal",
+    "damage_class": "physical",
+    "power": 40,
+    "accuracy": 100,
+    "pp": 30,
+    "priority": 1,
+    "effect_chance": null,
+    "effect": "Inflige des dégâts réguliers avec aucun effet additionnel."
+  },
+  "86": {
+    "id": 86,
+    "name": "thunder-wave",
+    "name_fr": "Cage Éclair",
+    "type": "electric",
+    "damage_class": "status",
+    "power": null,
+    "accuracy": 90,
+    "pp": 20,
+    "priority": 0,
+    "effect_chance": null,
+    "effect": "Paralyse la cible."
+  },
+  "97": {
+    "id": 97,
+    "name": "agility",
+    "name_fr": "Hâte",
+    "type": "psychic",
+    "damage_class": "status",
+    "power": null,
+    "accuracy": null,
+    "pp": 30,
+    "priority": 0,
+    "effect_chance": null,
+    "effect": "Augmente la Vitesse du lanceur de deux niveaux."
   }
 }

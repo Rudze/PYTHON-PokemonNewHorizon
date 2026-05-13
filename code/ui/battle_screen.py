@@ -120,6 +120,9 @@ class BattleScreen:
             e, n = player_pokemon.xp_progress()
             self._exp_displayed_ratio = e / n if n else 0.0
 
+        # Résultat du combat : "won" | "fled" | "lost" | None
+        self._outcome: str | None = None
+
         sw, sh = screen.get_size()
 
         # --- Dimensions panel calées sur le background ---
@@ -199,6 +202,11 @@ class BattleScreen:
             self._wild_hp_max = hp_max
             self._wild_hp     = hp_max
 
+        # Animation barres HP
+        self._hp_anim_speed:          float = 0.7   # ratio/seconde
+        self._player_hp_displayed:    float = (player_pokemon.hp / player_pokemon.maxhp if player_pokemon and player_pokemon.maxhp else 0.0)
+        self._wild_hp_displayed:      float = (self._wild_hp / self._wild_hp_max if self._wild_hp_max else 0.0)
+
     # ------------------------------------------------------------------
     def handle_input(self, keylistener, controller, mouse_pos=None, mouse_click=None) -> None:
         if not self._active or self._intro_progress < 1.0:
@@ -271,7 +279,9 @@ class BattleScreen:
     # ------------------------------------------------------------------
     def _confirm(self) -> None:
         if   self._cmd_idx == 0: self._state = "MOVE_SELECT"; self._move_idx = 0
-        elif self._cmd_idx == 3: self._active = False   # Run
+        elif self._cmd_idx == 3:
+            self._outcome = "fled"
+            self._active  = False
         # Party (1) et Bag (2) : TODO
 
     # ------------------------------------------------------------------
@@ -432,8 +442,12 @@ class BattleScreen:
             else:
                 self._state = "MENU"
 
-        elif self._state in ("WILD_FAINTED", "PLAYER_FAINTED"):
-            self._active = False
+        elif self._state == "WILD_FAINTED":
+            self._outcome = "won"
+            self._active  = False
+        elif self._state == "PLAYER_FAINTED":
+            self._outcome = "lost"
+            self._active  = False
 
     # ------------------------------------------------------------------
     def _calc_xp_gain(self) -> int:
@@ -508,6 +522,22 @@ class BattleScreen:
                 else:
                     self._exp_displayed_ratio = \
                         self._exp_anim_segments[self._exp_anim_seg_idx][0]
+
+        # Animation barres HP — descente progressive
+        if self._player_pokemon and self._player_pokemon.maxhp:
+            target = self._player_pokemon.hp / self._player_pokemon.maxhp
+            if self._player_hp_displayed > target:
+                self._player_hp_displayed = max(target, self._player_hp_displayed - self._hp_anim_speed * dt)
+            else:
+                self._player_hp_displayed = min(target, self._player_hp_displayed + self._hp_anim_speed * dt)
+
+        if self._wild_hp_max:
+            hp_cur = self._wild_pokemon.hp if self._wild_pokemon else self._wild_hp
+            target = hp_cur / self._wild_hp_max
+            if self._wild_hp_displayed > target:
+                self._wild_hp_displayed = max(target, self._wild_hp_displayed - self._hp_anim_speed * dt)
+            else:
+                self._wild_hp_displayed = min(target, self._wild_hp_displayed + self._hp_anim_speed * dt)
 
         if self._state in ("TEXT", "PLAYER_ATTACK", "ENEMY_ATTACK",
                            "WILD_FAINTED", "PLAYER_FAINTED"):
@@ -593,8 +623,7 @@ class BattleScreen:
         lv = self._f_small.render(f"Nv.{level}", True, _TEXT_DIM)
         surf.blit(lv, (bx + bw - lv.get_width() - 8, name_y))
 
-        hp_cur = self._wild_pokemon.hp if self._wild_pokemon else self._wild_hp
-        ratio  = hp_cur / self._wild_hp_max if self._wild_hp_max else 0
+        ratio = min(1.0, max(0.0, self._wild_hp_displayed))
         pygame.draw.rect(surf, _HP_BG, (bar_x, bar_y, bar_w, 6))
         color = _HP_OK if ratio >= 0.5 else (_HP_MED if ratio >= 0.25 else _HP_LOW)
         pygame.draw.rect(surf, color, (bar_x, bar_y, int(bar_w * ratio), 6))
@@ -624,7 +653,7 @@ class BattleScreen:
         hp_txt = self._f_small.render(f"{pp.hp}/{pp.maxhp}", True, _TEXT)
         surf.blit(hp_txt, (r.x + bw - hp_txt.get_width() - 8, r.y + int(bh * 0.44)))
 
-        ratio = pp.hp / pp.maxhp if pp.maxhp else 0
+        ratio = min(1.0, max(0.0, self._player_hp_displayed))
         pygame.draw.rect(surf, _HP_BG, (bar_x, bar_y, bar_w, 6))
         color = _HP_OK if ratio >= 0.5 else (_HP_MED if ratio >= 0.25 else _HP_LOW)
         pygame.draw.rect(surf, color, (bar_x, bar_y, int(bar_w * ratio), 6))
@@ -690,6 +719,10 @@ class BattleScreen:
             surf.blit(pp_txt, (btn_x + btn_w - pp_txt.get_width() - 8, by + btn_h // 2 - 6))
 
     # ------------------------------------------------------------------
+    @property
+    def outcome(self) -> str | None:
+        return self._outcome
+
     @property
     def active(self) -> bool:
         return self._active
