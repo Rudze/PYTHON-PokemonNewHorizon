@@ -112,8 +112,8 @@ class Pokemon:
         level = self.level
         nature = 1.0
         if stat == "hp":
-            return math.floor(((2 * base_stat + iv + math.floor(ev / 4)) * level / 100) + level / 10)
-        return math.floor((((2 * base_stat + iv + math.floor(ev / 4)) * level / 100) + 5) * nature)
+            return math.floor((2 * base_stat + iv + math.floor(ev / 4)) * level / 100) + level + 10
+        return math.floor((math.floor((2 * base_stat + iv + math.floor(ev / 4)) * level / 100) + 5) * nature)
 
     @staticmethod
     def _calc_xp_for_level(level: int, experience_type: int) -> int:

@@ -7,22 +7,19 @@ Run: python server.py
 import asyncio
 import json
 import random
+import sys
 import uuid
+from pathlib import Path
 
 import websockets
 from websockets.exceptions import ConnectionClosed
 
-TILE_SIZE         = 16
-VALID_DIRECTIONS  = {"left", "right", "up", "down"}
+# Ajoute la racine du projet au path pour pouvoir importer code.config
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from code.config import POKEMON_SPAWNS  # source unique de vérité
 
-# ── Spawn config — MIRROR de config.py POKEMON_SPAWNS ─────────────────────
-# Pour ajouter une zone : ajouter une entrée ici ET dans config.py côté client.
-POKEMON_SPAWNS: dict[str, list[dict]] = {
-    "route_1": [
-        {"pokemon_id": 19, "rarity": 70, "min_level": 2, "max_level": 4},  # Rattata
-        {"pokemon_id": 16, "rarity": 30, "min_level": 3, "max_level": 5},  # Roucool
-    ],
-}
+TILE_SIZE        = 16
+VALID_DIRECTIONS = {"left", "right", "up", "down"}
 
 # ── État serveur ────────────────────────────────────────────────────────────
 

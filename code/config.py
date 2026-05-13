@@ -223,16 +223,6 @@ CUSTOMIZATION_SETTINGS = {
     "gender_icon": str(ASSETS_DIR / "icones" / "gender_icons_large.png"),
 }
 
-# ---------------------------------------------------------------------------
-# Spawns de Pokémon sauvages
-# ---------------------------------------------------------------------------
-# Clé    : spawn_zone property de l'objet Tiled (ex: "route_1")
-# Valeur : liste d'entrées de spawn
-#   pokemon_id  : numéro national du Pokédex
-#   rarity      : poids relatif (ex: 70 + 30 = 100 %, mais ce n'est pas obligatoire)
-#   min_level   : niveau minimum (inclus)
-#   max_level   : niveau maximum (inclus)
-# ---------------------------------------------------------------------------
 POKEMON_SPAWNS: dict[str, list[dict]] = {
     "route_1": [
         {"pokemon_id": 19, "rarity": 70, "min_level": 10, "max_level": 20},   # Rattata
