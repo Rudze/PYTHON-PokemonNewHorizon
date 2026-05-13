@@ -1,3 +1,5 @@
+import time
+
 import pygame
 
 from code.api.game_api_client import GameApiClient
@@ -15,6 +17,7 @@ from code.managers.save import Save
 from code.managers.sound_manager import SoundManager
 from code.network.client import NetworkClient
 from code.ui.battle_screen import BattleScreen
+from code.ui.components.text_box import TextBox
 from code.ui.dialogue import Dialogue
 from code.ui.character_creation_menu import CharacterCreationMenu
 from code.ui.login_menu import LoginMenu
@@ -53,9 +56,11 @@ class Game:
         self._cached_character:     dict               | None = None
         self.wild_pokemon_manager:  WildPokemonManager | None = None
         self.battle_screen:         BattleScreen       | None = None
-        self._battle_wpid:   str | None = None
-        self._battle_entity = None
-        self._saving_started:       bool                      = False
+        self._battle_wpid:        str  | None = None
+        self._battle_entity                 = None
+        self._pending_battle_data: dict | None = None  # données en attente de pokemon_encounter_start
+        self._saving_started:      bool         = False
+        self._notify_box:          TextBox | None = None
 
     def _setup_game_world(self):
         """ Cette méthode initialise tout le monde de jeu une fois connecté """
@@ -177,6 +182,14 @@ class Game:
     # ------------------------------------------------------------------
     # Saving screen + graceful quit
     # ------------------------------------------------------------------
+
+    def _show_notify(self, message: str) -> None:
+        """Affiche un message via le TextBox en bas de l'écran (confirmation par action)."""
+        W, H = self.screen.get_size()
+        bw, bh = int(W * 0.55), int(H * 0.14)
+        rect = pygame.Rect((W - bw) // 2, H - bh - 16, bw, bh)
+        self._notify_box = TextBox(rect, text_color=(255, 255, 255))
+        self._notify_box.set_messages([message])
 
     def _draw_saving_screen(self) -> None:
         disp = self.screen.get_display()
@@ -342,12 +355,7 @@ class Game:
                 self.wild_pokemon_manager.on_despawned(msg)
 
         elif t == "pokemon_encounter_start":
-            # TODO: démarrer le système de combat avec ces données
-            print(
-                f"[Encounter] Pokémon #{msg['pokemon_id']} "
-                f"nv.{msg['level']}"
-                + (" ✨ Shiny !" if msg.get("shiny") else "")
-            )
+            self._on_encounter_confirmed(msg)
 
     def _add_remote_player(self, data: dict) -> None:
         pid = data["pid"]
@@ -440,42 +448,40 @@ class Game:
             pass
 
     def _start_wild_battle(self, data: dict) -> None:
-        """Déclenche un combat contre un Pokémon sauvage."""
+        """Gèle le Pokémon sauvage et demande au serveur de confirmer le combat."""
         wpid        = data["wpid"]
         current_map = self.map.current_map.name if self.map.current_map else ""
 
-        # Freeze l'entité (ne la despawn PAS — on attend la fin du combat)
-        self._battle_entity = self.wild_pokemon_manager.get_entity(wpid)
-        self._battle_wpid   = wpid
+        # Freeze l'entité immédiatement pour bloquer ses déplacements
+        self._battle_entity       = self.wild_pokemon_manager.get_entity(wpid)
+        self._battle_wpid         = wpid
+        self._pending_battle_data = data
         if self._battle_entity:
             self._battle_entity.frozen = True
 
+        # Le serveur valide et répond par pokemon_encounter_start → _on_encounter_confirmed
         self.network.send({
             "type": "pokemon_encounter",
             "wpid": wpid,
             "map":  current_map,
         })
 
-        # Sync complète avant combat : push local → API, puis reload pour valider
-        if self.player.inv.api_client:
-            print("[Battle] Sync inventaire avant combat...")
-            self.player.inv.save_all()
-            self.player.inv.load_from_api()
-
-        # Vérifie qu'au moins un Pokémon est apte au combat (HP > 0)
-        able = [p for p in self.player.pokemons if p.hp > 0]
-        if not able:
-            print("[Battle] Aucun Pokémon apte — combat annulé.")
-            self.player.can_move = True
+    def _on_encounter_confirmed(self, msg: dict) -> None:
+        """Appelé quand le serveur confirme le combat (pokemon_encounter_start)."""
+        data = self._pending_battle_data
+        self._pending_battle_data = None
+        if not data:
             return
 
         try:
-            wild_pokemon = Pokemon.create_from_id(data["pokemon_id"], data["level"])
+            wild_pokemon = Pokemon.create_from_id(msg["pokemon_id"], msg["level"])
         except Exception as e:
             print(f"[Battle] Impossible de créer le Pokémon sauvage: {e}")
             wild_pokemon = None
 
-        player_pokemon = able[0]  # premier Pokémon avec HP > 0
+        able = [p for p in self.player.pokemons if p.hp > 0]
+        player_pokemon = able[0] if able else None
+
         self.battle_screen = BattleScreen(
             self.screen, data, player_pokemon,
             wild_pokemon=wild_pokemon, zone=data.get("zone_name", "")
@@ -567,3 +573,14 @@ class Game:
 
         # 3. Gérer le réseau
         self._handle_network(prev_walking, prev_pos, prev_map, prev_dir)
+
+        # 4. Notification in-world (TextBox)
+        if self._notify_box:
+            self._notify_box.update()
+            action_key = self.controller.get_key("action")
+            if (self._notify_box.waiting_confirm
+                    and self.keylistener.key_pressed(action_key)):
+                self._notify_box = None
+                self.keylistener.remove_key(action_key)
+            else:
+                self._notify_box.draw(self.screen.get_display())
