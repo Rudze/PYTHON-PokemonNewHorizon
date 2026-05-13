@@ -111,6 +111,15 @@ class BattleScreen:
         self._last_tick      = time.time()
         self._pending_enemy_attack = False  # flag pour lancer la contre-attaque
 
+        # Animation barre EXP
+        self._exp_displayed_ratio: float                     = 0.0
+        self._exp_anim_segments:   list[tuple[float, float]] = []
+        self._exp_anim_seg_idx:    int                       = 0
+        self._exp_anim_speed:      float                     = 0.4  # ratio/seconde
+        if player_pokemon:
+            e, n = player_pokemon.xp_progress()
+            self._exp_displayed_ratio = e / n if n else 0.0
+
         sw, sh = screen.get_size()
 
         # --- Dimensions panel calées sur le background ---
@@ -370,24 +379,46 @@ class BattleScreen:
 
         elif self._state == "PLAYER_ATTACK":
             if self._wild_pokemon and self._wild_pokemon.hp <= 0:
-                # Ennemi KO
                 ename   = self._wild_pokemon.dbSymbol.capitalize()
                 xp_gain = self._calc_xp_gain()
                 pname   = self._player_pokemon.dbSymbol.capitalize() if self._player_pokemon else "?"
                 msgs    = [f"{ename} ennemi est mis KO !"]
+
                 if xp_gain > 0 and self._player_pokemon:
-                    self._player_pokemon.xp += xp_gain
-                    msgs.append(f"{pname} gagne {xp_gain} points d'EXP !")
-                    # Vérifie les montées de niveau
+                    # Ratio avant gain (pour lancer l'animation en fond)
+                    e_b, n_b = self._player_pokemon.xp_progress()
+                    ratio_before = e_b / n_b if n_b else 0.0
                     old_level = self._player_pokemon.level
-                    learned   = self._player_pokemon.check_level_ups()
-                    if self._player_pokemon.level > old_level:
+
+                    self._player_pokemon.xp += xp_gain
+                    learned = self._player_pokemon.check_level_ups()
+                    levels_gained = self._player_pokemon.level - old_level
+
+                    e_a, n_a = self._player_pokemon.xp_progress()
+                    ratio_after = e_a / n_a if n_a else 0.0
+
+                    # Segments d'animation (un par niveau franchi)
+                    if levels_gained == 0:
+                        segs: list[tuple[float, float]] = [(ratio_before, ratio_after)]
+                    else:
+                        segs = [(ratio_before, 1.0)]
+                        for _ in range(levels_gained - 1):
+                            segs.append((0.0, 1.0))
+                        segs.append((0.0, ratio_after))
+                    self._exp_anim_segments   = segs
+                    self._exp_anim_seg_idx    = 0
+                    self._exp_displayed_ratio = segs[0][0]
+
+                    msgs.append(f"{pname} gagne {xp_gain} points d'EXP !")
+                    if levels_gained > 0:
                         msgs.append(f"{pname} monte au niveau {self._player_pokemon.level} !")
                     for move_name in learned:
                         display = move_name.replace("-", " ").replace("_", " ").title()
                         msgs.append(f"{pname} apprend {display} !")
+
                 self._text_box.set_messages(msgs)
                 self._state = "WILD_FAINTED"
+
             elif self._pending_enemy_attack:
                 self._enemy_counter_attack()
             else:
@@ -463,6 +494,20 @@ class BattleScreen:
             self._wild_sprite.update(dt)
         if self._player_sprite:
             self._player_sprite.update(dt)
+
+        # Animation EXP — tourne en fond quel que soit l'état
+        if self._exp_anim_segments:
+            _, seg_end = self._exp_anim_segments[self._exp_anim_seg_idx]
+            self._exp_displayed_ratio = min(
+                seg_end, self._exp_displayed_ratio + self._exp_anim_speed * dt
+            )
+            if self._exp_displayed_ratio >= seg_end:
+                self._exp_anim_seg_idx += 1
+                if self._exp_anim_seg_idx >= len(self._exp_anim_segments):
+                    self._exp_anim_segments = []
+                else:
+                    self._exp_displayed_ratio = \
+                        self._exp_anim_segments[self._exp_anim_seg_idx][0]
 
         if self._state in ("TEXT", "PLAYER_ATTACK", "ENEMY_ATTACK",
                            "WILD_FAINTED", "PLAYER_FAINTED"):
@@ -584,10 +629,9 @@ class BattleScreen:
         color = _HP_OK if ratio >= 0.5 else (_HP_MED if ratio >= 0.25 else _HP_LOW)
         pygame.draw.rect(surf, color, (bar_x, bar_y, int(bar_w * ratio), 6))
 
-        # Barre EXP — progression depuis le niveau actuel vers le suivant
+        # Barre EXP — animée via _exp_displayed_ratio
         exp_x, exp_y, exp_w = r.x + 89, r.y + int(bh * 0.75), bw - 148
-        earned, needed = pp.xp_progress()
-        exp_ratio = min(1.0, earned / needed) if needed else 0.0
+        exp_ratio = min(1.0, max(0.0, self._exp_displayed_ratio))
         pygame.draw.rect(surf, _HP_BG,     (exp_x, exp_y, exp_w, 4))
         pygame.draw.rect(surf, _EXP_COLOR, (exp_x, exp_y, int(exp_w * exp_ratio), 4))
 

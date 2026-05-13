@@ -235,8 +235,8 @@ CUSTOMIZATION_SETTINGS = {
 # ---------------------------------------------------------------------------
 POKEMON_SPAWNS: dict[str, list[dict]] = {
     "route_1": [
-        {"pokemon_id": 19, "rarity": 70, "min_level": 2, "max_level": 4},   # Rattata
-        {"pokemon_id": 16, "rarity": 30, "min_level": 3, "max_level": 5},   # Roucool
+        {"pokemon_id": 19, "rarity": 70, "min_level": 10, "max_level": 20},   # Rattata
+        {"pokemon_id": 16, "rarity": 30, "min_level": 10, "max_level": 20},   # Roucool
     ],
     # "foret_0": [
     #     {"pokemon_id": 10, "rarity": 50, "min_level": 4, "max_level": 6},  # Chenipan

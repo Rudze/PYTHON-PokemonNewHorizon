@@ -65,7 +65,7 @@ class Pokemon:
         self.spd = self.update_stats("spd")
 
         self.shiny = "shiny" if random.randint(1, 10) == 1 else ""
-        self.xp = 0
+        self.xp = Pokemon._calc_xp_for_level(level, self.experienceType)
         self.points_ev = 0
 
         self.moves: list[Move] = self.set_moves()
@@ -264,6 +264,23 @@ class Pokemon:
         pokemon = Pokemon.__new__(Pokemon)
         pokemon.__dict__.update(data)
         pokemon.moves = [Move.from_dict(move_data) for move_data in data["moves"]]
+        # Restore form-derived attributes absent de to_dict()
+        f = pokemon.forms[0] if getattr(pokemon, "forms", None) else {}
+        pokemon.evolutions    = f.get("evolutions", [])
+        pokemon.experienceType = f.get("experienceType", 0)
+        pokemon.baseExperience = f.get("baseExperience", 100)
+        pokemon.baseLoyalty   = f.get("baseLoyalty", 70)
+        pokemon.catchRate     = f.get("catchRate", 45)
+        pokemon.femaleRate    = f.get("femaleRate", 50)
+        pokemon.breedGroups   = f.get("breedGroups", [])
+        pokemon.hatchSteps    = f.get("hatchSteps", 0)
+        pokemon.babyDbSymbol  = f.get("babyDbSymbol", "__undef__")
+        pokemon.babyForm      = f.get("babyForm", 0)
+        pokemon.itemHeld      = f.get("itemHeld", [])
+        pokemon.abilities     = f.get("abilities", [])
+        pokemon.frontOffsetY  = f.get("frontOffsetY", 0)
+        pokemon.resources     = f.get("resources", {})
+        pokemon.moveSet       = f.get("moveSet", [])
         return pokemon
 
     @staticmethod
