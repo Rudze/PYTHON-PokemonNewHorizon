@@ -480,10 +480,17 @@ class Game:
             wild_pokemon = None
 
         able = [p for p in self.player.pokemons if p.hp > 0]
-        player_pokemon = able[0] if able else None
+        if not able:
+            # Annule le combat : dégèle l'entité, affiche un message
+            if self._battle_entity:
+                self._battle_entity.frozen = False
+            self._battle_entity = None
+            self._battle_wpid   = None
+            self._show_notify("Aucun Pokémon en état de combattre !")
+            return
 
         self.battle_screen = BattleScreen(
-            self.screen, data, player_pokemon,
+            self.screen, data, able[0],
             wild_pokemon=wild_pokemon, zone=data.get("zone_name", "")
         )
         self.player.can_move = False
