@@ -43,7 +43,6 @@ class SQL:
             query += f" ORDER BY {order}"
         if limit:
             query += f" LIMIT {limit}"
-        print(query)
         self.cursor.execute(query)
         return self.cursor.fetchall()
 

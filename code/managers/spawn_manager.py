@@ -154,7 +154,6 @@ class SpawnManager:
         self._zone_timers.clear()
 
         self._known_zones = current_zones
-        print(f"[SpawnManager] Map changée — {len(current_zones)} zones chargées")
 
     # ------------------------------------------------------------------
     # Spawn / despawn

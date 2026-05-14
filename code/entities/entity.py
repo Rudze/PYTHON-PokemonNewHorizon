@@ -32,7 +32,7 @@ class Entity(pygame.sprite.Sprite):
         self.animation_walk: bool = False
         self.direction: str = "down"
 
-        self.animtion_step_time: float = 0.0
+        self.animation_step_time: float = 0.0
         self.action_animation: int = 16
 
         self.speed: int = 1
@@ -100,8 +100,8 @@ class Entity(pygame.sprite.Sprite):
         :return:
         """
         if self.animation_walk:
-            self.animtion_step_time += self.screen.get_delta_time()
-            if self.step < 16 and self.animtion_step_time >= self.action_animation:
+            self.animation_step_time += self.screen.get_delta_time()
+            if self.step < 16 and self.animation_step_time >= self.action_animation:
                 self.step += self.speed
                 if self.direction == "left":
                     self.position.x -= self.speed
@@ -114,7 +114,7 @@ class Entity(pygame.sprite.Sprite):
                 if self.stairs_walk > 0:
                     self.stairs_walk -= 1
                     self.move_stairs()
-                self.animtion_step_time = 0
+                self.animation_step_time = 0
             elif self.step >= 16:
                 self.step = 0
                 self.animation_walk = False
@@ -177,12 +177,8 @@ class Entity(pygame.sprite.Sprite):
         return all_images
 
     def set_position(self, x: int, y: int) -> None:
-        """
-        Set the entity position
-        """
         self.position = pygame.math.Vector2(x, y)
         self.rect.center = self.position
-        self.hitbox.midbottom = self.rect.midbottom
         self.hitbox.midbottom = self.rect.midbottom
 
     def reload_spritesheet(self, spritesheet: pygame.Surface) -> None:

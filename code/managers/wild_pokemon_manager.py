@@ -34,7 +34,10 @@ class WildPokemonManager:
     def on_moved(self, data: dict) -> None:
         entity = self._entities.get(data.get("wpid"))
         if entity:
-            entity.apply_move(int(data["x"]), int(data["y"]), data["dir"])
+            try:
+                entity.apply_move(int(data["x"]), int(data["y"]), data["dir"])
+            except (KeyError, ValueError):
+                pass
 
     def on_despawned(self, data: dict) -> None:
         entity = self._entities.pop(data.get("wpid"), None)

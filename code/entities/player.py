@@ -181,7 +181,8 @@ class Player(Entity):
     def switch_bike(self, deactive: bool = False) -> None:
         if self.speed == 1 and not deactive:
             self.speed = 4
-            self.all_images = self.get_all_images(self.spritesheet_bike)
+            bike_sheet = getattr(self, "spritesheet_bike", None) or self.spritesheet
+            self.all_images = self.get_all_images(bike_sheet)
         else:
             self.speed = 1
             self.all_images = self.get_all_images(self.spritesheet)

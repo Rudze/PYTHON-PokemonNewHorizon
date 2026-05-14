@@ -28,6 +28,8 @@ UTILISATION :
 """
 from __future__ import annotations
 
+import logging
+
 import pygame
 
 from code.config import SPRITES_CHARACTER_DIR, CUSTOMIZATION_CATALOG
@@ -61,13 +63,13 @@ def compose_player_spritesheet(customization: dict) -> pygame.Surface:
     # ── 1. Sprite de base ──────────────────────────────────────────────
     base_path = SPRITES_CHARACTER_DIR / "character_walk.png"
     if not base_path.exists():
-        print(f"[SpriteComposer] ERREUR : sprite de base introuvable ({base_path})")
+        logging.warning("SpriteComposer: sprite de base introuvable (%s)", base_path)
         return None
 
     try:
         composite = pygame.image.load(str(base_path)).convert_alpha()
     except pygame.error as exc:
-        print(f"[SpriteComposer] ERREUR chargement base : {exc}")
+        logging.warning("SpriteComposer: erreur chargement base: %s", exc)
         return None
 
     # ── 2. Calques optionnels (dans l'ordre overlay_order du catalogue) ──
@@ -93,6 +95,5 @@ def compose_player_spritesheet(customization: dict) -> pygame.Surface:
         # Blit sur tout le spritesheet d'un coup (toutes les frames et directions)
         composite.blit(overlay, (0, 0))
 
-        print(f"[SpriteComposer] calque '{layer_name}' ({variant}) appliqué")
 
     return composite

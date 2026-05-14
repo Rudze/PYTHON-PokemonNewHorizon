@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import logging
 import threading
 
 from code.config_items import INVENTORY_MAX_SLOTS
 from code.entities.pokemon import Pokemon
+
+_log = logging.getLogger(__name__)
 
 PARTY_MAX = 6
 PC_BOX_SIZE = 30
@@ -146,13 +149,16 @@ class InventoryManager:
     """
 
     def __init__(self, party: list[Pokemon], api_client=None, account_id: int | None = None) -> None:
-        # party is a shared reference to player.pokemons so both stay in sync.
         self.party = party
         self.bag = Bag()
         self.pc = PC()
         self.api_client = api_client
         self.account_id = account_id
-        self.money: int = 0  # Pokédollars — chargé depuis l'API
+        self.money: int = 0
+        # Compte les syncs réseau en cours (swap de slots, etc.).
+        # Le rechargement depuis l'API est bloqué tant que ce compteur est > 0
+        # pour éviter la race condition lecture/écriture côté serveur.
+        self._pending_syncs: int = 0
 
     # ------------------------------------------------------------------
     # Party
@@ -349,12 +355,15 @@ class InventoryManager:
             updates.append({"item_db_symbol": item_b.item_db_symbol,
                             "pocket": item_b.pocket, "slot_index": slot_a})
         if updates and self.api_client and self.account_id:
-            # Fire-and-forget : pas de lag sur le thread principal
-            threading.Thread(
-                target=self.api_client.update_item_slots,
-                args=(self.account_id, updates),
-                daemon=True,
-            ).start()
+            self._pending_syncs += 1
+
+            def _do_swap() -> None:
+                try:
+                    self.api_client.update_item_slots(self.account_id, updates)
+                finally:
+                    self._pending_syncs -= 1
+
+            threading.Thread(target=_do_swap, daemon=True).start()
 
     # ------------------------------------------------------------------
     # Serialization
@@ -374,61 +383,42 @@ class InventoryManager:
         for p in party_data:
             try:
                 pokemon = Pokemon.from_dict(p)
-                pokemon.check_level_ups()   # traite les XP accumulées pendant l'offline
+                pokemon.check_level_ups()  # retourne (learned, pending) — ignoré au chargement
                 self.party.append(pokemon)
             except Exception as exc:
-                print(f"[INV] load_from_dict: erreur reconstruction Pokémon équipe — {exc}")
+                _log.error("Erreur reconstruction Pokémon équipe: %s", exc)
 
         self.bag = Bag.from_dict(data.get("bag", []))
-        self.pc = PC.from_dict(data.get("pc", []))
+        self.pc  = PC.from_dict(data.get("pc", []))
 
     def load_from_api(self) -> bool:
-        """
-        Load inventory from the API. Returns True on success.
-        Safe to call even when api_client is None (no-op, returns False).
-        """
         if self.api_client is None or self.account_id is None:
-            print("[INV] load_from_api: pas de client API configuré (mode local).")
             return False
-        print(f"[INV] Chargement depuis l'API (account_id={self.account_id})...")
         data = self.api_client.load_inventory(self.account_id)
         if not data:
-            print("[INV] ERREUR: réponse vide ou API inaccessible.")
+            _log.warning("load_from_api: réponse vide ou API inaccessible")
             return False
         self.load_from_dict(data)
-        print(
-            f"[INV] Chargé — équipe: {len(self.party)} Pokémon | "
-            f"sac: {sum(len(v) for v in self.bag.pockets.values())} lignes | "
-            f"PC: {sum(1 for b in self.pc.boxes.values() for p in b if p)} Pokémon"
-        )
+        _log.info("Inventaire chargé — équipe:%d sac:%d PC:%d",
+                  len(self.party),
+                  sum(len(v) for v in self.bag.pockets.values()),
+                  sum(1 for b in self.pc.boxes.values() for p in b if p))
         return True
 
     def reload_from_api(self) -> bool:
-        """
-        Force-reload: wipes local state then fetches fresh data from API.
-        Used by the [FORCE SYNC] debug button.
-        """
-        print("[INV] FORCE SYNC — réinitialisation locale puis rechargement API...")
         self.party.clear()
         self.bag = Bag()
-        self.pc = PC()
+        self.pc  = PC()
         return self.load_from_api()
 
     def save_all(self) -> bool:
-        """
-        Bulk-save everything to the API. Returns True on success.
-        Blocks for up to 5 s (requests timeout).
-        """
         if self.api_client is None or self.account_id is None:
-            print("[INV] save_all: pas de client API (mode local, rien envoyé).")
             return False
-        print(f"[INV] Sauvegarde complète vers l'API (account_id={self.account_id})...")
         ok = self.api_client.sync_full_inventory(self.account_id, self.to_dict())
-        if ok is not None:
-            print("[INV] Sauvegarde API : OK")
-            return True
-        print("[INV] ERREUR: échec de la sauvegarde API.")
-        return False
+        if ok is None:
+            _log.error("save_all: échec sauvegarde API")
+            return False
+        return True
 
     # ------------------------------------------------------------------
     # Internal sync helpers

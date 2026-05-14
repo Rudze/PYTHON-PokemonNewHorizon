@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import logging
+
 import requests
+
+_log = logging.getLogger(__name__)
 
 
 class GameApiClient:
@@ -77,7 +81,7 @@ class GameApiClient:
             )
             r.raise_for_status()
         except Exception as exc:
-            print(f"[GameAPI] delete_item failed: {exc}")
+            _log.warning("delete_item failed: %s", exc)
 
     # ------------------------------------------------------------------
     # Full inventory (load & bulk save)
@@ -116,7 +120,7 @@ class GameApiClient:
             r.raise_for_status()
             return r.json()
         except Exception as exc:
-            print(f"[GameAPI] POST {path} failed: {exc}")
+            _log.warning("POST %s failed: %s", path, exc)
             return None
 
     def _get(self, path: str) -> dict | None:
@@ -125,5 +129,5 @@ class GameApiClient:
             r.raise_for_status()
             return r.json()
         except Exception as exc:
-            print(f"[GameAPI] GET {path} failed: {exc}")
+            _log.warning("GET %s failed: %s", path, exc)
             return None

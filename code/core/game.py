@@ -1,7 +1,10 @@
+import logging
 import threading
 import time
 
 import pygame
+
+_log = logging.getLogger(__name__)
 
 from code.api.game_api_client import GameApiClient
 from code.config import AUTH_API_URL
@@ -25,6 +28,7 @@ from code.ui.login_menu import LoginMenu
 from code.ui.inventory_hud import InventoryHUD
 from code.ui.motismart import Motismart
 from code.ui.escape_menu import EscapeMenu
+from code.ui.move_learn_menu import MoveLearnMenu
 from code.ui.server_select_menu import ServerSelectMenu
 from code.ui.splash_screen import SplashScreen
 from code.world.map import Map
@@ -40,7 +44,6 @@ class Game:
         self.splash = SplashScreen(self.screen)
 
         # --- CHARGEMENT DÈS ELEMENTS ---
-        print("Chargement des SFX !")
         SoundManager.load_all_sounds()
         # -----------------------------------------
 
@@ -64,8 +67,10 @@ class Game:
         self._pending_battle_data: dict | None = None  # données en attente de pokemon_encounter_start
         self._saving_started:      bool         = False
         self._notify_box:          TextBox | None = None
-        self._inv_pending_refresh: bool         = False  # mis à True par le thread de reload
-        self._inv_last_reload:    float        = 0.0    # timestamp du dernier reload API
+        self._inv_pending_refresh: bool         = False
+        self._inv_last_reload:    float        = 0.0
+        self._move_learn_menu: MoveLearnMenu  | None = None
+        self._pending_move_for_menu: tuple    | None = None
 
     def _setup_game_world(self):
         """ Cette méthode initialise tout le monde de jeu une fois connecté """
@@ -77,9 +82,9 @@ class Game:
         # ── account_id (api_client déjà créé dans run() après le login) ──
         account_id = self.account.get("id")
         if not account_id:
-            print("[Game] ATTENTION: account_id introuvable dans account.")
+            _log.warning("account_id introuvable dans account — mode hors-ligne.")
         else:
-            print(f"[Game] GameApiClient actif (account_id={account_id})")
+            _log.info("GameApiClient actif (account_id=%s)", account_id)
 
         # ── Monde ──────────────────────────────────────────────────────
         self.map = Map(self.screen, self.controller)
@@ -104,7 +109,7 @@ class Game:
             self.player.inv.account_id = int(account_id)
 
         self.dialogue = Dialogue(self.player, self.screen)
-        self.save = Save("save_0", self.map, self.player, self.keylistener, self.dialogue)
+        self.save = Save("save_0", self.map, self.player)
         self.save.load()          # charge la sauvegarde locale (position, map…)
         self._ensure_map_ready()
 
@@ -205,8 +210,10 @@ class Game:
         self.inv_hud.load_from_inventory(self.player.inv.bag)
         self.inv_hud.toggle()
 
-        if time.time() - self._inv_last_reload < self._INV_RELOAD_TTL:
-            return   # cache local suffisamment récent
+        ttl_ok   = time.time() - self._inv_last_reload < self._INV_RELOAD_TTL
+        syncing  = self.player.inv._pending_syncs > 0
+        if ttl_ok or syncing:
+            return   # données locales à jour, ou sync en cours → ne pas écraser
 
         def _refresh() -> None:
             if self.player.inv.reload_from_api():
@@ -284,15 +291,12 @@ class Game:
         disp.blit(t2, t2.get_rect(center=(W // 2, H // 2 + 20)))
 
     def _perform_save_and_quit(self) -> None:
-        print("[Game] Sauvegarde avant fermeture...")
         if self.save:
             self.save.save()
-            print("[Game] Sauvegarde locale : OK")
         if self.player:
             ok = self.player.inv.save_all()
             if not ok:
-                print("[Game] ATTENTION: sauvegarde API échouée — données locales préservées.")
-        print("[Game] Fermeture du jeu.")
+                _log.warning("Sauvegarde API échouée — données locales préservées.")
         self.running = False
         pygame.quit()
 
@@ -309,10 +313,9 @@ class Game:
         if self.map.player is None:
             self.map.add_player(self.player)
 
-        print("[Game] Map ready")
-        print(f"[Game] Current map: {self.map.current_map.name if self.map.current_map else None}")
-        print(f"[Game] Player position: {self.player.position}")
-        print(f"[Game] Player collisions: {len(self.player.collisions)}")
+        _log.info("Map ready — %s pos=%s collisions=%d",
+                  self.map.current_map.name if self.map.current_map else "?",
+                  self.player.position, len(self.player.collisions))
 
     # ------------------------------------------------------------------
     # Network integration
@@ -392,21 +395,24 @@ class Game:
             self._add_remote_player(msg)
 
         elif t == "player_left":
-            self._remove_remote_player(msg["pid"])
+            pid = msg.get("pid")
+            if pid:
+                self._remove_remote_player(pid)
 
         elif t == "player_moved":
-            pid = msg["pid"]
-            if pid in self.remote_players:
-                self.remote_players[pid].apply_move(
-                    int(msg["x"]),
-                    int(msg["y"]),
-                    msg["dir"]
-                )
+            pid = msg.get("pid")
+            if pid and pid in self.remote_players:
+                try:
+                    self.remote_players[pid].apply_move(
+                        int(msg["x"]), int(msg["y"]), msg["dir"]
+                    )
+                except (KeyError, ValueError):
+                    pass
 
         elif t == "player_turned":
             pid = msg.get("pid")
-            if pid in self.remote_players:
-                self.remote_players[pid].direction = msg["dir"]
+            if pid and pid in self.remote_players:
+                self.remote_players[pid].direction = msg.get("dir", "down")
 
         elif t == "pokemon_snapshot":
             if self.wild_pokemon_manager:
@@ -550,7 +556,7 @@ class Game:
         try:
             wild_pokemon = Pokemon.create_from_id(msg["pokemon_id"], msg["level"])
         except Exception as e:
-            print(f"[Battle] Impossible de créer le Pokémon sauvage: {e}")
+            _log.error("Impossible de créer le Pokémon sauvage: %s", e)
             wild_pokemon = None
 
         able = [p for p in self.player.pokemons if p.hp > 0]
@@ -609,6 +615,17 @@ class Game:
             self._handle_network(prev_walking, prev_pos, prev_map, prev_dir)
             return
 
+        # ── Menu d'apprentissage d'attaque ──────────────────────────────────────
+        if self._move_learn_menu:
+            self.map.update()
+            result = self._move_learn_menu.update(self.mouse_click)
+            self.mouse_click = None
+            if result is not None:
+                self._move_learn_menu = None
+                self.player.can_move  = True
+            self._handle_network(prev_walking, prev_pos, prev_map, prev_dir)
+            return
+
         # ── Dialogue in-world : prioritaire sur tout ─────────────────────────────
         if self._notify_box:
             self.map.update()                                      # rendu monde
@@ -641,7 +658,9 @@ class Game:
 
         self.map.update()   # monde toujours actif (animations, Pokémon sauvages…)
         cx, cy = self._player_screen_pos()
-        self.inv_hud.update(cx, cy, money=self.player.inv.money)   # arc inventaire
+        self.inv_hud.update(cx, cy,
+                            money=self.player.inv.money,
+                            party=self.player.pokemons)   # arc inventaire + colonne équipe
 
         if self.player.menu_option:
             # Pokephone par-dessus le monde en mouvement
@@ -661,7 +680,7 @@ class Game:
             self.battle_screen.update()
             self.battle_screen.draw(self.screen.get_display())
             if not self.battle_screen.active:
-                print("[Battle] Combat terminé — synchronisation de l'équipe vers l'API...")
+                _log.info("Combat terminé — synchronisation équipe")
                 self.player.inv.sync_party()
                 if self.battle_screen.outcome == "won":
                     self.wild_pokemon_manager.on_despawned({"wpid": self._battle_wpid})
@@ -695,6 +714,41 @@ class Game:
                 self._inv_pending_refresh = False
                 if self.inv_hud.active:
                     self.inv_hud.load_from_inventory(self.player.inv.bag)
+
+            # ── Nouvelles attaques apprises (notification simple) ─────────────
+            if not self._notify_box:
+                for pkmn in self.player.pokemons:
+                    if pkmn.newly_learned:
+                        sym   = pkmn.newly_learned.pop(0)
+                        pname = pkmn.dbSymbol.replace("_", " ").capitalize()
+                        mname = sym.replace("_", " ").capitalize()
+                        self._open_dialogue([f"{pname} a appris {mname} !"])
+                        break
+
+            # ── Attaques en attente (4 attaques déjà → menu de remplacement) ─
+            if not self._notify_box and not self._move_learn_menu:
+                for pkmn in self.player.pokemons:
+                    if pkmn.pending_moves:
+                        sym  = pkmn.pending_moves.pop(0)
+                        pname = pkmn.dbSymbol.replace("_", " ").capitalize()
+                        mname = sym.replace("_", " ").capitalize()
+                        self._open_dialogue(
+                            [f"{pname} peut apprendre {mname} !",
+                             f"Mais il connaît déjà 4 attaques.",
+                             f"Voulez-vous remplacer une attaque ?"]
+                        )
+                        self._pending_move_for_menu = (pkmn, sym)
+                        break
+
+            # Ouvrir le menu de remplacement après confirmation du dialogue
+            if (not self._notify_box
+                    and not self._move_learn_menu
+                    and hasattr(self, "_pending_move_for_menu")
+                    and self._pending_move_for_menu):
+                pkmn, sym = self._pending_move_for_menu
+                self._pending_move_for_menu = None
+                self._move_learn_menu = MoveLearnMenu(self.screen, pkmn, sym)
+                self.player.can_move  = False
 
             action_key = self.controller.get_key("action")
             if (self.keylistener.key_pressed(action_key)

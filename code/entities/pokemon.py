@@ -75,6 +75,13 @@ class Pokemon:
 
         self.evolution = None
 
+        # Files d'attente pour le flux d'apprentissage en overworld.
+        # Uniquement peuplés par des appels explicites (admin, gain XP overworld).
+        # Le battle_screen gère son propre affichage ; ces listes restent vides
+        # lors des montées de niveau en combat.
+        self.newly_learned: list[str] = []   # attaques apprises normalement
+        self.pending_moves:  list[str] = []  # attaques en attente (4 attaques déjà)
+
     def get_types(self):
         """
         Get the types of the Pokémon
@@ -153,21 +160,24 @@ class Pokemon:
         xp_next  = Pokemon._calc_xp_for_level(self.level + 1, self.experienceType)
         return max(0, self.xp - xp_this), max(1, xp_next - xp_this)
 
-    def check_level_ups(self) -> list[str]:
+    def check_level_ups(self) -> tuple[list[str], list[str]]:
         """
         Vérifie si l'XP accumulée permet un ou plusieurs montées de niveau.
-        Recalcule tous les stats, et retourne la liste des noms de moves appris.
+
+        Retourne (learned, pending) :
+          learned : attaques apprises directement (< 4 attaques au moment de la montée)
+          pending : attaques qui ne peuvent pas être apprises (4 attaques déjà) —
+                    le appelant décide d'afficher ou non un menu de remplacement.
         """
-        new_moves: list[str] = []
+        learned: list[str] = []
+        pending: list[str] = []
         while self.level < 100:
             xp_needed = Pokemon._calc_xp_for_level(self.level + 1, self.experienceType)
             if self.xp < xp_needed:
                 break
             self.level += 1
-            # Recalcule les stats avec le nouveau niveau
             old_maxhp  = self.maxhp
             self.maxhp = self.update_stats("hp")
-            # HP augmente de la même valeur que le maxhp
             self.hp    = min(self.hp + (self.maxhp - old_maxhp), self.maxhp)
             self.atk   = self.update_stats("atk")
             self.dfe   = self.update_stats("dfe")
@@ -175,16 +185,18 @@ class Pokemon:
             self.dfs   = self.update_stats("dfs")
             self.spd   = self.update_stats("spd")
             self.xp_to_next_level = Pokemon._calc_xp_for_level(self.level, self.experienceType)
-            # Apprentissage de nouvelles attaques
             for entry in self.moveSet:
-                if entry.get("level") == self.level and len(self.moves) < 4:
-                    try:
-                        new_move = Move.createMove(entry["move"])
-                        self.moves.append(new_move)
-                        new_moves.append(new_move.dbSymbol)
-                    except Exception:
-                        pass
-        return new_moves
+                if entry.get("level") == self.level:
+                    if len(self.moves) < 4:
+                        try:
+                            new_move = Move.createMove(entry["move"])
+                            self.moves.append(new_move)
+                            learned.append(new_move.dbSymbol)
+                        except Exception:
+                            pass
+                    else:
+                        pending.append(entry["move"])
+        return learned, pending
 
     def set_moves(self):
         """
@@ -197,7 +209,7 @@ class Pokemon:
             try:
                 if move['level'] <= self.level:
                     list_move.append(move)
-            except:
+            except (KeyError, TypeError):
                 pass
         minimum = 2
         if len(list_move) < minimum:
@@ -281,6 +293,9 @@ class Pokemon:
         pokemon.frontOffsetY  = f.get("frontOffsetY", 0)
         pokemon.resources     = f.get("resources", {})
         pokemon.moveSet       = f.get("moveSet", [])
+        # Attributs runtime non sérialisés — toujours réinitialiser après from_dict
+        pokemon.newly_learned = []
+        pokemon.pending_moves = []
         return pokemon
 
     @staticmethod

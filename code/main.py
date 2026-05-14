@@ -1,12 +1,16 @@
-"""
-This is the main file of the game. It initializes the game and runs it.
-"""
+import logging
 import pygame
 
 from code.core.game import Game
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%H:%M:%S",
+)
+
 pygame.init()
 
 if __name__ == "__main__":
-    game: Game = Game()  # Ici on appelle le __init__ (préparation)
-    game.run()  # ICI on lance la boucle infinie
+    game: Game = Game()
+    game.run()
