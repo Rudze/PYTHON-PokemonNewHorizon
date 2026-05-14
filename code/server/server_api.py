@@ -731,6 +731,27 @@ def save_character(
 # POST /accounts/{id}/player_data   — argent, badges, temps de jeu
 # ---------------------------------------------------------------------------
 
+@app.get("/accounts/{account_id}/player_data")
+def get_player_data(account_id: int, auth_id: int = Depends(require_auth)):
+    check_ownership(account_id, auth_id)
+
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute(
+        "SELECT money, badges, play_time FROM player_data WHERE account_id = %s",
+        (account_id,),
+    )
+    row = cursor.fetchone()
+    cursor.close(); db.close()
+
+    if not row:
+        return {"money": 0, "badges": [], "play_time": 0.0}
+
+    badges = json.loads(row["badges"]) if row["badges"] else []
+    return {"money": int(row["money"]), "badges": badges,
+            "play_time": float(row["play_time"])}
+
+
 @app.post("/accounts/{account_id}/player_data")
 def sync_player_data(
     account_id: int,

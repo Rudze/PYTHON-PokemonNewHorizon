@@ -107,8 +107,9 @@ class Game:
         self.save.load()          # charge la sauvegarde locale (position, map…)
         self._ensure_map_ready()
 
-        # ── Charge l'inventaire depuis l'API (priorité sur sauvegarde locale) ──
+        # ── Charge l'inventaire et les Pokédollars depuis l'API ──
         self.player.inv.load_from_api()
+        self.player.inv.load_money_from_api()
 
         self.option       = Motismart(self.screen, self.controller, self.keylistener, self.save, self.player)
         self.escape_menu  = EscapeMenu(self.screen, self.controller, self.keylistener)
@@ -631,7 +632,8 @@ class Game:
                     self.player.can_move  = False
 
         self.map.update()   # monde toujours actif (animations, Pokémon sauvages…)
-        self.inv_hud.update(*self._player_screen_pos())   # arc inventaire
+        cx, cy = self._player_screen_pos()
+        self.inv_hud.update(cx, cy, money=self.player.inv.money)   # arc inventaire
 
         if self.player.menu_option:
             # Pokephone par-dessus le monde en mouvement

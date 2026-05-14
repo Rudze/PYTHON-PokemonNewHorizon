@@ -149,6 +149,7 @@ class InventoryManager:
         self.pc = PC()
         self.api_client = api_client
         self.account_id = account_id
+        self.money: int = 0  # Pokédollars — chargé depuis l'API
 
     # ------------------------------------------------------------------
     # Party
@@ -262,6 +263,42 @@ class InventoryManager:
             return False
         self._sync_item(item_db_symbol, pocket)
         return True
+
+    # ------------------------------------------------------------------
+    # Pokédollars
+    # ------------------------------------------------------------------
+
+    def load_money_from_api(self) -> bool:
+        """Charge le solde depuis le serveur. Retourne True si succès."""
+        if self.api_client is None or self.account_id is None:
+            return False
+        data = self.api_client.get_player_data(self.account_id)
+        if data is None:
+            return False
+        self.money = int(data.get("money", 0))
+        print(f"[INV] Pokédollars chargés : P$ {self.money}")
+        return True
+
+    def add_money(self, amount: int) -> None:
+        """Ajoute des Pokédollars et synchronise avec l'API."""
+        self.money = max(0, self.money + amount)
+        self._sync_money()
+
+    def spend_money(self, amount: int) -> bool:
+        """
+        Dépense des Pokédollars. Retourne False si solde insuffisant.
+        En cas de succès, synchronise avec l'API.
+        """
+        if self.money < amount:
+            return False
+        self.money -= amount
+        self._sync_money()
+        return True
+
+    def _sync_money(self) -> None:
+        if self.api_client is None or self.account_id is None:
+            return
+        self.api_client.sync_player_data(self.account_id, self.money, [], 0.0)
 
     def auto_assign_slots(self) -> None:
         """

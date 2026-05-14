@@ -95,6 +95,10 @@ class GameApiClient:
     # Player data (money, badges, play_time)
     # ------------------------------------------------------------------
 
+    def get_player_data(self, account_id: int) -> dict | None:
+        """Charge money, badges et play_time depuis le serveur."""
+        return self._get(f"/accounts/{account_id}/player_data")
+
     def sync_player_data(self, account_id: int, money: int, badges: list, play_time: float) -> None:
         self._post(f"/accounts/{account_id}/player_data", {
             "money": money,
