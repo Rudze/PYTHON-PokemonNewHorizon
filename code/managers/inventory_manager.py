@@ -204,24 +204,58 @@ class InventoryManager:
 
     def add_item_with_slot(self, item_db_symbol: str, pocket: str, quantity: int = 1) -> int | None:
         """
-        Ajoute un item ET lui assigne le premier slot HUD libre (0-19).
-        Retourne le slot_index assigné, ou None si l'inventaire HUD est plein.
-        Si l'item existe déjà (avec un slot), incrémente juste la quantité.
+        Ajoute un item en respectant l'ordre des slots (0, 1, 2…) :
+        1. Cherche une stack existante non-pleine du même item → empile.
+        2. Sinon trouve le premier slot libre en tenant compte des items
+           sans slot_index qui occupent virtuellement les premiers slots libres.
         """
-        existing = self._find_item_in_pocket(item_db_symbol, pocket)
-        if existing:
-            existing.quantity += quantity
-            self._sync_item(item_db_symbol, pocket)
-            return existing.slot_index
+        from code.config_items import ITEMS as _ITEMS
+        defn      = _ITEMS.get(item_db_symbol, {})
+        max_stack = defn.get("max_stack", 99)
+        stackable = defn.get("stackable", True)
 
-        used = {item.slot_index for items in self.bag.pockets.values()
-                for item in items if item.slot_index is not None}
-        free_slot = next((i for i in range(20) if i not in used), None)
+        # Passe 1 : stack existante non-pleine
+        if stackable:
+            existing = self._find_item_in_pocket(item_db_symbol, pocket)
+            if existing and existing.quantity < max_stack:
+                existing.quantity += quantity
+                self._sync_item(item_db_symbol, pocket)
+                return existing.slot_index
+
+        # Passe 2 : premier slot libre (slots virtuels des items sans slot_index inclus)
+        free_slot = next(
+            (i for i in range(20) if i not in self._occupied_slots()),
+            None,
+        )
 
         new_item = BagItem(item_db_symbol, quantity, pocket, free_slot)
         self.bag.pockets[pocket].append(new_item)
         self._sync_item(item_db_symbol, pocket)
         return free_slot
+
+    def _occupied_slots(self) -> set[int]:
+        """
+        Retourne l'ensemble des slots réellement ou virtuellement occupés.
+        Les items avec slot_index=None occupent le premier slot libre en ordre,
+        exactement comme le fait load_from_inventory (2e passe).
+        """
+        occupied: set[int] = set()
+        deferred = []
+
+        for pocket_items in self.bag.pockets.values():
+            for item in pocket_items:
+                if item.slot_index is not None:
+                    occupied.add(item.slot_index)
+                else:
+                    deferred.append(item)
+
+        for item in deferred:
+            for i in range(20):
+                if i not in occupied:
+                    occupied.add(i)
+                    break
+
+        return occupied
 
     def use_item(self, item_db_symbol: str, pocket: str, quantity: int = 1) -> bool:
         if not self.bag.remove(item_db_symbol, pocket, quantity):
