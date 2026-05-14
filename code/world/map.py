@@ -60,7 +60,7 @@ class Map:
         self.animation_change_map_active = False
 
         if switch.name.split("_")[0] == "map":
-            self.map_layer.zoom = 3
+            self.map_layer.zoom = 5
             self.set_draw_change_map(switch.name)
         else:
             self.map_layer.zoom = 4

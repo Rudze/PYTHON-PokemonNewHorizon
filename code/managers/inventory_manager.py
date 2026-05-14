@@ -229,6 +229,30 @@ class InventoryManager:
         self._sync_item(item_db_symbol, pocket)
         return True
 
+    def auto_assign_slots(self) -> None:
+        """
+        Assigne un slot_index aux items qui n'en ont pas encore (slot_index = None).
+        Persiste les nouveaux assignments via l'API.
+        Appelé après reload_from_api() pour gérer les items sans slot (ancienne BDD).
+        """
+        used = {item.slot_index for items in self.bag.pockets.values()
+                for item in items if item.slot_index is not None}
+        to_update = []
+        for pocket_items in self.bag.pockets.values():
+            for item in pocket_items:
+                if item.slot_index is None:
+                    free = next((i for i in range(20) if i not in used), None)
+                    if free is not None:
+                        item.slot_index = free
+                        used.add(free)
+                        to_update.append({
+                            "item_db_symbol": item.item_db_symbol,
+                            "pocket":         item.pocket,
+                            "slot_index":     free,
+                        })
+        if to_update and self.api_client and self.account_id:
+            self.api_client.update_item_slots(self.account_id, to_update)
+
     def swap_hud_slots(self, slot_a: int, slot_b: int) -> None:
         """Échange les slot_index de deux items dans le HUD et synchronise avec l'API."""
         item_a = self._find_item_by_slot(slot_a)

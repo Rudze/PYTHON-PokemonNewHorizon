@@ -1,8 +1,8 @@
 {
     "player": {
         "position": {
-            "x": 376.0,
-            "y": 192.0
+            "x": 392.0,
+            "y": 256.0
         },
         "direction": "down",
         "pokedex": null

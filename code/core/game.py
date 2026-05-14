@@ -1,3 +1,4 @@
+import threading
 import time
 
 import pygame
@@ -63,6 +64,7 @@ class Game:
         self._pending_battle_data: dict | None = None  # données en attente de pokemon_encounter_start
         self._saving_started:      bool         = False
         self._notify_box:          TextBox | None = None
+        self._inv_pending_refresh: bool         = False  # mis à True par le thread de reload
 
     def _setup_game_world(self):
         """ Cette méthode initialise tout le monde de jeu une fois connecté """
@@ -187,6 +189,23 @@ class Game:
     # ------------------------------------------------------------------
     # Helpers
     # ------------------------------------------------------------------
+
+    def _open_inv_hud(self) -> None:
+        """
+        Ouvre le HUD inventaire sans lag :
+        - affiche immédiatement les données en cache
+        - lance un thread pour rafraîchir depuis l'API
+        - met à jour le HUD dès que le thread finit (flag _inv_pending_refresh)
+        """
+        self.inv_hud.load_from_inventory(self.player.inv.bag)
+        self.inv_hud.toggle()
+
+        def _refresh() -> None:
+            if self.player.inv.reload_from_api():
+                self.player.inv.auto_assign_slots()   # corrige les items sans slot_index
+                self._inv_pending_refresh = True
+
+        threading.Thread(target=_refresh, daemon=True).start()
 
     def _player_screen_pos(self) -> tuple[int, int]:
         W, H = self.screen.get_size()
@@ -649,14 +668,20 @@ class Game:
                     and not self.player.animation_walk):
                 self.player.can_move = True
 
-            # Inventaire (R) — rechargement API à chaque ouverture (anti-triche)
+            # Inventaire (R) — ouverture instantanée + refresh API en arrière-plan
             inv_key = self.controller.get_key("inventory")
             if self.keylistener.key_pressed(inv_key):
                 self.keylistener.remove_key(inv_key)
                 if not self.inv_hud.active:
-                    self.player.inv.reload_from_api()
+                    self._open_inv_hud()
+                else:
+                    self.inv_hud.toggle()
+
+            # Appliquer le résultat du refresh API si le thread a terminé
+            if self._inv_pending_refresh:
+                self._inv_pending_refresh = False
+                if self.inv_hud.active:
                     self.inv_hud.load_from_inventory(self.player.inv.bag)
-                self.inv_hud.toggle()
 
             action_key = self.controller.get_key("action")
             if (self.keylistener.key_pressed(action_key)
