@@ -14,10 +14,12 @@ ALL_POCKETS = (POCKET_ITEMS, POCKET_POKEBALLS, POCKET_TM_HM, POCKET_KEY_ITEMS)
 
 
 class BagItem:
-    def __init__(self, item_db_symbol: str, quantity: int, pocket: str) -> None:
+    def __init__(self, item_db_symbol: str, quantity: int, pocket: str,
+                 slot_index: int | None = None) -> None:
         self.item_db_symbol = item_db_symbol
         self.quantity = quantity
         self.pocket = pocket
+        self.slot_index = slot_index
 
 
 class Bag:
@@ -52,11 +54,14 @@ class Bag:
         result = []
         for pocket, items in self.pockets.items():
             for item in items:
-                result.append({
+                entry: dict = {
                     "item_db_symbol": item.item_db_symbol,
                     "quantity": item.quantity,
                     "pocket": pocket,
-                })
+                }
+                if item.slot_index is not None:
+                    entry["slot_index"] = item.slot_index
+                result.append(entry)
         return result
 
     @staticmethod
@@ -66,7 +71,8 @@ class Bag:
             pocket = entry["pocket"]
             if pocket in bag.pockets:
                 bag.pockets[pocket].append(
-                    BagItem(entry["item_db_symbol"], entry["quantity"], pocket)
+                    BagItem(entry["item_db_symbol"], entry["quantity"], pocket,
+                            entry.get("slot_index"))
                 )
         return bag
 
@@ -196,11 +202,52 @@ class InventoryManager:
         self.bag.add(item_db_symbol, pocket, quantity)
         self._sync_item(item_db_symbol, pocket)
 
+    def add_item_with_slot(self, item_db_symbol: str, pocket: str, quantity: int = 1) -> int | None:
+        """
+        Ajoute un item ET lui assigne le premier slot HUD libre (0-19).
+        Retourne le slot_index assigné, ou None si l'inventaire HUD est plein.
+        Si l'item existe déjà (avec un slot), incrémente juste la quantité.
+        """
+        existing = self._find_item_in_pocket(item_db_symbol, pocket)
+        if existing:
+            existing.quantity += quantity
+            self._sync_item(item_db_symbol, pocket)
+            return existing.slot_index
+
+        used = {item.slot_index for items in self.bag.pockets.values()
+                for item in items if item.slot_index is not None}
+        free_slot = next((i for i in range(20) if i not in used), None)
+
+        new_item = BagItem(item_db_symbol, quantity, pocket, free_slot)
+        self.bag.pockets[pocket].append(new_item)
+        self._sync_item(item_db_symbol, pocket)
+        return free_slot
+
     def use_item(self, item_db_symbol: str, pocket: str, quantity: int = 1) -> bool:
         if not self.bag.remove(item_db_symbol, pocket, quantity):
             return False
         self._sync_item(item_db_symbol, pocket)
         return True
+
+    def swap_hud_slots(self, slot_a: int, slot_b: int) -> None:
+        """Échange les slot_index de deux items dans le HUD et synchronise avec l'API."""
+        item_a = self._find_item_by_slot(slot_a)
+        item_b = self._find_item_by_slot(slot_b)
+        if item_a is None and item_b is None:
+            return
+        if item_a:
+            item_a.slot_index = slot_b
+        if item_b:
+            item_b.slot_index = slot_a
+        updates = []
+        if item_a:
+            updates.append({"item_db_symbol": item_a.item_db_symbol,
+                            "pocket": item_a.pocket, "slot_index": slot_b})
+        if item_b:
+            updates.append({"item_db_symbol": item_b.item_db_symbol,
+                            "pocket": item_b.pocket, "slot_index": slot_a})
+        if updates and self.api_client and self.account_id:
+            self.api_client.update_item_slots(self.account_id, updates)
 
     # ------------------------------------------------------------------
     # Serialization
@@ -298,11 +345,26 @@ class InventoryManager:
             return
         self.api_client.sync_pc_pokemon(self.account_id, pokemon.to_dict(), box, slot)
 
+    def _find_item_in_pocket(self, item_db_symbol: str, pocket: str) -> "BagItem | None":
+        for item in self.bag.pockets.get(pocket, []):
+            if item.item_db_symbol == item_db_symbol:
+                return item
+        return None
+
+    def _find_item_by_slot(self, slot_index: int) -> "BagItem | None":
+        for pocket_items in self.bag.pockets.values():
+            for item in pocket_items:
+                if item.slot_index == slot_index:
+                    return item
+        return None
+
     def _sync_item(self, item_db_symbol: str, pocket: str) -> None:
         if self.api_client is None or self.account_id is None:
             return
-        quantity = self.bag.get_quantity(item_db_symbol, pocket)
+        item = self._find_item_in_pocket(item_db_symbol, pocket)
+        quantity = item.quantity if item else 0
+        slot_index = item.slot_index if item else None
         if quantity > 0:
-            self.api_client.sync_item(self.account_id, item_db_symbol, quantity, pocket)
+            self.api_client.sync_item(self.account_id, item_db_symbol, quantity, pocket, slot_index)
         else:
             self.api_client.delete_item(self.account_id, item_db_symbol, pocket)

@@ -159,6 +159,11 @@ class ItemSync(BaseModel):
     item_db_symbol: str
     quantity:       int
     pocket:         str
+    slot_index:     int | None = None
+
+
+class SlotUpdate(BaseModel):
+    updates: list[dict]   # [{item_db_symbol, pocket, slot_index}]
 
 
 class PlayerDataSync(BaseModel):
@@ -541,17 +546,21 @@ def sync_item(
     cursor = db.cursor()
 
     try:
-        # ON DUPLICATE KEY nécessite UNIQUE (account_id, item_db_symbol, pocket)
         cursor.execute(
             """
-            INSERT INTO inventory (account_id, item_db_symbol, quantity, pocket)
-            VALUES (%s, %s, %s, %s)
-            ON DUPLICATE KEY UPDATE quantity = %s
+            INSERT INTO inventory (account_id, item_db_symbol, quantity, pocket, slot_index)
+            VALUES (%s, %s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE quantity = VALUES(quantity)
             """,
-            (account_id, body.item_db_symbol, body.quantity, body.pocket, body.quantity),
+            (account_id, body.item_db_symbol, body.quantity, body.pocket, body.slot_index),
         )
+        if body.slot_index is not None:
+            cursor.execute(
+                "UPDATE inventory SET slot_index = %s WHERE account_id = %s AND item_db_symbol = %s AND pocket = %s",
+                (body.slot_index, account_id, body.item_db_symbol, body.pocket),
+            )
         db.commit()
-        print(f"[API] sync_item account={account_id} {body.item_db_symbol} ×{body.quantity} ({body.pocket})")
+        print(f"[API] sync_item account={account_id} {body.item_db_symbol} ×{body.quantity} slot={body.slot_index}")
     except Exception as exc:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erreur sync item : {exc}")
@@ -594,6 +603,47 @@ def delete_item(
         cursor.close(); db.close()
 
     return {"ok": True}
+
+
+# ---------------------------------------------------------------------------
+# POST /accounts/{id}/inventory/slot_update   — déplace des items entre slots HUD
+# ---------------------------------------------------------------------------
+
+@app.post("/accounts/{account_id}/inventory/slot_update")
+def update_inventory_slots(
+    account_id: int,
+    body: SlotUpdate,
+    auth_id: int = Depends(require_auth),
+):
+    check_ownership(account_id, auth_id)
+
+    db = get_db()
+    cursor = db.cursor()
+
+    try:
+        # Libérer tous les slots ciblés avant de les réassigner (évite les conflits UNIQUE)
+        target_slots = [u["slot_index"] for u in body.updates if u.get("slot_index") is not None]
+        if target_slots:
+            fmt = ",".join(["%s"] * len(target_slots))
+            cursor.execute(
+                f"UPDATE inventory SET slot_index = NULL WHERE account_id = %s AND slot_index IN ({fmt})",
+                [account_id] + target_slots,
+            )
+        for upd in body.updates:
+            cursor.execute(
+                "UPDATE inventory SET slot_index = %s WHERE account_id = %s AND item_db_symbol = %s AND pocket = %s",
+                (upd.get("slot_index"), account_id, upd["item_db_symbol"], upd["pocket"]),
+            )
+        db.commit()
+        print(f"[API] slot_update account={account_id} — {len(body.updates)} items")
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Erreur slot_update : {exc}")
+    finally:
+        cursor.close(); db.close()
+
+    return {"ok": True}
+
 
 # ---------------------------------------------------------------------------
 # GET  /accounts/{id}/character   — récupère la customisation du personnage

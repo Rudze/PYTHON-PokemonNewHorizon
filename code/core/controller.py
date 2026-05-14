@@ -15,8 +15,10 @@ class Controller:
             "left": pygame.K_q,
             "right": pygame.K_d,
             "action": pygame.K_e,
-            "bike": pygame.K_b,
-            "quit": pygame.K_ESCAPE,
+            "bike":      pygame.K_b,
+            "quit":      pygame.K_ESCAPE,
+            "phone":     pygame.K_x,
+            "inventory": pygame.K_r,
         }
 
     def get_key(self, key: str) -> int:

@@ -21,7 +21,9 @@ from code.ui.components.text_box import TextBox
 from code.ui.dialogue import Dialogue
 from code.ui.character_creation_menu import CharacterCreationMenu
 from code.ui.login_menu import LoginMenu
-from code.ui.option import Option
+from code.ui.inventory_hud import InventoryHUD
+from code.ui.motismart import Motismart
+from code.ui.escape_menu import EscapeMenu
 from code.ui.server_select_menu import ServerSelectMenu
 from code.ui.splash_screen import SplashScreen
 from code.world.map import Map
@@ -106,7 +108,10 @@ class Game:
         # ── Charge l'inventaire depuis l'API (priorité sur sauvegarde locale) ──
         self.player.inv.load_from_api()
 
-        self.option = Option(self.screen, self.controller, self.map, "fr", self.save, self.keylistener, self.dialogue)
+        self.option       = Motismart(self.screen, self.controller, self.keylistener, self.save, self.player)
+        self.escape_menu  = EscapeMenu(self.screen, self.controller, self.keylistener)
+        self.inv_hud      = InventoryHUD(self.screen)
+        self.inv_hud.on_slot_swap = lambda a, b: self.player.inv.swap_hud_slots(a, b)
         self.network = NetworkClient(self.server_url)
         self.remote_players = {}
 
@@ -180,16 +185,53 @@ class Game:
             self.screen.update()
 
     # ------------------------------------------------------------------
+    # Helpers
+    # ------------------------------------------------------------------
+
+    def _player_screen_pos(self) -> tuple[int, int]:
+        W, H = self.screen.get_size()
+        try:
+            vr   = self.map.map_layer.view_rect
+            zoom = self.map.map_layer.zoom
+            cx = int((self.player.position.x - vr.left) * zoom)
+            cy = int((self.player.position.y - vr.top)  * zoom)
+            return cx, cy
+        except Exception:
+            return W // 2, H // 2
+
+    # ------------------------------------------------------------------
     # Saving screen + graceful quit
     # ------------------------------------------------------------------
 
-    def _show_notify(self, message: str) -> None:
-        """Affiche un message via le TextBox en bas de l'écran (confirmation par action)."""
+    def _open_dialogue(self, messages: list[str],
+                        rect: pygame.Rect | None = None) -> None:
+        """
+        Ouvre une boîte de dialogue en jeu.
+        Utilise TextBox + fond overlay_message.png scalé au rect.
+        Bloque le mouvement du joueur jusqu'à confirmation (E ou clic).
+
+        rect : None → fenêtre standard en bas de l'écran (overworld)
+               pygame.Rect → taille/position personnalisées (ex. combat)
+        """
+        from code.config import BATTLE_UI
         W, H = self.screen.get_size()
-        bw, bh = int(W * 0.55), int(H * 0.14)
-        rect = pygame.Rect((W - bw) // 2, H - bh - 16, bw, bh)
-        self._notify_box = TextBox(rect, text_color=(255, 255, 255))
-        self._notify_box.set_messages([message])
+        if rect is None:
+            bw = int(W * 0.68)
+            bh = int(H * 0.20)
+            rect = pygame.Rect((W - bw) // 2, H - bh - 16, bw, bh)
+
+        try:
+            bg = pygame.transform.scale(
+                pygame.image.load(str(BATTLE_UI["overlay_message"])).convert_alpha(),
+                (rect.width, rect.height),
+            )
+        except Exception:
+            bg = None
+
+        self._notify_box = TextBox(rect, bg_surf=bg, text_color=(255, 255, 255))
+        self._notify_box.set_messages(messages)
+        if self.player:
+            self.player.can_move = False
 
     def _draw_saving_screen(self) -> None:
         disp = self.screen.get_display()
@@ -448,18 +490,22 @@ class Game:
             pass
 
     def _start_wild_battle(self, data: dict) -> None:
-        """Gèle le Pokémon sauvage et demande au serveur de confirmer le combat."""
+        """Demande au serveur de confirmer le combat après vérification locale."""
+        # Check HP local AVANT tout envoi réseau — évite le despawn serveur inutile
+        able = [p for p in self.player.pokemons if p.hp > 0]
+        if not able:
+            self._open_dialogue(["Aucun Pokémon en état de combattre !"])
+            return  # n'envoie rien au serveur → le Pokémon sauvage reste
+
         wpid        = data["wpid"]
         current_map = self.map.current_map.name if self.map.current_map else ""
 
-        # Freeze l'entité immédiatement pour bloquer ses déplacements
         self._battle_entity       = self.wild_pokemon_manager.get_entity(wpid)
         self._battle_wpid         = wpid
         self._pending_battle_data = data
         if self._battle_entity:
             self._battle_entity.frozen = True
 
-        # Le serveur valide et répond par pokemon_encounter_start → _on_encounter_confirmed
         self.network.send({
             "type": "pokemon_encounter",
             "wpid": wpid,
@@ -480,17 +526,8 @@ class Game:
             wild_pokemon = None
 
         able = [p for p in self.player.pokemons if p.hp > 0]
-        if not able:
-            # Annule le combat : dégèle l'entité, affiche un message
-            if self._battle_entity:
-                self._battle_entity.frozen = False
-            self._battle_entity = None
-            self._battle_wpid   = None
-            self._show_notify("Aucun Pokémon en état de combattre !")
-            return
-
         self.battle_screen = BattleScreen(
-            self.screen, data, able[0],
+            self.screen, data, able[0] if able else None,
             wild_pokemon=wild_pokemon, zone=data.get("zone_name", "")
         )
         self.player.can_move = False
@@ -514,16 +551,58 @@ class Game:
         return None
 
     def update_playing_logic(self) -> None:
-        # 1. Sauvegarder l'état précédent (pour le réseau)
         prev_walking = self.player.animation_walk
         prev_pos     = (int(self.player.position.x), int(self.player.position.y))
         prev_map     = self.map.current_map.name if self.map.current_map else None
         prev_dir     = self.player.direction
 
-        # 2. Gérer le mouvement et les menus
+        # ── Menu Échap : prioritaire, s'ouvre sur pression Échap hors combat/menu ─
+        quit_key = self.controller.get_key("quit")
+        if (not self.player.menu_option
+                and not self.escape_menu.active
+                and not (self.battle_screen and self.battle_screen.active)
+                and self.keylistener.key_pressed(quit_key)):
+            self.keylistener.remove_key(quit_key)
+            self.escape_menu.open()
+
+        if self.escape_menu.active:
+            self.player.can_move = False          # bloque les déplacements
+            self.map.update()
+            self.escape_menu.update(self.mouse_click)
+            self.mouse_click = None
+            if not self.escape_menu.active:       # vient de se fermer
+                self.player.can_move = True
+            if self.escape_menu.result == self.escape_menu.RESULT_QUIT:
+                self.state = "SAVING"
+                self._saving_started = False
+            elif self.escape_menu.result == self.escape_menu.RESULT_DISCONNECT:
+                self.state = "SAVING"
+                self._saving_started = False
+            self._handle_network(prev_walking, prev_pos, prev_map, prev_dir)
+            return
+
+        # ── Dialogue in-world : prioritaire sur tout ─────────────────────────────
+        if self._notify_box:
+            self.map.update()                                      # rendu monde
+            self._notify_box.update()
+            self._notify_box.draw(self.screen.get_display())
+            action_key = self.controller.get_key("action")
+            if self.keylistener.key_pressed(action_key) or self.mouse_click:
+                self._notify_box.action()
+                if self.keylistener.key_pressed(action_key):
+                    self.keylistener.remove_key(action_key)
+                self.mouse_click = None
+                if self._notify_box.done:
+                    self._notify_box       = None
+                    self.player.can_move   = True
+            self._handle_network(prev_walking, prev_pos, prev_map, prev_dir)
+            return  # tout le reste est bypassé pendant un dialogue
+
+        # 2. La map tourne TOUJOURS (Pokephone et combat se dessinent par-dessus)
+        in_battle = self.battle_screen and self.battle_screen.active
+
         if not self.player.menu_option:
-            # ── Pokémon sauvages : bloquer le mouvement ───────────────────
-            in_battle = self.battle_screen and self.battle_screen.active
+            # Pokémon sauvages : bloquer le mouvement avant map.update()
             if (self.wild_pokemon_manager and not self.player.animation_walk
                     and self.player.can_move and not in_battle):
                 facing = self._find_facing_pokemon()
@@ -532,62 +611,61 @@ class Game:
                     self.player.direction = direction
                     self.player.can_move  = False
 
-            self.map.update()
+        self.map.update()   # monde toujours actif (animations, Pokémon sauvages…)
+        self.inv_hud.update(*self._player_screen_pos())   # arc inventaire
 
-            # Restaurer can_move uniquement hors combat
-            if (self.player and not self.player.can_move
-                    and not self.player.animation_walk and not in_battle):
-                self.player.can_move = True
-
-            # ── Combat en cours ───────────────────────────────────────────
-            if in_battle:
-                self.battle_screen.handle_input(
-                    self.keylistener,
-                    self.controller,
-                    mouse_pos   = pygame.mouse.get_pos(),
-                    mouse_click = self.mouse_click,
-                )
-                self.mouse_click = None
-                self.battle_screen.update()
-                self.battle_screen.draw(self.screen.get_display())
-                if not self.battle_screen.active:
-                    print("[Battle] Combat terminé — synchronisation de l'équipe vers l'API...")
-                    self.player.inv.sync_party()
-                    if self.battle_screen.outcome == "won":
-                        self.wild_pokemon_manager.on_despawned({"wpid": self._battle_wpid})
-                    elif self._battle_entity:
-                        self._battle_entity.frozen = False
-                    self._battle_wpid   = None
-                    self._battle_entity = None
-                    self.battle_screen  = None
-                    self.player.can_move = True
-            else:
-                # Touche interaction (E)
-                action_key = self.controller.get_key("action")
-                if (self.keylistener.key_pressed(action_key)
-                        and not self.dialogue.active
-                        and not self.player.animation_walk):
-                    self._handle_interaction()
-                    self.keylistener.remove_key(action_key)
-                self.dialogue_controller()
-
-            self.mouse_click = None
-        else:
+        if self.player.menu_option:
+            # Pokephone par-dessus le monde en mouvement
             self.option.update(self.mouse_click)
             self.mouse_click = None
-            self.dialogue_controller()
             self.option.check_inputs()
+
+        elif in_battle:
+            # Combat par-dessus le monde
+            self.battle_screen.handle_input(
+                self.keylistener,
+                self.controller,
+                mouse_pos   = pygame.mouse.get_pos(),
+                mouse_click = self.mouse_click,
+            )
+            self.mouse_click = None
+            self.battle_screen.update()
+            self.battle_screen.draw(self.screen.get_display())
+            if not self.battle_screen.active:
+                print("[Battle] Combat terminé — synchronisation de l'équipe vers l'API...")
+                self.player.inv.sync_party()
+                if self.battle_screen.outcome == "won":
+                    self.wild_pokemon_manager.on_despawned({"wpid": self._battle_wpid})
+                elif self._battle_entity:
+                    self._battle_entity.frozen = False
+                self._battle_wpid    = None
+                self._battle_entity  = None
+                self.battle_screen   = None
+                self.player.can_move = True
+
+        else:
+            # Jeu normal : restaurer can_move + interactions
+            if (self.player and not self.player.can_move
+                    and not self.player.animation_walk):
+                self.player.can_move = True
+
+            # Inventaire (R) — rechargement API à chaque ouverture (anti-triche)
+            inv_key = self.controller.get_key("inventory")
+            if self.keylistener.key_pressed(inv_key):
+                self.keylistener.remove_key(inv_key)
+                if not self.inv_hud.active:
+                    self.player.inv.reload_from_api()
+                    self.inv_hud.load_from_inventory(self.player.inv.bag)
+                self.inv_hud.toggle()
+
+            action_key = self.controller.get_key("action")
+            if (self.keylistener.key_pressed(action_key)
+                    and not self.dialogue.active
+                    and not self.player.animation_walk):
+                self._handle_interaction()
+                self.keylistener.remove_key(action_key)
+            self.dialogue_controller()
+            self.mouse_click = None
 
         # 3. Gérer le réseau
         self._handle_network(prev_walking, prev_pos, prev_map, prev_dir)
-
-        # 4. Notification in-world (TextBox)
-        if self._notify_box:
-            self._notify_box.update()
-            action_key = self.controller.get_key("action")
-            if (self._notify_box.waiting_confirm
-                    and self.keylistener.key_pressed(action_key)):
-                self._notify_box = None
-                self.keylistener.remove_key(action_key)
-            else:
-                self._notify_box.draw(self.screen.get_display())

@@ -168,9 +168,12 @@ class Player(Entity):
         if self.keylistener.key_pressed(self.controller.get_key("bike")):
             self.switch_bike()
 
-        if self.keylistener.key_pressed(self.controller.get_key("quit")):
-            self.menu_option = True
-            self.keylistener.remove_key(self.controller.get_key("quit"))
+        if self.keylistener.key_pressed(self.controller.get_key("phone")):
+            if not self.menu_option:
+                self.menu_option = True
+                self.can_move    = False
+                self.keylistener.remove_key(self.controller.get_key("phone"))
+            # Si déjà ouvert : ne consomme pas, Motismart gère la fermeture
             return
 
     def switch_bike(self, deactive: bool = False) -> None:

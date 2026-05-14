@@ -52,13 +52,19 @@ class GameApiClient:
     # Bag / Inventory
     # ------------------------------------------------------------------
 
-    def sync_item(self, account_id: int, item_db_symbol: str, quantity: int, pocket: str) -> None:
-        """Upsert a single item row."""
+    def sync_item(self, account_id: int, item_db_symbol: str, quantity: int, pocket: str,
+                  slot_index: int | None = None) -> None:
+        """Upsert a single item row (slot_index optionnel)."""
         self._post(f"/accounts/{account_id}/inventory", {
             "item_db_symbol": item_db_symbol,
             "quantity": quantity,
             "pocket": pocket,
+            "slot_index": slot_index,
         })
+
+    def update_item_slots(self, account_id: int, updates: list[dict]) -> None:
+        """Swap/move items between HUD slots. updates = [{item_db_symbol, pocket, slot_index}, ...]"""
+        self._post(f"/accounts/{account_id}/inventory/slot_update", {"updates": updates})
 
     def delete_item(self, account_id: int, item_db_symbol: str, pocket: str) -> None:
         """Remove an item that reached quantity 0."""

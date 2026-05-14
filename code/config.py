@@ -40,7 +40,15 @@ SPRITES_HAIRS_DIR       = SPRITES_DIR / "hairs"
 SPRITES_BACK_DIR        = SPRITES_DIR / "back"
 SPRITES_FOLLOWERS_DIR   = SPRITES_DIR / "followersprites"
 BATTLEBACKS_DIR       = ASSETS_DIR / "Battlebacks"
-BATTLE_INTERFACES_DIR = INTERFACES_DIR / "battle"
+BATTLE_INTERFACES_DIR  = INTERFACES_DIR / "battle"
+MOTISMART_DIR          = INTERFACES_DIR / "motismart"
+
+# ---------------------------------------------------------------------------
+# Motismart — images de l'interface téléphone (touche X)
+# ---------------------------------------------------------------------------
+MOTISMART_UI: dict[str, object] = {
+    "bg": MOTISMART_DIR / "bg.png",   # fond du téléphone
+}
 
 # ---------------------------------------------------------------------------
 # Zones de combat — clé "background" uniquement, les bases ont été supprimées
@@ -117,7 +125,7 @@ SPLASH_SETTINGS = {
 LOGIN_MENU_SETTINGS = {
     "music":  str(SOUNDS_DIR / "Lake.mp3"),
     "volume": 0.01,
-    "background_image": str(ASSETS_DIR / "interfaces" / "backgrounds" / "dracaufeu.jpg"),
+    "background_image": str(ASSETS_DIR / "interfaces" / "backgrounds" / "arceus-cynthia.jpg"),
     "font": str(ASSETS_DIR / "fonts" / "pokemon.ttf"),
 }
 
