@@ -2,9 +2,9 @@
     "player": {
         "position": {
             "x": 392.0,
-            "y": 112.0
+            "y": 160.0
         },
-        "direction": "up",
+        "direction": "down",
         "pokedex": null
     },
     "map": {

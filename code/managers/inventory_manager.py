@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import threading
+
+from code.config_items import INVENTORY_MAX_SLOTS
 from code.entities.pokemon import Pokemon
 
 PARTY_MAX = 6
@@ -225,7 +228,7 @@ class InventoryManager:
 
         # Passe 2 : premier slot libre (slots virtuels des items sans slot_index inclus)
         free_slot = next(
-            (i for i in range(20) if i not in self._occupied_slots()),
+            (i for i in range(INVENTORY_MAX_SLOTS) if i not in self._occupied_slots()),
             None,
         )
 
@@ -251,7 +254,7 @@ class InventoryManager:
                     deferred.append(item)
 
         for item in deferred:
-            for i in range(20):
+            for i in range(INVENTORY_MAX_SLOTS):
                 if i not in occupied:
                     occupied.add(i)
                     break
@@ -298,7 +301,11 @@ class InventoryManager:
     def _sync_money(self) -> None:
         if self.api_client is None or self.account_id is None:
             return
-        self.api_client.sync_player_data(self.account_id, self.money, [], 0.0)
+        threading.Thread(
+            target=self.api_client.sync_player_data,
+            args=(self.account_id, self.money, [], 0.0),
+            daemon=True,
+        ).start()
 
     def auto_assign_slots(self) -> None:
         """
@@ -312,7 +319,7 @@ class InventoryManager:
         for pocket_items in self.bag.pockets.values():
             for item in pocket_items:
                 if item.slot_index is None:
-                    free = next((i for i in range(20) if i not in used), None)
+                    free = next((i for i in range(INVENTORY_MAX_SLOTS) if i not in used), None)
                     if free is not None:
                         item.slot_index = free
                         used.add(free)
@@ -342,7 +349,12 @@ class InventoryManager:
             updates.append({"item_db_symbol": item_b.item_db_symbol,
                             "pocket": item_b.pocket, "slot_index": slot_a})
         if updates and self.api_client and self.account_id:
-            self.api_client.update_item_slots(self.account_id, updates)
+            # Fire-and-forget : pas de lag sur le thread principal
+            threading.Thread(
+                target=self.api_client.update_item_slots,
+                args=(self.account_id, updates),
+                daemon=True,
+            ).start()
 
     # ------------------------------------------------------------------
     # Serialization
@@ -456,10 +468,18 @@ class InventoryManager:
     def _sync_item(self, item_db_symbol: str, pocket: str) -> None:
         if self.api_client is None or self.account_id is None:
             return
-        item = self._find_item_in_pocket(item_db_symbol, pocket)
-        quantity = item.quantity if item else 0
+        item      = self._find_item_in_pocket(item_db_symbol, pocket)
+        quantity  = item.quantity if item else 0
         slot_index = item.slot_index if item else None
         if quantity > 0:
-            self.api_client.sync_item(self.account_id, item_db_symbol, quantity, pocket, slot_index)
+            threading.Thread(
+                target=self.api_client.sync_item,
+                args=(self.account_id, item_db_symbol, quantity, pocket, slot_index),
+                daemon=True,
+            ).start()
         else:
-            self.api_client.delete_item(self.account_id, item_db_symbol, pocket)
+            threading.Thread(
+                target=self.api_client.delete_item,
+                args=(self.account_id, item_db_symbol, pocket),
+                daemon=True,
+            ).start()

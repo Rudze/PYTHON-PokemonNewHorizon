@@ -65,6 +65,7 @@ class Game:
         self._saving_started:      bool         = False
         self._notify_box:          TextBox | None = None
         self._inv_pending_refresh: bool         = False  # mis à True par le thread de reload
+        self._inv_last_reload:    float        = 0.0    # timestamp du dernier reload API
 
     def _setup_game_world(self):
         """ Cette méthode initialise tout le monde de jeu une fois connecté """
@@ -110,6 +111,7 @@ class Game:
         # ── Charge l'inventaire et les Pokédollars depuis l'API ──
         self.player.inv.load_from_api()
         self.player.inv.load_money_from_api()
+        self._inv_last_reload = time.time()   # démarre le TTL du cache inventaire
 
         self.option       = Motismart(self.screen, self.controller, self.keylistener, self.save, self.player)
         self.escape_menu  = EscapeMenu(self.screen, self.controller, self.keylistener)
@@ -191,22 +193,28 @@ class Game:
     # Helpers
     # ------------------------------------------------------------------
 
+    _INV_RELOAD_TTL = 60.0  # secondes entre deux rechargements API
+
     def _open_inv_hud(self) -> None:
         """
-        Ouvre le HUD inventaire sans lag :
-        - affiche immédiatement les données en cache
-        - lance un thread pour rafraîchir depuis l'API
-        - met à jour le HUD dès que le thread finit (flag _inv_pending_refresh)
+        Ouvre le HUD inventaire sans lag.
+        Le cache local est toujours à jour (syncs en arrière-plan).
+        Recharge depuis l'API au maximum toutes les 60 s pour éviter la race
+        condition entre le thread de swap et le thread de reload.
         """
         self.inv_hud.load_from_inventory(self.player.inv.bag)
         self.inv_hud.toggle()
 
+        if time.time() - self._inv_last_reload < self._INV_RELOAD_TTL:
+            return   # cache local suffisamment récent
+
         def _refresh() -> None:
             if self.player.inv.reload_from_api():
-                self.player.inv.auto_assign_slots()   # corrige les items sans slot_index
+                self.player.inv.auto_assign_slots()
                 self._inv_pending_refresh = True
 
         threading.Thread(target=_refresh, daemon=True).start()
+        self._inv_last_reload = time.time()
 
     def _player_screen_pos(self) -> tuple[int, int]:
         W, H = self.screen.get_size()
