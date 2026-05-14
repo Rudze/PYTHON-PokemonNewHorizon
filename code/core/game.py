@@ -673,9 +673,10 @@ class Game:
                 self.player.can_move = True
 
         else:
-            # Jeu normal : restaurer can_move + interactions
+            # Jeu normal : restaurer can_move uniquement si aucun menu bloquant n'est ouvert
             if (self.player and not self.player.can_move
-                    and not self.player.animation_walk):
+                    and not self.player.animation_walk
+                    and not self.inv_hud.active):
                 self.player.can_move = True
 
             # Inventaire (R) — ouverture instantanée + refresh API en arrière-plan
@@ -684,8 +685,10 @@ class Game:
                 self.keylistener.remove_key(inv_key)
                 if not self.inv_hud.active:
                     self._open_inv_hud()
+                    self.player.can_move = False
                 else:
                     self.inv_hud.toggle()
+                    self.player.can_move = True
 
             # Appliquer le résultat du refresh API si le thread a terminé
             if self._inv_pending_refresh:

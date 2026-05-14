@@ -214,6 +214,7 @@ class BattleScreen:
         up     = controller.get_key("up")
         down   = controller.get_key("down")
         action = controller.get_key("action")
+        quit   = controller.get_key("quit")
 
         hover = self._to_panel(mouse_pos)
         click = self._to_panel(mouse_click)
@@ -275,6 +276,9 @@ class BattleScreen:
             elif keylistener.key_pressed(action):
                 self._use_player_move()
                 keylistener.remove_key(action)
+            elif keylistener.key_pressed(quit):
+                self._state = "MENU"
+                keylistener.remove_key(quit)
 
     # ------------------------------------------------------------------
     def _confirm(self) -> None:
