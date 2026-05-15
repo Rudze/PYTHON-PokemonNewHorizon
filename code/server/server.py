@@ -14,9 +14,25 @@ from pathlib import Path
 import websockets
 from websockets.exceptions import ConnectionClosed
 
-# Ajoute la racine du projet au path pour pouvoir importer code.config
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from code.shared.config import POKEMON_SPAWNS  # source unique de vérité
+# Ajoute la racine du projet au path (code/server/server.py → code/ → projet/)
+_PROJECT_ROOT = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(_PROJECT_ROOT))
+
+# Import POKEMON_SPAWNS — compatible nouvelle architecture (code.shared)
+# et ancienne architecture (code.config) pour le déploiement progressif
+try:
+    from code.shared.config import POKEMON_SPAWNS
+except (ImportError, ModuleNotFoundError):
+    try:
+        from code.config import POKEMON_SPAWNS  # ancienne structure
+    except (ImportError, ModuleNotFoundError):
+        # Fallback autonome — serveur autonome sans dépendance au package client
+        POKEMON_SPAWNS = {
+            "route_1": [
+                {"pokemon_id": 19, "rarity": 70, "min_level": 10, "max_level": 20},
+                {"pokemon_id": 16, "rarity": 30, "min_level": 10, "max_level": 20},
+            ],
+        }
 
 TILE_SIZE        = 16
 VALID_DIRECTIONS = {"left", "right", "up", "down"}
