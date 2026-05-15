@@ -1,0 +1,8800 @@
+{
+  "65": {
+    "id": 65,
+    "name": "overgrow",
+    "name_fr": "Engrais",
+    "generation": "generation-iii",
+    "effect": "Renforce les capacités Plante pour infliger 1.5× de dégâts à 1/3 des PV max ou moins.",
+    "flavor_text": "Augmente attaques PLANTE.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "bulbasaur",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ivysaur",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "venusaur",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "chikorita",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "bayleef",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "meganium",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "treecko",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "grovyle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sceptile",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "turtwig",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "grotle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "torterra",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "snivy",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "servine",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "serperior",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pansage",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "simisage",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "chespin",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "quilladin",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "chesnaught",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rowlet",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dartrix",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "decidueye",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "grookey",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "thwackey",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rillaboom",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sprigatito",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "floragato",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "meowscarada",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "venusaur-gmax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rillaboom-gmax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "decidueye-hisui",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "1": {
+    "id": 1,
+    "name": "stench",
+    "name_fr": "Puanteur",
+    "generation": "generation-iii",
+    "effect": "A 10% de chances d'apeurer le Pokémon cible à chaque coup.",
+    "flavor_text": "Repousse POKéMON sauvage.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "gloom",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "grimer",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "muk",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "koffing",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "weezing",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "stunky",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "skuntank",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "trubbish",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "garbodor",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "garbodor-gmax",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "2": {
+    "id": 2,
+    "name": "drizzle",
+    "name_fr": "Crachin",
+    "generation": "generation-iii",
+    "effect": "Provoque la pluie qui dure indéfiniment dès l'entrée au combat.",
+    "flavor_text": "Le Pokémon invoque la pluie quand il entre au combat.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "politoed",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pelipper",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "kyogre",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "3": {
+    "id": 3,
+    "name": "speed-boost",
+    "name_fr": "Turbo",
+    "generation": "generation-iii",
+    "effect": "Augmente la Vitesse d'un niveau après chaque tour.",
+    "flavor_text": "Améliore la VITESSE.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "yanma",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "torchic",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "combusken",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "blaziken",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "ninjask",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "carvanha",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "sharpedo",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "yanmega",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "venipede",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "whirlipede",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "scolipede",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "flittle",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "espathra",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "blaziken-mega",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "4": {
+    "id": 4,
+    "name": "battle-armor",
+    "name_fr": "Armurbaston",
+    "generation": "generation-iii",
+    "effect": "Protège contre les coups critiques.",
+    "flavor_text": "Bloque les coups critiques.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "cubone",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "marowak",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "kabuto",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "kabutops",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "anorith",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "armaldo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "skorupi",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "drapion",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "type-null",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "perrserker",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "falinks",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "5": {
+    "id": 5,
+    "name": "sturdy",
+    "name_fr": "Fermeté",
+    "generation": "generation-iii",
+    "effect": "Empêche d'être mis KO en ayant tous ses PV, laissant 1 PV à la place.  Protège contre les capacités OHKO peu importe son nombre de PV.",
+    "flavor_text": "Protège des capacités mettant K.O. en un coup.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "geodude",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "graveler",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "golem",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "magnemite",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "magneton",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "onix",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "sudowoodo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pineco",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "forretress",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "steelix",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "shuckle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "skarmory",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "donphan",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "nosepass",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "aron",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lairon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "aggron",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "relicanth",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "regirock",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "shieldon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "bastiodon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "bonsly",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "magnezone",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "probopass",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "roggenrola",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "boldore",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gigalith",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sawk",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dwebble",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "crustle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tirtouga",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "carracosta",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "tyrunt",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "carbink",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "bergmite",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "avalugg",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "togedemaru",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "cosmoem",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "nacli",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "naclstack",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "garganacl",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "archaludon",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "geodude-alola",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "graveler-alola",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "golem-alola",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "togedemaru-totem",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "avalugg-hisui",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "ogerpon-cornerstone-mask",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "6": {
+    "id": 6,
+    "name": "damp",
+    "name_fr": "Moiteur",
+    "generation": "generation-iii",
+    "effect": "Empêche Destruction, Explosion, et Boom Final de s'activer tant que le Pokémon est au combat.",
+    "flavor_text": "Empêche auto-destruction.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "paras",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "parasect",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "psyduck",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "golduck",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "poliwag",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "poliwhirl",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "poliwrath",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "horsea",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "seadra",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "politoed",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "wooper",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "quagsire",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kingdra",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "mudkip",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "marshtomp",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "swampert",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "frillish-male",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "jellicent-male",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "tadbulb",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "bellibolt",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "7": {
+    "id": 7,
+    "name": "limber",
+    "name_fr": "Échauffement",
+    "generation": "generation-iii",
+    "effect": "Empêche la paralysie.",
+    "flavor_text": "Empêche la paralysie.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "persian",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "hitmonlee",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ditto",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "buneary",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lopunny",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "glameow",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "purrloin",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "liepard",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "stunfisk",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "hawlucha",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mareanie",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "toxapex",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "clobbopus",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "grapploct",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "8": {
+    "id": 8,
+    "name": "sand-veil",
+    "name_fr": "Voile Sable",
+    "generation": "generation-iii",
+    "effect": "Augmente l'esquive de 25% pendant une tempête de sable.  Protège contre les dégâts de la tempête de sable.",
+    "flavor_text": "Evasion si tempête sable.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "sandshrew",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sandslash",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "diglett",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dugtrio",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "geodude",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "graveler",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "golem",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "gligar",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "phanpy",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "donphan",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "larvitar",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "cacnea",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cacturne",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gible",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gabite",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "garchomp",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gliscor",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "stunfisk",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "helioptile",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "heliolisk",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "sandygast",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "palossand",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "silicobra",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "sandaconda",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "wiglett",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "wugtrio",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "orthworm",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "diglett-alola",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dugtrio-alola",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sandaconda-gmax",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "9": {
+    "id": 9,
+    "name": "static",
+    "name_fr": "Statik",
+    "generation": "generation-iii",
+    "effect": "A 30% de chances de paralyser le Pokémon attaquant en cas de contact.",
+    "flavor_text": "Paralyse au toucher.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "pikachu",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "raichu",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "voltorb",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "electrode",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "electabuzz",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "zapdos",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pichu",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mareep",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "flaaffy",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ampharos",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "elekid",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "electrike",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "manectric",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "emolga",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "stunfisk",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "toxel",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "arctozolt",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "pawmi",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tadbulb",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "bellibolt",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "pikachu-rock-star",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-belle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-pop-star",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-phd",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-libre",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-cosplay",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-original-cap",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-hoenn-cap",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-sinnoh-cap",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-unova-cap",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-kalos-cap",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-alola-cap",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-partner-cap",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-starter",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-world-cap",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-gmax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "voltorb-hisui",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "electrode-hisui",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "10": {
+    "id": 10,
+    "name": "volt-absorb",
+    "name_fr": "Absorbe-Volt",
+    "generation": "generation-iii",
+    "effect": "Absorbe les capacités Électrik, soignant 1/4 des PV max.",
+    "flavor_text": "Change l'électricité en PV.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "jolteon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "chinchou",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lanturn",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "minun",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pachirisu",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "zeraora",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dracozolt",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "arctozolt",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pawmo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pawmot",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wattrel",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "kilowattrel",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "thundurus-therian",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "11": {
+    "id": 11,
+    "name": "water-absorb",
+    "name_fr": "Absorbe-Eau",
+    "generation": "generation-iii",
+    "effect": "Absorbe les capacités Eau, soignant 1/4 des PV max.",
+    "flavor_text": "Change l'eau en PV.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "poliwag",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "poliwhirl",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "poliwrath",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lapras",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "vaporeon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "chinchou",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lanturn",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "politoed",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wooper",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "quagsire",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "mantine",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "cacnea",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "cacturne",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "mantyke",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "tympole",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "palpitoad",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "seismitoad",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "maractus",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "frillish-male",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "jellicent-male",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "volcanion",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dewpider",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "araquanid",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "dracovish",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "arctovish",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "clodsire",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "araquanid-totem",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lapras-gmax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wooper-paldea",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "ogerpon-wellspring-mask",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "12": {
+    "id": 12,
+    "name": "oblivious",
+    "name_fr": "Benêt",
+    "generation": "generation-iii",
+    "effect": "Empêche l'attirance et protège contre Séduction.",
+    "flavor_text": "Empêche l'attirance.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "slowpoke",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "slowbro",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lickitung",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "jynx",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "slowking",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "swinub",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "piloswine",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "smoochum",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "illumise",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wailmer",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "wailord",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "numel",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "barboach",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "whiscash",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "feebas",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "spheal",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "sealeo",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "walrein",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lickilicky",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "mamoswine",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "salandit",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "salazzle",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "bounsweet",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "steenee",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "dondozo",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "salazzle-totem",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "13": {
+    "id": 13,
+    "name": "cloud-nine",
+    "name_fr": "Ciel Gris",
+    "generation": "generation-iii",
+    "effect": "Annule tous les effets de la météo, mais n'empêche pas la météo elle-même.",
+    "flavor_text": "Ignore les effets du climat.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "psyduck",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "golduck",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "lickitung",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "swablu",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "altaria",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lickilicky",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "drampa",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "14": {
+    "id": 14,
+    "name": "compound-eyes",
+    "name_fr": "Œil Composé",
+    "generation": "generation-iii",
+    "effect": "Augmente la précision des capacités de 30%.",
+    "flavor_text": "Augmente la précision.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "butterfree",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "venonat",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "yanma",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "dustox",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "nincada",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "joltik",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "galvantula",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "scatterbug",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "vivillon",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "blipbug",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "dottler",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "rellor",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "butterfree-gmax",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "15": {
+    "id": 15,
+    "name": "insomnia",
+    "name_fr": "Insomnia",
+    "generation": "generation-iii",
+    "effect": "Empêche le sommeil.",
+    "flavor_text": "Empêche de s'endormir.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "drowzee",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "hypno",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "hoothoot",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "noctowl",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "spinarak",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "ariados",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "murkrow",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "delibird",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "shuppet",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "banette",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "honchkrow",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pumpkaboo-average",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "gourgeist-average",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "tarountula",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "spidops",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "capsakid",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "scovillain",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "pumpkaboo-small",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pumpkaboo-large",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pumpkaboo-super",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "gourgeist-small",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "gourgeist-large",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "gourgeist-super",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "mewtwo-mega-y",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "16": {
+    "id": 16,
+    "name": "color-change",
+    "name_fr": "Homochromie",
+    "generation": "generation-iii",
+    "effect": "Change le type en accord avec celui de la capacité offensive qui vient de le toucher.",
+    "flavor_text": "Le Pokémon adopte le type de la capacité ennemie.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "kecleon",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "17": {
+    "id": 17,
+    "name": "immunity",
+    "name_fr": "Vaccin",
+    "generation": "generation-iii",
+    "effect": "Empêche le poison.",
+    "flavor_text": "Empêche l'empoisonnement.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "snorlax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gligar",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "zangoose",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "snorlax-gmax",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "18": {
+    "id": 18,
+    "name": "flash-fire",
+    "name_fr": "Torche",
+    "generation": "generation-iii",
+    "effect": "Protège contre les capacités Feu.  Une fois qu'une a été bloquée, les propres attaques Feu du Pokémon infligent 50% de dégats supplémentaires jusqu'à ce qu'il quitte le combat.",
+    "flavor_text": "Puissance monte si brûlé.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "vulpix",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ninetales",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "growlithe",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "arcanine",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "ponyta",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "rapidash",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "flareon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cyndaquil",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "quilava",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "typhlosion",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "houndour",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "houndoom",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "heatran",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "litwick",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lampent",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "chandelure",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "heatmor",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "rolycoly",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "carkol",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "coalossal",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "sizzlipede",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "centiskorch",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "charcadet",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "armarouge",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ceruledge",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "coalossal-gmax",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "centiskorch-gmax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "growlithe-hisui",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "arcanine-hisui",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "19": {
+    "id": 19,
+    "name": "shield-dust",
+    "name_fr": "Écran Poudre",
+    "generation": "generation-iii",
+    "effect": "Protège contre les effets additionnels des capacités subies.",
+    "flavor_text": "Empêche le cumul d'effets.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "caterpie",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "weedle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "venomoth",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wurmple",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dustox",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "scatterbug",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "vivillon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cutiefly",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "ribombee",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "snom",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "frosmoth",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ribombee-totem",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "20": {
+    "id": 20,
+    "name": "own-tempo",
+    "name_fr": "Tempo Perso",
+    "generation": "generation-iii",
+    "effect": "Empêche la confusion.",
+    "flavor_text": "Empêche la confusion.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "slowpoke",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "slowbro",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "lickitung",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "slowking",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "smeargle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lotad",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lombre",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "ludicolo",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "numel",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "spoink",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "grumpig",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "spinda",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "glameow",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "purugly",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "lickilicky",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "petilil",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "lilligant",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "espurr",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "bergmite",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "avalugg",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mudbray",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mudsdale",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tandemaus",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "fidough",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tadbulb",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tinkatink",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "tinkatuff",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "tinkaton",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "rockruff-own-tempo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "slowpoke-galar",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "slowbro-galar",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "slowking-galar",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "indeedee-female",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "21": {
+    "id": 21,
+    "name": "suction-cups",
+    "name_fr": "Ventouse",
+    "generation": "generation-iii",
+    "effect": "Empêche d'être retiré du combat par les capacités d'autres Pokémon.",
+    "flavor_text": "Fixe solidement le corps.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "octillery",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lileep",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cradily",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "inkay",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "malamar",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "22": {
+    "id": 22,
+    "name": "intimidate",
+    "name_fr": "Intimidation",
+    "generation": "generation-iii",
+    "effect": "Diminue l'Attaque des adversaires d'un niveau en entrant au combat.",
+    "flavor_text": "Baisse l'ATTAQUE ennemie.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "ekans",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "arbok",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "growlithe",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "arcanine",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tauros",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gyarados",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "snubbull",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "granbull",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "qwilfish",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "stantler",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "hitmontop",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mightyena",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "masquerain",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mawile",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "salamence",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "staravia",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "staraptor",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "shinx",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "luxio",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "luxray",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "herdier",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "stoutland",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sandile",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "krokorok",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "krookodile",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "scraggy",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "scrafty",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "litten",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "torracat",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "incineroar",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "wyrdeer",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "overqwil",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "squawkabilly-green-plumage",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "maschiff",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mabosstiff",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "landorus-therian",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "manectric-mega",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "growlithe-hisui",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "arcanine-hisui",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "qwilfish-hisui",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "tauros-paldea-combat-breed",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tauros-paldea-blaze-breed",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tauros-paldea-aqua-breed",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "squawkabilly-blue-plumage",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "squawkabilly-yellow-plumage",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "squawkabilly-white-plumage",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "23": {
+    "id": 23,
+    "name": "shadow-tag",
+    "name_fr": "Marque Ombre",
+    "generation": "generation-iii",
+    "effect": "Empêche l'adversaire de fuir ou de se retirer.",
+    "flavor_text": "Empêche la fuite ennemie.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "wobbuffet",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wynaut",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gothita",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "gothorita",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "gothitelle",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "gengar-mega",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "24": {
+    "id": 24,
+    "name": "rough-skin",
+    "name_fr": "Peau Dure",
+    "generation": "generation-iii",
+    "effect": "Inflige des dommages au Pokémon attaquant égaux à 1/8 de ses PV max lors d'un contact.",
+    "flavor_text": "Blesse quand touché.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "carvanha",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sharpedo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gible",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "gabite",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "garchomp",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "druddigon",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "25": {
+    "id": 25,
+    "name": "wonder-guard",
+    "name_fr": "Garde Mystik",
+    "generation": "generation-iii",
+    "effect": "Protège des dégâts des capacités offensives qui ne sont pas super efficaces.",
+    "flavor_text": "Reçoit seul. \"sup. eff.\".",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "shedinja",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "26": {
+    "id": 26,
+    "name": "levitate",
+    "name_fr": "Lévitation",
+    "generation": "generation-iii",
+    "effect": "Évite les capacités Sol.",
+    "flavor_text": "Ignore les attaques SOL.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "gastly",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "haunter",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "koffing",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "weezing",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "misdreavus",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "unown",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "vibrava",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "flygon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lunatone",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "solrock",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "baltoy",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "claydol",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "duskull",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "chimecho",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "latias",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "latios",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mismagius",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "chingling",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "bronzor",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "bronzong",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "carnivine",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rotom",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "uxie",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mesprit",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "azelf",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cresselia",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tynamo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "eelektrik",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "eelektross",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cryogonal",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "hydreigon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "vikavolt",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "giratina-origin",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rotom-heat",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rotom-wash",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rotom-frost",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rotom-fan",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rotom-mow",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "latias-mega",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "latios-mega",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "vikavolt-totem",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "weezing-galar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "delphox-mega",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "chimecho-mega",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "27": {
+    "id": 27,
+    "name": "effect-spore",
+    "name_fr": "Pose Spore",
+    "generation": "generation-iii",
+    "effect": "A 30% de chances d'infliger soit la paralysie, le poison, ou le sommeil au Pokémon attaquant lors d'un contact.",
+    "flavor_text": "Laisse spores si touché.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "vileplume",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "paras",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "parasect",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "shroomish",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "breloom",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "foongus",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "amoonguss",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "morelull",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "shiinotic",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "gossifleur",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "eldegoss",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "28": {
+    "id": 28,
+    "name": "synchronize",
+    "name_fr": "Synchro",
+    "generation": "generation-iii",
+    "effect": "Copie la brûlure, la paralysie, et le poison reçus au Pokémon qui les a infligés.",
+    "flavor_text": "Transfère statuts.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "abra",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kadabra",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "alakazam",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mew",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "natu",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "xatu",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "espeon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "umbreon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ralts",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kirlia",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gardevoir",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "munna",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "musharna",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "elgyem",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "beheeyem",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "indeedee-male",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "rabsca",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "indeedee-female",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "29": {
+    "id": 29,
+    "name": "clear-body",
+    "name_fr": "Corps Sain",
+    "generation": "generation-iii",
+    "effect": "Empêche les stats d'être diminuées par d'autres Pokémon.",
+    "flavor_text": "Empêche réduction de cap.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "tentacool",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tentacruel",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "beldum",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "metang",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "metagross",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "regirock",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "regice",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "registeel",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "klink",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "klang",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "klinklang",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "carbink",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "diancie",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dreepy",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "drakloak",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dragapult",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "nacli",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "naclstack",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "garganacl",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "30": {
+    "id": 30,
+    "name": "natural-cure",
+    "name_fr": "Médic Nature",
+    "generation": "generation-iii",
+    "effect": "Soigne n'importe quelle altération majeure de statut en se retirant.",
+    "flavor_text": "Soigne POKéMON changeant.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "chansey",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "staryu",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "starmie",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "corsola",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "blissey",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "celebi",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "roselia",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "swablu",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "altaria",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "budew",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "roserade",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "happiny",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "shaymin-land",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "phantump",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "trevenant",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "comfey",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pawmi",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "pawmo",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "pawmot",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "31": {
+    "id": 31,
+    "name": "lightning-rod",
+    "name_fr": "Paratonnerre",
+    "generation": "generation-iii",
+    "effect": "Redirige les capacités Électrik à cible unique sur ce Pokémon quand c'est possible.  Absorbe les capacités Électrik, augmentant l'Attaque Spéciale d'un niveau.",
+    "flavor_text": "Attire l’électricité et augmente l’Atq. Spé.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "pikachu",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "raichu",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "cubone",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "marowak",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "rhyhorn",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rhydon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "goldeen",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "seaking",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pichu",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "electrike",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "manectric",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "plusle",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "rhyperior",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "blitzle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "zebstrika",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "togedemaru",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "pincurchin",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sceptile-mega",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikachu-rock-star",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pikachu-belle",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pikachu-pop-star",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pikachu-phd",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pikachu-libre",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pikachu-cosplay",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pikachu-original-cap",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pikachu-hoenn-cap",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pikachu-sinnoh-cap",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pikachu-unova-cap",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pikachu-kalos-cap",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pikachu-alola-cap",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "marowak-alola",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "pikachu-partner-cap",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "marowak-totem",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "togedemaru-totem",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "pikachu-starter",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pikachu-world-cap",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pikachu-gmax",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "32": {
+    "id": 32,
+    "name": "serene-grace",
+    "name_fr": "Sérénité",
+    "generation": "generation-iii",
+    "effect": "Double les chances d'activation des effets additionnels des capacités.",
+    "flavor_text": "Favorise le cumul d'effet.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "chansey",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "togepi",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "togetic",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "dunsparce",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "blissey",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "jirachi",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "happiny",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "togekiss",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "deerling",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "sawsbuck",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "meloetta-aria",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dudunsparce-two-segment",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "shaymin-sky",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "meloetta-pirouette",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dudunsparce-three-segment",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "33": {
+    "id": 33,
+    "name": "swift-swim",
+    "name_fr": "Glissade",
+    "generation": "generation-iii",
+    "effect": "Double la Vitesse sous la pluie.",
+    "flavor_text": "Monte VITESSE s'il pleut.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "psyduck",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "golduck",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "poliwag",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "poliwhirl",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "poliwrath",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "horsea",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "goldeen",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "seaking",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "magikarp",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "omanyte",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "omastar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kabuto",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kabutops",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "qwilfish",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "mantine",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kingdra",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lotad",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lombre",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ludicolo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "surskit",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "anorith",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "armaldo",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "feebas",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "huntail",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gorebyss",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "relicanth",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "luvdisc",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "buizel",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "floatzel",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "finneon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lumineon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mantyke",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tympole",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "palpitoad",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "seismitoad",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tirtouga",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "carracosta",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "beartic",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "chewtle",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "drednaw",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "arrokuda",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "barraskewda",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "basculegion-male",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "overqwil",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "swampert-mega",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "drednaw-gmax",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "qwilfish-hisui",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "basculegion-female",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "34": {
+    "id": 34,
+    "name": "chlorophyll",
+    "name_fr": "Chlorophylle",
+    "generation": "generation-iii",
+    "effect": "Double la Vitesse sous le soleil intense.",
+    "flavor_text": "Augmente vitesse au soleil.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "bulbasaur",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "ivysaur",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "venusaur",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "oddish",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gloom",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "vileplume",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "bellsprout",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "weepinbell",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "victreebel",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "exeggcute",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "exeggutor",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tangela",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "bellossom",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "hoppip",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "skiploom",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "jumpluff",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sunkern",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sunflora",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "seedot",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "nuzleaf",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "shiftry",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tropius",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cherubi",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tangrowth",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "leafeon",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "sewaddle",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "swadloon",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "leavanny",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "cottonee",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "whimsicott",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "petilil",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lilligant",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "maractus",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "deerling",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sawsbuck",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "capsakid",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "scovillain",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "venusaur-gmax",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lilligant-hisui",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "35": {
+    "id": 35,
+    "name": "illuminate",
+    "name_fr": "Lumiattirance",
+    "generation": "generation-iii",
+    "effect": "Double le taux de rencontre sauvage.",
+    "flavor_text": "Augmente les rencontres.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "staryu",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "starmie",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "chinchou",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "lanturn",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "volbeat",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "watchog",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "morelull",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "shiinotic",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "36": {
+    "id": 36,
+    "name": "trace",
+    "name_fr": "Calque",
+    "generation": "generation-iii",
+    "effect": "Copie le talent d'un adversaire en entrant au combat.",
+    "flavor_text": "Imite la capacité spéciale.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "porygon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "porygon2",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ralts",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "kirlia",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "gardevoir",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "alakazam-mega",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "meowstic-mega",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "37": {
+    "id": 37,
+    "name": "huge-power",
+    "name_fr": "Coloforce",
+    "generation": "generation-iii",
+    "effect": "Double l'Attaque au combat.",
+    "flavor_text": "Augmente ATTAQUE.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "marill",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "azumarill",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "azurill",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "bunnelby",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "diggersby",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "mawile-mega",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "starmie-mega",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "38": {
+    "id": 38,
+    "name": "poison-point",
+    "name_fr": "Point Poison",
+    "generation": "generation-iii",
+    "effect": "A 30% de chances d'empoisonner le Pokémon attaquant en cas de contact.",
+    "flavor_text": "Empoisonne quand touché.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "nidoran-f",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "nidorina",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "nidoqueen",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "nidoran-m",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "nidorino",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "nidoking",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "seadra",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "qwilfish",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "roselia",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "budew",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "roserade",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "venipede",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "whirlipede",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "scolipede",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "skrelp",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dragalge",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "overqwil",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "clodsire",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "qwilfish-hisui",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wooper-paldea",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "39": {
+    "id": 39,
+    "name": "inner-focus",
+    "name_fr": "Attention",
+    "generation": "generation-iii",
+    "effect": "Empêche l'apeurement.",
+    "flavor_text": "Empêche la peur.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "zubat",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "golbat",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "abra",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "kadabra",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "alakazam",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "farfetchd",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "drowzee",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "hypno",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "hitmonchan",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "kangaskhan",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "dragonite",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "crobat",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "umbreon",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "girafarig",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sneasel",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "raikou",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "entei",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "suicune",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "snorunt",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "glalie",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "riolu",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "lucario",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "throh",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "sawk",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "darumaka",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "mienfoo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mienshao",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pawniard",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "bisharp",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "mudbray",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "mudsdale",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "oranguru",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "indeedee-male",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kubfu",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "annihilape",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "gallade-mega",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "darumaka-galar",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "sneasel-hisui",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "40": {
+    "id": 40,
+    "name": "magma-armor",
+    "name_fr": "Armumagma",
+    "generation": "generation-iii",
+    "effect": "Empêche le gel.",
+    "flavor_text": "Empêche le gel.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "slugma",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "magcargo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "camerupt",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "41": {
+    "id": 41,
+    "name": "water-veil",
+    "name_fr": "Ignifu-Voile",
+    "generation": "generation-iii",
+    "effect": "Empêche la brûlure.",
+    "flavor_text": "Empêche les brûlures.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "goldeen",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "seaking",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "mantine",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "wailmer",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wailord",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "huntail",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "buizel",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "floatzel",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "finneon",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lumineon",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "mantyke",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "finizen",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dondozo",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "42": {
+    "id": 42,
+    "name": "magnet-pull",
+    "name_fr": "Magnépiège",
+    "generation": "generation-iii",
+    "effect": "Empêche les adversaires Acier de fuir ou se retirer.",
+    "flavor_text": "Piège les POKéMON ACIER.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "magnemite",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "magneton",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "nosepass",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "magnezone",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "probopass",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "meltan",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "geodude-alola",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "graveler-alola",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "golem-alola",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "43": {
+    "id": 43,
+    "name": "soundproof",
+    "name_fr": "Anti-Bruit",
+    "generation": "generation-iii",
+    "effect": "Protège contre les capacités basées sur le son.",
+    "flavor_text": "Évite les attaques sonores.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "voltorb",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "electrode",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mr-mime",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "whismur",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "loudred",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "exploud",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "shieldon",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "bastiodon",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "mime-jr",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "snover",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "abomasnow",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "bouffalant",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "jangmo-o",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "hakamo-o",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "kommo-o",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "kommo-o-totem",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "voltorb-hisui",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "electrode-hisui",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "44": {
+    "id": 44,
+    "name": "rain-dish",
+    "name_fr": "Cuvette",
+    "generation": "generation-iii",
+    "effect": "Soigne 1/16 des PV max après chaque tour sous la pluie.",
+    "flavor_text": "Gagne quelques PV si pluie.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "squirtle",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "wartortle",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "blastoise",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "tentacool",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "tentacruel",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lotad",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "lombre",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "ludicolo",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "wingull",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pelipper",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "surskit",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "morelull",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "shiinotic",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "blastoise-gmax",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "45": {
+    "id": 45,
+    "name": "sand-stream",
+    "name_fr": "Sable Volant",
+    "generation": "generation-iii",
+    "effect": "Déclenche une tempête de sable qui dure indéfiniment en entrant sur le terrain.",
+    "flavor_text": "Lance une tempête de sable.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "tyranitar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "hippopotas",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "hippowdon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gigalith",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "tyranitar-mega",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "46": {
+    "id": 46,
+    "name": "pressure",
+    "name_fr": "Pression",
+    "generation": "generation-iii",
+    "effect": "Augmente le coût de PP des capacités ciblant ce Pokémon de un.",
+    "flavor_text": "Force l’ennemi à dépenser plus de PP.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "aerodactyl",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "articuno",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "zapdos",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "moltres",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mewtwo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "raikou",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "entei",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "suicune",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lugia",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ho-oh",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wailmer",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "wailord",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "dusclops",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "absol",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "deoxys-normal",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "vespiquen",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "spiritomb",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "weavile",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dusknoir",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dialga",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "palkia",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "giratina-altered",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pawniard",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "bisharp",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "kyurem",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "corviknight",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "eternatus",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sneasler",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kingambit",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "deoxys-attack",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "deoxys-defense",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "deoxys-speed",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "eternatus-eternamax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "corviknight-gmax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dialga-origin",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "palkia-origin",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "47": {
+    "id": 47,
+    "name": "thick-fat",
+    "name_fr": "Isograisse",
+    "generation": "generation-iii",
+    "effect": "Divise par deux les dommages des capacités Feu et Glace.",
+    "flavor_text": "Contre chaleur et froid.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "seel",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dewgong",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "snorlax",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "marill",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "azumarill",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "swinub",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "piloswine",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "miltank",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "makuhita",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "hariyama",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "azurill",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "spoink",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "grumpig",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "spheal",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sealeo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "walrein",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "purugly",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "munchlax",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "mamoswine",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "tepig",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pignite",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "appletun",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lechonk",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "oinkologne-male",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "cetoddle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cetitan",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "venusaur-mega",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rattata-alola",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "raticate-alola",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "raticate-totem-alola",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "snorlax-gmax",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "appletun-gmax",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "oinkologne-female",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "48": {
+    "id": 48,
+    "name": "early-bird",
+    "name_fr": "Matinal",
+    "generation": "generation-iii",
+    "effect": "Fait passer le sommeil deux fois plus rapidement.",
+    "flavor_text": "Se réveille rapidement.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "doduo",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "dodrio",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "kangaskhan",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ledyba",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "ledian",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "natu",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "xatu",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "sunkern",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "sunflora",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "girafarig",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "houndour",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "houndoom",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "seedot",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "nuzleaf",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "smoliv",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dolliv",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "49": {
+    "id": 49,
+    "name": "flame-body",
+    "name_fr": "Corps Ardent",
+    "generation": "generation-iii",
+    "effect": "A 30% de chances de brûler le Pokémon attaquant en cas de contact.",
+    "flavor_text": "Brûle l'ennemi quand touché.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "ponyta",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "rapidash",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "magmar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "moltres",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "slugma",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "magcargo",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "magby",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "magmortar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "heatran",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "litwick",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "lampent",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "chandelure",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "larvesta",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "volcarona",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "fletchinder",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "talonflame",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "carkol",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "coalossal",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "sizzlipede",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "centiskorch",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "charcadet",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "coalossal-gmax",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "centiskorch-gmax",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "50": {
+    "id": 50,
+    "name": "run-away",
+    "name_fr": "Fuite",
+    "generation": "generation-iii",
+    "effect": "Garantit la fuite lors de combats sauvages.",
+    "flavor_text": "Améliore chances de fuite.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "caterpie",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "weedle",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "rattata",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "raticate",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "oddish",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "venonat",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "ponyta",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rapidash",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "doduo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dodrio",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "eevee",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sentret",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "furret",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "aipom",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dunsparce",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "snubbull",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "poochyena",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wurmple",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "nincada",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "kricketot",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pachirisu",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "buneary",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "patrat",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lillipup",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "nickit",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "thievul",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wooloo",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "tandemaus",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "maschiff",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "dudunsparce-two-segment",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "eevee-starter",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ponyta-galar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rapidash-galar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "eevee-gmax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dudunsparce-three-segment",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "gimmighoul-roaming",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "51": {
+    "id": 51,
+    "name": "keen-eye",
+    "name_fr": "Regard Vif",
+    "generation": "generation-iii",
+    "effect": "Empêche la précision d'être baissée.",
+    "flavor_text": "Empêche perte de précision.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "pidgey",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pidgeotto",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pidgeot",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "spearow",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "fearow",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "farfetchd",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "hitmonchan",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sentret",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "furret",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "hoothoot",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "noctowl",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "sneasel",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "skarmory",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wingull",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pelipper",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sableye",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "starly",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "glameow",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "stunky",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "skuntank",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "chatot",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "skorupi",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "drapion",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "patrat",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "watchog",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "ducklett",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "swanna",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rufflet",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "braviary",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "espurr",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "meowstic-male",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikipek",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "trumbeak",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "toucannon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rockruff",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lycanroc-midday",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rookidee",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "corvisquire",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "bombirdier",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "meowstic-female",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lycanroc-midnight",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sneasel-hisui",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "braviary-hisui",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "52": {
+    "id": 52,
+    "name": "hyper-cutter",
+    "name_fr": "Hyper Cutter",
+    "generation": "generation-iii",
+    "effect": "Empêche l'Attaque d'être baissée.",
+    "flavor_text": "Empêche réduction ATTAQUE.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "krabby",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kingler",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pinsir",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gligar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mawile",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "trapinch",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "corphish",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "crawdaunt",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gliscor",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "crabrawler",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "crabominable",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kingler-gmax",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "53": {
+    "id": 53,
+    "name": "pickup",
+    "name_fr": "Ramassage",
+    "generation": "generation-iii",
+    "effect": "Ramasse les objets tenus utilisés par d'autres Pokémon et lancés.  Peut aussi ramasser un objet après un combat.",
+    "flavor_text": "Permet parfois au Pokémon de ramasser des objets.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "meowth",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "aipom",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "teddiursa",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "phanpy",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "zigzagoon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "linoone",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pachirisu",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "ambipom",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "munchlax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lillipup",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "bunnelby",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "diggersby",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dedenne",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "pumpkaboo-average",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gourgeist-average",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pikipek",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "trumbeak",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "tandemaus",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "greavard",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pumpkaboo-small",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pumpkaboo-large",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pumpkaboo-super",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gourgeist-small",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gourgeist-large",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gourgeist-super",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "meowth-alola",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "meowth-galar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "zigzagoon-galar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "linoone-galar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "meowth-gmax",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "54": {
+    "id": 54,
+    "name": "truant",
+    "name_fr": "Absentéisme",
+    "generation": "generation-iii",
+    "effect": "Passe tous les seconds tours.",
+    "flavor_text": "Frappe tous les 2 tours.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "slakoth",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "slaking",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "durant",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "55": {
+    "id": 55,
+    "name": "hustle",
+    "name_fr": "Agitation",
+    "generation": "generation-iii",
+    "effect": "Renforce les capacités physiques pour augmenter les dégâts de 1.5×, mais diminue leur précision de 0.8×.",
+    "flavor_text": "Substitue préc. par puiss.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "rattata",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "raticate",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "nidoran-f",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "nidorina",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "nidoran-m",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "nidorino",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "togepi",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "togetic",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "corsola",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "remoraid",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "delibird",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "combee",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "togekiss",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "darumaka",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rufflet",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "durant",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "deino",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "zweilous",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "flapple",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "dracozolt",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "squawkabilly-green-plumage",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "rattata-alola",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "raticate-alola",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "raticate-totem-alola",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "darumaka-galar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "flapple-gmax",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lilligant-hisui",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "squawkabilly-blue-plumage",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "squawkabilly-yellow-plumage",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "squawkabilly-white-plumage",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "56": {
+    "id": 56,
+    "name": "cute-charm",
+    "name_fr": "Joli Sourire",
+    "generation": "generation-iii",
+    "effect": "A 30% de chances de rendre amoureux le Pokémon attaquant lors d'un contact.",
+    "flavor_text": "Séduit parfois l'ennemi au contact.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "clefairy",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "clefable",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "jigglypuff",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wigglytuff",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cleffa",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "igglybuff",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "skitty",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "delcatty",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "milotic",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lopunny",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "minccino",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cinccino",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sylveon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "stufful",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "enamorus-incarnate",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "57": {
+    "id": 57,
+    "name": "plus",
+    "name_fr": "Plus",
+    "generation": "generation-iii",
+    "effect": "Augmente l'Attaque Spéciale d'1.5× quand un Pokémon allié a Plus ou Moins.",
+    "flavor_text": "Puissance + avec MINUS.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "mareep",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "flaaffy",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "ampharos",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "plusle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "klink",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "klang",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "klinklang",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dedenne",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "toxtricity-amped",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "toxtricity-amped-gmax",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "58": {
+    "id": 58,
+    "name": "minus",
+    "name_fr": "Moins",
+    "generation": "generation-iii",
+    "effect": "Augmente l'Attaque Spéciale d'1.5× quand un Pokémon allié a Plus ou Moins.",
+    "flavor_text": "Puissance + avec PLUS.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "electrike",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "manectric",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "minun",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "klink",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "klang",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "klinklang",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "toxtricity-low-key",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "toxtricity-low-key-gmax",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "59": {
+    "id": 59,
+    "name": "forecast",
+    "name_fr": "Météo",
+    "generation": "generation-iii",
+    "effect": "Change le type et la forme de Morphéo pour correspondre à la météo.",
+    "flavor_text": "Change selon le climat.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "castform",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "castform-sunny",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "castform-rainy",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "castform-snowy",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "60": {
+    "id": 60,
+    "name": "sticky-hold",
+    "name_fr": "Glu",
+    "generation": "generation-iii",
+    "effect": "Empêche un objet tenu d'être retiré par un autre Pokémon.",
+    "flavor_text": "Empêche le vol d'objets.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "grimer",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "muk",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "gulpin",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "swalot",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "shellos",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gastrodon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "trubbish",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "accelgor",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "dipplin",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "hydrapple",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "61": {
+    "id": 61,
+    "name": "shed-skin",
+    "name_fr": "Mue",
+    "generation": "generation-iii",
+    "effect": "A 33% de chances de soigner n'importe quelle altération majeure de statut après chaque tour.",
+    "flavor_text": "Mue pour se soigner.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "metapod",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kakuna",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ekans",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "arbok",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "dratini",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dragonair",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pupitar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "silcoon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cascoon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "seviper",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kricketot",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "burmy",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "scraggy",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "scrafty",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "karrablast",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "spewpa",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "silicobra",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "sandaconda",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "rellor",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "cyclizar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sandaconda-gmax",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "62": {
+    "id": 62,
+    "name": "guts",
+    "name_fr": "Cran",
+    "generation": "generation-iii",
+    "effect": "Augmente l'Attaque d'1.5× avec une altération majeure de statut.",
+    "flavor_text": "Augmente ATT. quand blessé.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "rattata",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "raticate",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "machop",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "machoke",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "machamp",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "flareon",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "heracross",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "ursaring",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tyrogue",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "larvitar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "taillow",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "swellow",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "makuhita",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "hariyama",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "shinx",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "luxio",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "luxray",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "timburr",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gurdurr",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "conkeldurr",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "throh",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "obstagoon",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "ursaluna",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "squawkabilly-green-plumage",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "machamp-gmax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "squawkabilly-blue-plumage",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "63": {
+    "id": 63,
+    "name": "marvel-scale",
+    "name_fr": "Écaille Spéciale",
+    "generation": "generation-iii",
+    "effect": "Augmente la Défense d'1.5× avec une altération majeure de statut.",
+    "flavor_text": "Augmente DEF. quand blessé.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "dratini",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "dragonair",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "milotic",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "64": {
+    "id": 64,
+    "name": "liquid-ooze",
+    "name_fr": "Suintement",
+    "generation": "generation-iii",
+    "effect": "Inflige des dégâts aux adversaires qui utilisent des capacités drainantes d'autant qu'elles soigneraient.",
+    "flavor_text": "Blesse quand drainé.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "tentacool",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "tentacruel",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "gulpin",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "swalot",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "66": {
+    "id": 66,
+    "name": "blaze",
+    "name_fr": "Brasier",
+    "generation": "generation-iii",
+    "effect": "Renforce les capacités Feu pour infliger 1.5× de dégâts à 1/3 des PV max ou moins.",
+    "flavor_text": "Augmente attaques feu.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "charmander",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "charmeleon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "charizard",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cyndaquil",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "quilava",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "typhlosion",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "torchic",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "combusken",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "blaziken",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "chimchar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "monferno",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "infernape",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tepig",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pignite",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "emboar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pansear",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "simisear",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "fennekin",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "braixen",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "delphox",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "litten",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "torracat",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "incineroar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "scorbunny",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "raboot",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cinderace",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "fuecoco",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "crocalor",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "skeledirge",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "charizard-gmax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cinderace-gmax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "typhlosion-hisui",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "67": {
+    "id": 67,
+    "name": "torrent",
+    "name_fr": "Torrent",
+    "generation": "generation-iii",
+    "effect": "Renforce les capacités Eau pour infliger 1.5× de dégâts à 1/3 des PV max ou moins.",
+    "flavor_text": "Augmente attaques EAU.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "squirtle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "wartortle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "blastoise",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "totodile",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "croconaw",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "feraligatr",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mudkip",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "marshtomp",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "swampert",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "piplup",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "prinplup",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "empoleon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "oshawott",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dewott",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "samurott",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "panpour",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "simipour",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "froakie",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "frogadier",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "greninja",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "popplio",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "brionne",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "primarina",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sobble",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "drizzile",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "inteleon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "quaxly",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "quaxwell",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "quaquaval",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "blastoise-gmax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "inteleon-gmax",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "samurott-hisui",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "68": {
+    "id": 68,
+    "name": "swarm",
+    "name_fr": "Essaim",
+    "generation": "generation-iii",
+    "effect": "Renforce les capacités Insecte pour infliger 1.5× de dégâts à 1/3 des PV max ou moins.",
+    "flavor_text": "Augmente attaques INSECT.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "beedrill",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "scyther",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ledyba",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ledian",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "spinarak",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ariados",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "scizor",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "heracross",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "beautifly",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "volbeat",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "kricketune",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mothim",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sewaddle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "leavanny",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "venipede",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "whirlipede",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "scolipede",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "karrablast",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "escavalier",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "joltik",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "galvantula",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "durant",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "larvesta",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "volcarona",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "grubbin",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "blipbug",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "dottler",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "orbeetle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kleavor",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "nymble",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lokix",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "orbeetle-gmax",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "69": {
+    "id": 69,
+    "name": "rock-head",
+    "name_fr": "Tête de Roc",
+    "generation": "generation-iii",
+    "effect": "Protège contre les contrecoups.",
+    "flavor_text": "Empêche dégâts du recul.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "geodude",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "graveler",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "golem",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "onix",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cubone",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "marowak",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rhyhorn",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "rhydon",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "aerodactyl",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sudowoodo",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "steelix",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "aron",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "lairon",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "aggron",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "relicanth",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "bagon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "shelgon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "bonsly",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "tyrantrum",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "basculin-blue-striped",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "marowak-alola",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "marowak-totem",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "growlithe-hisui",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "arcanine-hisui",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "70": {
+    "id": 70,
+    "name": "drought",
+    "name_fr": "Sécheresse",
+    "generation": "generation-iii",
+    "effect": "Invoque le soleil intense qui dure indéfiniment en entrant au combat.",
+    "flavor_text": "Invoque le soleil.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "vulpix",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "ninetales",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "torkoal",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "groudon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "charizard-mega-y",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "71": {
+    "id": 71,
+    "name": "arena-trap",
+    "name_fr": "Piège Sable",
+    "generation": "generation-iii",
+    "effect": "Empêche les adversaires de fuir ou se retirer.  Ne concerne pas les types Vol et les Pokémon dans les airs.",
+    "flavor_text": "Empêche la fuite.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "diglett",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "dugtrio",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "trapinch",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "72": {
+    "id": 72,
+    "name": "vital-spirit",
+    "name_fr": "Esprit Vital",
+    "generation": "generation-iii",
+    "effect": "Empêche le sommeil.",
+    "flavor_text": "Empêche le sommeil.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "mankey",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "primeape",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "electabuzz",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "magmar",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "delibird",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "tyrogue",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "elekid",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "magby",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "vigoroth",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "electivire",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "magmortar",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lillipup",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rockruff",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "annihilape",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lycanroc-midnight",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "mr-mime-galar",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "73": {
+    "id": 73,
+    "name": "white-smoke",
+    "name_fr": "Écran Fumée",
+    "generation": "generation-iii",
+    "effect": "Empêche les stats d'être diminuées par d'autres Pokémon.",
+    "flavor_text": "Empêche réduction des cap.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "torkoal",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "heatmor",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "sizzlipede",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "centiskorch",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "centiskorch-gmax",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "74": {
+    "id": 74,
+    "name": "pure-power",
+    "name_fr": "Force Pure",
+    "generation": "generation-iii",
+    "effect": "Double l'Attaque au combat.",
+    "flavor_text": "Augmente l'ATTAQUE.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "meditite",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "medicham",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "medicham-mega",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "75": {
+    "id": 75,
+    "name": "shell-armor",
+    "name_fr": "Coque Armure",
+    "generation": "generation-iii",
+    "effect": "Protège contre les coups critiques.",
+    "flavor_text": "Bloque les coups critiques.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "shellder",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cloyster",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "krabby",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "kingler",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "lapras",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "omanyte",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "omastar",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "torkoal",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "corphish",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "crawdaunt",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "clamperl",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "turtwig",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "grotle",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "torterra",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "oshawott",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "dewott",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "samurott",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "dwebble",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "crustle",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "escavalier",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "shelmet",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "turtonator",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "chewtle",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "drednaw",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "klawf",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "slowbro-mega",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "kingler-gmax",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "lapras-gmax",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "drednaw-gmax",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "sliggoo-hisui",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "goodra-hisui",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "76": {
+    "id": 76,
+    "name": "air-lock",
+    "name_fr": "Air Lock",
+    "generation": "generation-iii",
+    "effect": "Annule tous les effets de la météo, mais n'empêche pas la météo elle-même.",
+    "flavor_text": "Ignore les effets du climat.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "rayquaza",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "77": {
+    "id": 77,
+    "name": "tangled-feet",
+    "name_fr": "Pieds Confus",
+    "generation": "generation-iv",
+    "effect": "Double l'esquive quand confus.",
+    "flavor_text": "Augmente l'esquive si le Pokémon est confus.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "pidgey",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "pidgeotto",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "pidgeot",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "doduo",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "dodrio",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "spinda",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "chatot",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "mr-rime",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "flamigo",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "78": {
+    "id": 78,
+    "name": "motor-drive",
+    "name_fr": "Motorisé",
+    "generation": "generation-iv",
+    "effect": "Absorbe les capacités Électrik, augmentant la Vitesse d'un niveau.",
+    "flavor_text": "Augmente la Vit. si touché par une cap. Électrik.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "electivire",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "blitzle",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "zebstrika",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "emolga",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "79": {
+    "id": 79,
+    "name": "rivalry",
+    "name_fr": "Rivalité",
+    "generation": "generation-iv",
+    "effect": "Augmente les dégâts infligés de 1.25× contre les Pokémon du même genre, mais diminue les dégâts de 0.75× contre ceux du genre opposé.",
+    "flavor_text": "Augmente l'Attaque si l'ennemi est du même sexe.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "nidoran-f",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "nidorina",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "nidoqueen",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "nidoran-m",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "nidorino",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "nidoking",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "beautifly",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "shinx",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "luxio",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "luxray",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pidove",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "tranquill",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "unfezant",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "axew",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "fraxure",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "haxorus",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "litleo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pyroar-male",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "80": {
+    "id": 80,
+    "name": "steadfast",
+    "name_fr": "Impassible",
+    "generation": "generation-iv",
+    "effect": "Augmente la Vitesse d'un niveau lors d'un apeurement.",
+    "flavor_text": "Augmente la Vitesse quand le Pokémon a peur.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "machop",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "machoke",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "machamp",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "scyther",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "tyrogue",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "hitmontop",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "riolu",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "lucario",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "gallade",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "rockruff",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "lycanroc-midday",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "dubwool",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "sirfetchd",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mewtwo-mega-x",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "farfetchd-galar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "machamp-gmax",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "81": {
+    "id": 81,
+    "name": "snow-cloak",
+    "name_fr": "Rideau Neige",
+    "generation": "generation-iv",
+    "effect": "Augmente l'esquive de 1.25× sous grêle.  Protège contre les dégâts de la grêle.",
+    "flavor_text": "Augmente l'Esquive durant les tempêtes de grêle.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "articuno",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "swinub",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "piloswine",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "glaceon",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "mamoswine",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "froslass",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "vanillite",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "vanillish",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "cubchoo",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "beartic",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "cetoddle",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "sandshrew-alola",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "sandslash-alola",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "vulpix-alola",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "ninetales-alola",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "82": {
+    "id": 82,
+    "name": "gluttony",
+    "name_fr": "Gloutonnerie",
+    "generation": "generation-iv",
+    "effect": "Fait manger au Pokémon n'importe quelle Baie tenue déclenchée par des PV bas sous la moitié de ses PV max.",
+    "flavor_text": "Encourage l'utilisation d'une Baie tenue.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "bellsprout",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "weepinbell",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "victreebel",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "snorlax",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "shuckle",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "zigzagoon",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "linoone",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "gulpin",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "swalot",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "spoink",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "grumpig",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "munchlax",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "pansage",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "simisage",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "pansear",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "simisear",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "panpour",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "simipour",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "heatmor",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "skwovet",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "greedent",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "applin",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "flapple",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "appletun",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "lechonk",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "oinkologne-male",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "dipplin",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "rattata-alola",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "raticate-alola",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "raticate-totem-alola",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "grimer-alola",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "muk-alola",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "slowpoke-galar",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "zigzagoon-galar",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "linoone-galar",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "snorlax-gmax",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "flapple-gmax",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "appletun-gmax",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "oinkologne-female",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "83": {
+    "id": 83,
+    "name": "anger-point",
+    "name_fr": "Colérique",
+    "generation": "generation-iv",
+    "effect": "Augmente l'Attaque au maximum des six niveaux en recevant un coup critique.",
+    "flavor_text": "Monte l’Attaque au max après un coup critique.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "mankey",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "primeape",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "tauros",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "camerupt",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "sandile",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "krokorok",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "krookodile",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "crabrawler",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "crabominable",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "tauros-paldea-combat-breed",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "tauros-paldea-blaze-breed",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "tauros-paldea-aqua-breed",
+        "hidden": false,
+        "slot": 2
+      }
+    ]
+  },
+  "84": {
+    "id": 84,
+    "name": "unburden",
+    "name_fr": "Délestage",
+    "generation": "generation-iv",
+    "effect": "Double la Vitesse en utilisant ou perdant un objet tenu.",
+    "flavor_text": "Augmente la Vit. si l'objet tenu est utilisé ou perdu.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "hitmonlee",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "treecko",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "grovyle",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "sceptile",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "drifloon",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "drifblim",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "purrloin",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "liepard",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "accelgor",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "swirlix",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "slurpuff",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "hawlucha",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "nickit",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "thievul",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "sneasler",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "shroodle",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "grafaiai",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "85": {
+    "id": 85,
+    "name": "heatproof",
+    "name_fr": "Ignifugé",
+    "generation": "generation-iv",
+    "effect": "Divise par deux les dégâts des capacités Feu et brûlures.",
+    "flavor_text": "Réduit la puissance des capacités de type Feu.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "bronzor",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "bronzong",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "rolycoly",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "poltchageist",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "sinistcha",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "86": {
+    "id": 86,
+    "name": "simple",
+    "name_fr": "Simple",
+    "generation": "generation-iv",
+    "effect": "Double les modifications de stats du Pokémon.  Ces doubles modifications sont toujours bornées entre les niveaux -6 et 6.",
+    "flavor_text": "Le Pokémon est sujet à des variations de stats.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "numel",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "bidoof",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "bibarel",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "woobat",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "swoobat",
+        "hidden": true,
+        "slot": 3
+      }
+    ]
+  },
+  "87": {
+    "id": 87,
+    "name": "dry-skin",
+    "name_fr": "Peau Sèche",
+    "generation": "generation-iv",
+    "effect": "Inflige 1/8 des PV max en dégâts à chaque tour durant un soleil intense, mais soigne 1/8 des PV max sous pluie.  Augmente les dégâts des capacités Feu de 1.25×, mais absorbe les capacités Eau, soignant 1/4 des PV max.",
+    "flavor_text": "Perd des PV à la chaleur. L'eau les restaure.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "paras",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "parasect",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "jynx",
+        "hidden": true,
+        "slot": 3
+      },
+      {
+        "name": "croagunk",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "toxicroak",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "helioptile",
+        "hidden": false,
+        "slot": 1
+      },
+      {
+        "name": "heliolisk",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  },
+  "88": {
+    "id": 88,
+    "name": "download",
+    "name_fr": "Télécharge",
+    "generation": "generation-iv",
+    "effect": "Augmente la stat d'attaque correspondant à la défense la plus faible de l'adversaire d'un niveau en entrant au combat.",
+    "flavor_text": "Ajuste la puissance selon l'ennemi.",
+    "is_main_series": true,
+    "pokemon": [
+      {
+        "name": "porygon",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "porygon2",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "porygon-z",
+        "hidden": false,
+        "slot": 2
+      },
+      {
+        "name": "genesect",
+        "hidden": false,
+        "slot": 1
+      }
+    ]
+  }
+}

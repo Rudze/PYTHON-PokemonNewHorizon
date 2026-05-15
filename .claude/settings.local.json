@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"G:\\\\Documents\\\\Développement\\\\Python\\\\PokeWorld\" -Depth 1 -Force | Where-Object {-not $_.PSIsContainer} | Select-Object Name)",
+      "PowerShell(ConvertTo-String *)",
+      "PowerShell(ls \"G:\\\\Documents\\\\Développement\\\\Python\\\\PokeWorld\\\\.venv\\\\Lib\\\\site-packages\" | Where-Object {$_.PSIsContainer -and $_.Name -notmatch \"dist-info|egg-info\"} | Select-Object -ExpandProperty Name)",
+      "Bash(grep \"\\\\.py$\")",
+      "Bash(xargs grep -l \"move\\\\|battle\\\\|attack\")",
+      "Bash(python -c ' *)",
+      "Bash(python *)",
+      "Bash(Get-ChildItem -Path \"G:\\\\Documents\\\\Développement\\\\Python\\\\PYTHON-PokemonNewHorizon\\\\code\" -Recurse -Filter \"*.pyc\")",
+      "Bash(Remove-Item -Force)",
+      "Bash(Write-Host \"Cache cleared\")",
+      "Bash(Get-ChildItem -Path \"G:\\\\Documents\\\\Développement\\\\Python\\\\PYTHON-PokemonNewHorizon\\\\assets\\\\sprite\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(grep -o '\\\\-b-[ns]\\\\.png$')",
+      "Bash(sed 's/\"//g')",
+      "Bash(del *)",
+      "Bash(Get-ChildItem -Path \"G:\\\\Documents\\\\Développement\\\\Python\\\\PYTHON-PokemonNewHorizon\\\\assets\\\\sprite\" -Recurse -Name)",
+      "Bash(Select-Object -First 50)",
+      "Bash(git ls-tree *)",
+      "Bash(grep \"\\\\.tsx$\")",
+      "Bash(git checkout *)",
+      "Bash(Get-ChildItem -Recurse -Filter \"*.sql\" -ErrorAction SilentlyContinue)",
+      "Bash(Select-Object FullName)",
+      "Bash(sqlite3 \"assets/base.db\" \".tables\")",
+      "PowerShell(cd \"G:\\\\Documents\\\\Développement\\\\Python\\\\PYTHON-PokemonNewHorizon\"; Get-Item -Path . -Force | Select-Object -ExpandProperty FullName; ls -Recurse -Directory -Exclude .venv | Where-Object { $_.Name -ne '__pycache__' } | ForEach-Object { $_.FullName -replace [regex]::Escape\\(\\(Get-Item -Path . -Force\\).FullName\\), \"\" } | Sort-Object)",
+      "PowerShell(Test-Path *)"
+    ]
+  }
+}
