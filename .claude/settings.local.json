@@ -25,7 +25,9 @@
       "Bash(Select-Object FullName)",
       "Bash(sqlite3 \"assets/base.db\" \".tables\")",
       "PowerShell(cd \"G:\\\\Documents\\\\Développement\\\\Python\\\\PYTHON-PokemonNewHorizon\"; Get-Item -Path . -Force | Select-Object -ExpandProperty FullName; ls -Recurse -Directory -Exclude .venv | Where-Object { $_.Name -ne '__pycache__' } | ForEach-Object { $_.FullName -replace [regex]::Escape\\(\\(Get-Item -Path . -Force\\).FullName\\), \"\" } | Sort-Object)",
-      "PowerShell(Test-Path *)"
+      "PowerShell(Test-Path *)",
+      "Bash(git rm *)",
+      "Bash(git add *)"
     ]
   }
 }
