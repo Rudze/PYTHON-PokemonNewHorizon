@@ -16,7 +16,7 @@ from websockets.exceptions import ConnectionClosed
 
 # Ajoute la racine du projet au path pour pouvoir importer code.config
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from code.config import POKEMON_SPAWNS  # source unique de vérité
+from code.shared.config import POKEMON_SPAWNS  # source unique de vérité
 
 TILE_SIZE        = 16
 VALID_DIRECTIONS = {"left", "right", "up", "down"}

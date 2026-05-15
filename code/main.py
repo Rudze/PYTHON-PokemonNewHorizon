@@ -1,7 +1,7 @@
 import logging
 import pygame
 
-from code.core.game import Game
+from code.client.core.game import Game
 
 logging.basicConfig(
     level=logging.INFO,

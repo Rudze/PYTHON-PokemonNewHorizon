@@ -2,9 +2,9 @@
     "player": {
         "position": {
             "x": 392.0,
-            "y": 336.0
+            "y": 48.0
         },
-        "direction": "down"
+        "direction": "up"
     },
     "map": {
         "path": "map_0",
