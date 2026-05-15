@@ -14,8 +14,9 @@ Structure de chaque item :
 """
 from pathlib import Path
 
-# Dossier des icônes d'items (PNG 16×16 ou 32×32)
-_ITEMS_DIR = Path(__file__).parent.parent / "assets" / "items"
+# Dossier des icônes d'items — chemin depuis la racine du projet
+# items.py est dans code/shared/config/ → 4 .parent pour atteindre la racine
+_ITEMS_DIR = Path(__file__).parent.parent.parent.parent / "assets" / "items"
 
 # Nombre maximum de slots dans l'inventaire arc du joueur
 INVENTORY_MAX_SLOTS: int = 16   # 8 slots × 2 rangées

@@ -682,10 +682,17 @@ class Game:
             if not self.battle_screen.active:
                 _log.info("Combat terminé — synchronisation équipe")
                 self.player.inv.sync_party()
-                if self.battle_screen.outcome == "won":
+                outcome    = self.battle_screen.outcome
+                wild_poke  = self.battle_screen._manager.wild_pokemon if self.battle_screen._manager else None
+                # Le Pokémon disparaît seulement s'il a perdu des PV
+                # (si plein PV = fuite joueur sans dégâts, ou victoire sauvage)
+                wild_took_damage = bool(
+                    wild_poke and wild_poke.hp < wild_poke.maxhp
+                )
+                if outcome == "won" or wild_took_damage:
                     self.wild_pokemon_manager.on_despawned({"wpid": self._battle_wpid})
                 elif self._battle_entity:
-                    self._battle_entity.frozen = False
+                    self._battle_entity.frozen = False  # reste sur la carte
                 self._battle_wpid    = None
                 self._battle_entity  = None
                 self.battle_screen   = None

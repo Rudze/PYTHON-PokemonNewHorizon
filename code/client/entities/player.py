@@ -54,6 +54,11 @@ class Player(Entity):
         # Il sera défini depuis game.py ou main.py.
         self.on_move = None
 
+        # Rotation sur place (PokeMMO-style) :
+        # mémorise la dernière direction demandée ; si elle change → simple rotation
+        # sans déplacement ; si elle est maintenue → marche.
+        self._turn_direction: str | None = None
+
     def from_dict(self, data: dict) -> None:
         self.position = pygame.math.Vector2(data["position"]["x"], data["position"]["y"])
         self.align_hitbox()
@@ -78,69 +83,56 @@ class Player(Entity):
             self.on_move(target_x, target_y, direction)
 
     def check_move(self) -> None:
-        """
-        Check the move of the player
-        """
+        """Déplacement avec rotation sur place (PokeMMO-style)."""
         if self.animation_walk:
             return
 
+        # Touche de direction actuellement pressée
+        cur_dir: str | None = None
+        if   self.keylistener.key_pressed(self.controller.get_key("left")):  cur_dir = "left"
+        elif self.keylistener.key_pressed(self.controller.get_key("right")): cur_dir = "right"
+        elif self.keylistener.key_pressed(self.controller.get_key("up")):    cur_dir = "up"
+        elif self.keylistener.key_pressed(self.controller.get_key("down")):  cur_dir = "down"
+
+        if cur_dir is None:
+            self._turn_direction = None
+            return
+
+        # Première pression dans cette direction → rotation simple, pas de marche
+        if self._turn_direction != cur_dir:
+            self._turn_direction = cur_dir
+            self.direction = cur_dir
+            return  # sprite mis à jour, aucun déplacement ce frame
+
+        # Touche maintenue → déplacement normal
         temp_hitbox = self.hitbox.copy()
-
-        if self.keylistener.key_pressed(self.controller.get_key("left")):
+        if cur_dir == "left":
             temp_hitbox.x -= self.TILE_SIZE
-
             if not self.check_collisions(temp_hitbox):
                 self.check_collisions_switchs(temp_hitbox)
-
-                target_x = int(self.position.x - self.TILE_SIZE)
-                target_y = int(self.position.y)
-
                 self.move_left()
-                self.notify_network_move(target_x, target_y, "left")
-            else:
-                self.direction = "left"
+                self.notify_network_move(int(self.position.x - self.TILE_SIZE), int(self.position.y), "left")
 
-        elif self.keylistener.key_pressed(self.controller.get_key("right")):
+        elif cur_dir == "right":
             temp_hitbox.x += self.TILE_SIZE
-
             if not self.check_collisions(temp_hitbox):
                 self.check_collisions_switchs(temp_hitbox)
-
-                target_x = int(self.position.x + self.TILE_SIZE)
-                target_y = int(self.position.y)
-
                 self.move_right()
-                self.notify_network_move(target_x, target_y, "right")
-            else:
-                self.direction = "right"
+                self.notify_network_move(int(self.position.x + self.TILE_SIZE), int(self.position.y), "right")
 
-        elif self.keylistener.key_pressed(self.controller.get_key("up")):
+        elif cur_dir == "up":
             temp_hitbox.y -= self.TILE_SIZE
-
             if not self.check_collisions(temp_hitbox):
                 self.check_collisions_switchs(temp_hitbox)
-
-                target_x = int(self.position.x)
-                target_y = int(self.position.y - self.TILE_SIZE)
-
                 self.move_up()
-                self.notify_network_move(target_x, target_y, "up")
-            else:
-                self.direction = "up"
+                self.notify_network_move(int(self.position.x), int(self.position.y - self.TILE_SIZE), "up")
 
-        elif self.keylistener.key_pressed(self.controller.get_key("down")):
+        elif cur_dir == "down":
             temp_hitbox.y += self.TILE_SIZE
-
             if not self.check_collisions(temp_hitbox):
                 self.check_collisions_switchs(temp_hitbox)
-
-                target_x = int(self.position.x)
-                target_y = int(self.position.y + self.TILE_SIZE)
-
                 self.move_down()
-                self.notify_network_move(target_x, target_y, "down")
-            else:
-                self.direction = "down"
+                self.notify_network_move(int(self.position.x), int(self.position.y + self.TILE_SIZE), "down")
 
     def add_switchs(self, switchs: list[Switch]) -> None:
         self.switchs = switchs if switchs is not None else []

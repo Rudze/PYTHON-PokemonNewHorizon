@@ -71,6 +71,11 @@ class Pokemon:
         self.moves: list[Move] = self.set_moves()
         self.status = ""
 
+        # Talent actif (premier talent non caché de la liste, ou None)
+        self.ability: str | None = (
+            self.abilities[0] if self.abilities else None
+        )
+
         self.xp_to_next_level = self.xp_to_next_level()
 
         self.evolution = None

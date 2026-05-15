@@ -7,6 +7,7 @@ from code.server.battle.type_chart import type_effectiveness
 from code.server.battle.status import can_inflict_status, STATUS_INFLICT_MSG
 from code.server.battle.move_effects import lookup_effect
 from code.server.battle.calc import calc_damage, stage_mult
+from code.server.battle import ability_handler as ab_handler
 
 
 class BattleManager:
@@ -75,6 +76,11 @@ class BattleManager:
         self._player_bide:         tuple | None = None
         self._wild_bide:           tuple | None = None
         self._player_transformed:  dict | None = None
+
+        # ── Talents d'entrée ──────────────────────────────────────────────
+        self._entry_ability_msgs: list[str] = []
+        ab_handler.on_battle_start(player_pokemon, wild_pokemon, self,
+                                   self._entry_ability_msgs)
 
     # ── Properties ───────────────────────────────────────────────────────
 
@@ -288,6 +294,11 @@ class BattleManager:
                 sym, t = v
                 setattr(self, attr, None if t <= 1 else (sym, t - 1))
 
+        # ── Talents de fin de tour (Turbo, Mue, Synchro…) ─────────────────
+        for poke, is_pl in [(pp, True), (wp, False)]:
+            if poke and poke.hp > 0:
+                ab_handler.on_end_of_turn(poke, is_pl, self, msgs)
+
         return msgs
 
     def on_wild_fainted(self) -> list[str]:
@@ -416,11 +427,17 @@ class BattleManager:
         if not can_inflict_status(status, getattr(target_poke, "type", [])):
             msgs.append("Ça n'a pas d'effet !")
             return
+        # Immunités par talent
+        if ab_handler.is_immune_to_status(target_poke, status):
+            tname = target_poke.dbSymbol.capitalize()
+            msgs.append(f"{tname} est immunisé grâce à son talent !")
+            return
         if status == "any_bpf":
             status = random.choice(["BRN", "PAR", "FRZ"])
         target_poke.status = status
         if status == "SLP":
-            turns = random.randint(1, 3)
+            base_turns = random.randint(1, 3)
+            turns = ab_handler.sleep_turns_for(target_poke, base_turns)
             if is_target_player:
                 self._player_sleep_ctr = turns
             else:
@@ -432,13 +449,16 @@ class BattleManager:
     def apply_stage(self, poke, stages: dict[str, int], is_player: bool,
                     msgs: list[str]) -> None:
         """Applique des modifications de stade et génère les messages."""
-        # Brume : bloque les baisses de stats
+        # Brume et talents de protection des stats : bloquent les baisses adverses
         if any(v < 0 for v in stages.values()):
             if is_player and self._player_mist > 0:
                 msgs.append(f"La Brume protège {poke.dbSymbol.capitalize()} !")
                 return
             if not is_player and self._wild_mist > 0:
                 msgs.append(f"La Brume protège {poke.dbSymbol.capitalize()} !")
+                return
+            if ab_handler.blocks_stat_drop(poke):
+                msgs.append(f"Le talent de {poke.dbSymbol.capitalize()} bloque la baisse de stats !")
                 return
         stage_dict = self._player_stages if is_player else self._wild_stages
         name = poke.dbSymbol.capitalize()
@@ -704,8 +724,14 @@ class BattleManager:
         msgs   = [f"{apfx}{aname} utilise {mname} !"]
 
         acc = effect.get("acc_override", move.accuracy) or 100
+        acc = int(acc * ab_handler.get_acc_modifier(attacker))
         if not (random.randint(1, 100) <= acc):
             msgs.append("L'attaque échoue !")
+            return msgs
+
+        # ── Absorption (Volt-Absorb, Aqua-Absorb, Feu-Force…) ─────────────
+        defender_is_player = not attacker_is_player
+        if ab_handler.is_move_absorbed(defender, move, self, defender_is_player, msgs):
             return msgs
 
         # ── Haze (réinitialise tous les stades) ──────────────────────────
@@ -861,7 +887,7 @@ class BattleManager:
                 msgs.append(f"L'attaque a frappé {hit_count} fois !")
                 msgs.append(f"{dpfx}{dname} perd {total_dmg} PV au total !")
             if defender.hp > 0 and "status" in effect:
-                chance = effect.get("chance", 100)
+                chance = min(100, int(effect.get("chance", 100) * ab_handler.get_sec_chance_mult(attacker)))
                 if random.randint(1, 100) <= chance:
                     self.apply_status(defender, effect["status"], not attacker_is_player, msgs)
             return msgs
@@ -907,7 +933,13 @@ class BattleManager:
             elif attacker_is_player and self._wild_rage:
                 self.apply_stage(attacker, {"atk": +1}, False, msgs)
 
-        if crit:    msgs.append("Coup critique !")
+        # ── Effets de contact (Statik, Corps-Brûlé, Peau-Rugueuse…) ───────
+        if dmg > 0:
+            ab_handler.on_contact(attacker, defender, move, self, attacker_is_player, msgs)
+
+        if crit:
+            msgs.append("Coup critique !")
+            ab_handler.on_critical_received(defender, defender_is_player, self, msgs)
         if eff == 0:
             msgs.append(f"Ça n'affecte pas {dpfx}{dname}…")
         elif eff >= 2:
@@ -934,13 +966,14 @@ class BattleManager:
             else:                  self._wild_recharging   = True
 
         # Effets secondaires si défenseur encore vivant
+        sec_mult = ab_handler.get_sec_chance_mult(attacker)
         if defender.hp > 0:
             if "status" in effect:
-                chance = effect.get("chance", 100)
+                chance = min(100, int(effect.get("chance", 100) * sec_mult))
                 if random.randint(1, 100) <= chance:
                     self.apply_status(defender, effect["status"], not attacker_is_player, msgs)
             if effect.get("confuse"):
-                chance = effect.get("chance", 100)
+                chance = min(100, int(effect.get("chance", 100) * sec_mult))
                 if random.randint(1, 100) <= chance:
                     self.apply_confusion(defender, not attacker_is_player, msgs)
             if "stages" in effect:
