@@ -117,6 +117,7 @@ class Game:
 
         # ── Charge l'inventaire et les Pokédollars depuis l'API ──
         self.player.inv.load_from_api()
+        self.player.inv.auto_assign_slots()   # assigne et sync les slot_index manquants
         self.player.inv.load_money_from_api()
         self._inv_last_reload = time.time()   # démarre le TTL du cache inventaire
 
