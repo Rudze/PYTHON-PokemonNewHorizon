@@ -69,6 +69,8 @@ class Game:
         self._notify_box:          TextBox | None = None
         self._inv_pending_refresh: bool         = False
         self._inv_last_reload:    float        = 0.0
+        self._inv_refresh_gen:    int          = 0
+        self._inv_pending_data:   dict | None  = None  # données fetchées par le thread
         self._move_learn_menu: MoveLearnMenu  | None = None
         self._pending_move_for_menu: tuple    | None = None
 
@@ -203,7 +205,9 @@ class Game:
 
     def _on_slot_swap(self, a: int, b: int) -> None:
         self.player.inv.swap_hud_slots(a, b)
+        self._inv_refresh_gen    += 1
         self._inv_pending_refresh = False
+        self._inv_pending_data    = None   # données fetchées stale → jeter
 
     def _on_party_swap(self, a: int, b: int) -> None:
         self.player.inv.sync_party()
@@ -223,9 +227,16 @@ class Game:
         if ttl_ok or syncing:
             return   # données locales à jour, ou sync en cours → ne pas écraser
 
+        gen = self._inv_refresh_gen
+        api = self.player.inv.api_client
+        acc = self.player.inv.account_id
+
         def _refresh() -> None:
-            if self.player.inv.reload_from_api():
-                self.player.inv.auto_assign_slots()
+            if api is None or acc is None:
+                return
+            data = api.load_inventory(acc)          # fetch seul — ne touche pas au bag
+            if data and self._inv_refresh_gen == gen:
+                self._inv_pending_data    = data
                 self._inv_pending_refresh = True
 
         threading.Thread(target=_refresh, daemon=True).start()
@@ -761,10 +772,14 @@ class Game:
                     self.inv_hud.toggle()
                     self.player.can_move = True
 
-            # Appliquer le résultat du refresh API seulement s'il n'y a pas de sync en cours
+            # Appliquer les données fetchées par le thread (jamais depuis le thread lui-même)
             if self._inv_pending_refresh and self.player.inv._pending_syncs == 0:
                 self._inv_pending_refresh = False
-                if self.inv_hud.active:
+                data = self._inv_pending_data
+                self._inv_pending_data = None
+                if data and self.inv_hud.active:
+                    self.player.inv.load_from_dict(data)
+                    self.player.inv.auto_assign_slots()
                     self.inv_hud.load_from_inventory(self.player.inv.bag)
 
             # ── Nouvelles attaques apprises (notification simple) ─────────────

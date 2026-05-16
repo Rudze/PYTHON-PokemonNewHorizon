@@ -350,7 +350,7 @@ def get_inventory_full(account_id: int, auth_id: int = Depends(require_auth)):
     pokemon_rows = cursor.fetchall()
 
     cursor.execute(
-        "SELECT item_db_symbol, quantity, pocket FROM inventory WHERE account_id = %s",
+        "SELECT item_db_symbol, quantity, pocket, slot_index FROM inventory WHERE account_id = %s",
         (account_id,),
     )
     item_rows = cursor.fetchall()
@@ -381,6 +381,7 @@ def get_inventory_full(account_id: int, auth_id: int = Depends(require_auth)):
             "item_db_symbol": r["item_db_symbol"],
             "quantity":       r["quantity"],
             "pocket":         r["pocket"],
+            "slot_index":     r["slot_index"],
         }
         for r in item_rows
     ]
