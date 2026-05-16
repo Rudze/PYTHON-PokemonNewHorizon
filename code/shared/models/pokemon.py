@@ -68,6 +68,10 @@ class Pokemon:
         self.xp = Pokemon._calc_xp_for_level(level, self.experienceType)
         self.points_ev = 0
 
+        self.ot: str = ""
+        self.happiness: int = int(self.baseLoyalty)
+        self.trained_evs: dict = {"hp": 0, "atk": 0, "dfe": 0, "ats": 0, "dfs": 0, "spd": 0}
+
         self.moves: list[Move] = self.set_moves()
         self.status = ""
 
@@ -119,9 +123,11 @@ class Pokemon:
         :return:
         """
         base_stat = self.get_base_stats()[stat]
-        iv = self.ivs[stat]
-        ev = self.get_ev()[stat]
-        level = self.level
+        iv  = self.ivs.get(stat, 0)
+        # trained_evs = EVs gagnés individuellement ; fallback sur species EVs si absent
+        ev  = getattr(self, "trained_evs", None)
+        ev  = ev.get(stat, 0) if ev else self.get_ev().get(stat, 0)
+        level  = self.level
         nature = 1.0
         if stat == "hp":
             return math.floor((2 * base_stat + iv + math.floor(ev / 4)) * level / 100) + level + 10
@@ -270,7 +276,12 @@ class Pokemon:
             'moves': [move.to_dict() for move in self.moves],
             'status': self.status,
             'xp_to_next_level': self.xp_to_next_level,
-            'evolution': self.evolution
+            'evolution': self.evolution,
+            'ot':        getattr(self, 'ot', ''),
+            'happiness': getattr(self, 'happiness', 70),
+            'trained_evs': getattr(self, 'trained_evs',
+                                   {"hp": 0, "atk": 0, "dfe": 0, "ats": 0, "dfs": 0, "spd": 0}),
+            'ability':   getattr(self, 'ability', None),
         }
 
     @staticmethod
@@ -301,6 +312,15 @@ class Pokemon:
         # Attributs runtime non sérialisés — toujours réinitialiser après from_dict
         pokemon.newly_learned = []
         pokemon.pending_moves = []
+        if not hasattr(pokemon, 'ot'):
+            pokemon.ot = ''
+        if not hasattr(pokemon, 'happiness'):
+            pokemon.happiness = int(f.get('baseLoyalty', 70))
+        if not hasattr(pokemon, 'trained_evs'):
+            pokemon.trained_evs = {"hp": 0, "atk": 0, "dfe": 0, "ats": 0, "dfs": 0, "spd": 0}
+        if not hasattr(pokemon, 'ability'):
+            abs_ = f.get('abilities', [])
+            pokemon.ability = abs_[0] if abs_ else None
         return pokemon
 
     @staticmethod

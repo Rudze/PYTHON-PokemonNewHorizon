@@ -37,14 +37,40 @@ def _mk_font(size: int) -> pygame.font.Font:
     except: return pygame.font.SysFont("arial", size)
 
 
+# Taux de capture par type de Pokéball
+_BALL_RATES: dict[str, float] = {
+    "poke_ball":   1.0,
+    "super_ball":  1.5,
+    "hyper_ball":  2.0,
+    "master_ball": 255.0,
+}
+# Bonus de statut pour le calcul de capture
+_STATUS_CATCH_BONUS: dict[str, float] = {
+    "SLP": 2.0, "FRZ": 2.0,
+    "PAR": 1.5, "BRN": 1.5, "PSN": 1.5, "TOX": 1.5,
+}
+
+
+def _catch_probability(poke, ball_rate: float) -> float:
+    """Probabilité de capture [0..1] — formule Gen 3 simplifiée."""
+    import random as _r
+    catch_rate  = getattr(poke, "catchRate", 45) or 45
+    hp_ratio    = poke.hp / max(poke.maxhp, 1)
+    status_mult = _STATUS_CATCH_BONUS.get(getattr(poke, "status", ""), 1.0)
+    a = (3 - 2 * hp_ratio) * catch_rate * ball_rate * status_mult / 3
+    return min(1.0, a / 255.0)
+
+
 class BattleScreen:
 
     def __init__(self, screen, wild_data: dict, player_pokemon=None,
-                 wild_pokemon=None, zone: str = None) -> None:
+                 wild_pokemon=None, zone: str = None,
+                 player_inv=None) -> None:
         self._screen         = screen
         self._wild           = wild_data
         self._wild_pokemon   = wild_pokemon
         self._player_pokemon = player_pokemon
+        self._player_inv     = player_inv   # InventoryManager — pour les Pokéballs
         self._active         = True
         self._state          = "TEXT"
         self._move_idx       = 0
@@ -142,7 +168,11 @@ class BattleScreen:
         pid   = wild_data["pokemon_id"]
         shiny = wild_data.get("shiny", False)
         self._wild_sprite   = _load_sprite(pid, shiny, front=True)
-        self._player_sprite = _load_sprite(player_pokemon.id, False, front=False) if player_pokemon else None
+        self._player_sprite = _load_sprite(
+            player_pokemon.id,
+            bool(getattr(player_pokemon, "shiny", "")),
+            front=False,
+        ) if player_pokemon else None
 
         # HP depuis l'objet Pokemon si disponible, sinon fallback dict
         if wild_pokemon:
@@ -243,6 +273,8 @@ class BattleScreen:
                 self._manager.clear_auto_move()
             self._state = "MOVE_SELECT"
             self._move_idx = 0
+        elif self._cmd_idx == 2:   # BAG → tenter une capture
+            self._try_catch()
         elif self._cmd_idx == 3:
             self._manager.end_battle("fled")
             self._outcome = "fled"
@@ -297,6 +329,57 @@ class BattleScreen:
         backup = self._manager.get_transform_backup()
         if backup and "sprite" in backup:
             self._player_sprite = backup["sprite"]
+
+    # ------------------------------------------------------------------
+    def _try_catch(self) -> None:
+        """Tente de capturer le Pokémon sauvage avec la meilleure Pokéball disponible."""
+        import random as _random
+
+        if not self._wild_pokemon:
+            self._text_box.set_messages(["Pas de Pokémon cible !"])
+            self._state = "TEXT"
+            return
+
+        # Cherche la meilleure Pokéball dans l'inventaire
+        inv  = self._player_inv
+        ball_sym  = None
+        ball_rate = 0.0
+
+        if inv and hasattr(inv, "bag"):
+            balls = inv.bag.pockets.get("pokeballs", [])
+            # Priorité : master > hyper > super > poke
+            for sym in ("master_ball", "hyper_ball", "super_ball", "poke_ball"):
+                for item in balls:
+                    if item.item_db_symbol == sym and item.quantity > 0:
+                        ball_sym  = sym
+                        ball_rate = _BALL_RATES[sym]
+                        break
+                if ball_sym:
+                    break
+
+        if not ball_sym:
+            self._text_box.set_messages(["Pas de Pokeball disponible !"])
+            self._state = "TEXT"
+            return
+
+        # Retire une Pokéball de l'inventaire
+        inv.bag.remove(ball_sym, "pokeballs", 1)
+
+        poke  = self._wild_pokemon
+        wname = poke.dbSymbol.capitalize()
+        msgs  = [f"Lance une {ball_sym.replace('_', ' ').title()} !"]
+
+        prob = _catch_probability(poke, ball_rate)
+        if ball_rate >= 255 or _random.random() < prob:
+            # Capturé !
+            msgs.append(f"{wname} est capturé !")
+            self._text_box.set_messages(msgs)
+            self._state = "WILD_CAUGHT"
+        else:
+            msgs.append(f"Oh ! {wname} s'est échappé !")
+            self._text_box.set_messages(msgs)
+            self._state          = "TEXT"
+            self._pending_enemy_attack = True   # l'ennemi contre-attaque
 
     # ------------------------------------------------------------------
     def _end_battle(self, outcome: str) -> None:
@@ -382,6 +465,8 @@ class BattleScreen:
 
         elif self._state == "WILD_FAINTED":
             self._end_battle("won")
+        elif self._state == "WILD_CAUGHT":
+            self._end_battle("caught")
         elif self._state == "PLAYER_FAINTED":
             self._end_battle("lost")
 
@@ -675,51 +760,7 @@ class BattleScreen:
 # Sprite animé GIF
 # ---------------------------------------------------------------------------
 
-class AnimatedGif:
-    """Charge un GIF animé via Pillow et expose la frame courante comme Surface pygame."""
-
-    def __init__(self, path) -> None:
-        self._frames: list[pygame.Surface] = []
-        self._delays: list[float] = []
-        self._frame_idx = 0
-        self._elapsed   = 0.0
-        self._load(path)
-
-    def _load(self, path) -> None:
-        img = Image.open(str(path))
-        try:
-            while True:
-                frame = img.convert("RGBA")
-                data  = frame.tobytes()
-                w, h  = frame.size
-                surf  = pygame.image.fromstring(data, (w, h), "RGBA").convert_alpha()
-                self._frames.append(surf)
-                delay = img.info.get("duration", 100) / 1000.0
-                self._delays.append(max(delay, 0.05))
-                img.seek(img.tell() + 1)
-        except EOFError:
-            pass
-
-    @property
-    def valid(self) -> bool:
-        return bool(self._frames)
-
-    def get_size(self) -> tuple[int, int]:
-        return self._frames[0].get_size() if self._frames else (0, 0)
-
-    def get_width(self)  -> int: return self.get_size()[0]
-    def get_height(self) -> int: return self.get_size()[1]
-
-    def update(self, dt: float) -> None:
-        if len(self._frames) <= 1:
-            return
-        self._elapsed += dt
-        while self._elapsed >= self._delays[self._frame_idx]:
-            self._elapsed  -= self._delays[self._frame_idx]
-            self._frame_idx = (self._frame_idx + 1) % len(self._frames)
-
-    def current_frame(self) -> pygame.Surface | None:
-        return self._frames[self._frame_idx] if self._frames else None
+from code.client.ui.animated_gif import AnimatedGif  # noqa: E402
 
 
 # ---------------------------------------------------------------------------

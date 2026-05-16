@@ -19,7 +19,7 @@ from pathlib import Path
 _ITEMS_DIR = Path(__file__).parent.parent.parent.parent / "assets" / "items"
 
 # Nombre maximum de slots dans l'inventaire arc du joueur
-INVENTORY_MAX_SLOTS: int = 16   # 8 slots × 2 rangées
+INVENTORY_MAX_SLOTS: int = 21   # 7 slots × 3 rangées
 
 # ---------------------------------------------------------------------------
 # Registre des items

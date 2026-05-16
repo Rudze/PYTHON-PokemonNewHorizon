@@ -121,7 +121,8 @@ class Game:
         self.option       = Motismart(self.screen, self.controller, self.keylistener, self.save, self.player)
         self.escape_menu  = EscapeMenu(self.screen, self.controller, self.keylistener)
         self.inv_hud      = InventoryHUD(self.screen)
-        self.inv_hud.on_slot_swap = lambda a, b: self.player.inv.swap_hud_slots(a, b)
+        self.inv_hud.on_slot_swap  = self._on_slot_swap
+        self.inv_hud.on_party_swap = self._on_party_swap
         self.network = NetworkClient(self.server_url)
         self.remote_players = {}
 
@@ -199,6 +200,13 @@ class Game:
     # ------------------------------------------------------------------
 
     _INV_RELOAD_TTL = 60.0  # secondes entre deux rechargements API
+
+    def _on_slot_swap(self, a: int, b: int) -> None:
+        self.player.inv.swap_hud_slots(a, b)
+        self._inv_pending_refresh = False
+
+    def _on_party_swap(self, a: int, b: int) -> None:
+        self.player.inv.sync_party()
 
     def _open_inv_hud(self) -> None:
         """
@@ -503,6 +511,11 @@ class Game:
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 self.mouse_click = event.pos
 
+            # Stats panel du HUD inventaire (clic droit + Escape)
+            hud = getattr(self, "inv_hud", None)
+            if hud and hud.active:
+                hud.handle_event(event, getattr(self.player, "pokemons", None))
+
     def _handle_interaction(self) -> None:
         """
         Appelé quand le joueur appuie sur E.
@@ -562,7 +575,8 @@ class Game:
         able = [p for p in self.player.pokemons if p.hp > 0]
         self.battle_screen = BattleScreen(
             self.screen, data, able[0] if able else None,
-            wild_pokemon=wild_pokemon, zone=data.get("zone_name", "")
+            wild_pokemon=wild_pokemon, zone=data.get("zone_name", ""),
+            player_inv=self.player.inv,
         )
         self.player.can_move = False
 
@@ -662,6 +676,27 @@ class Game:
                             money=self.player.inv.money,
                             party=self.player.pokemons)   # arc inventaire + colonne équipe
 
+        # Clic droit + Résumé → ouvre automatiquement le Motismart sur les stats
+        if self.inv_hud.stats_request is not None:
+            pkmn = self.inv_hud.stats_request
+            self.inv_hud.stats_request = None
+            # Ouvrir le téléphone si pas déjà ouvert
+            if not self.player.menu_option:
+                self.player.menu_option = True
+                self.player.can_move    = False
+            self.option.open_pokemon_stats(pkmn)
+
+        # Touche inventaire — prioritaire même si le Motismart est ouvert.
+        # Ferme les deux menus si les deux sont actifs.
+        inv_key = self.controller.get_key("inventory")
+        if self.keylistener.key_pressed(inv_key) and self.inv_hud.active:
+            self.keylistener.remove_key(inv_key)
+            self.inv_hud.toggle()
+            if self.player.menu_option:
+                self.option.force_close()   # _do_close() met can_move=True et menu_option=False
+            else:
+                self.player.can_move = True
+
         if self.player.menu_option:
             # Pokephone par-dessus le monde en mouvement
             self.option.update(self.mouse_click)
@@ -681,18 +716,28 @@ class Game:
             self.battle_screen.draw(self.screen.get_display())
             if not self.battle_screen.active:
                 _log.info("Combat terminé — synchronisation équipe")
+                outcome   = self.battle_screen.outcome
+                wild_poke = self.battle_screen._manager.wild_pokemon if self.battle_screen._manager else None
+
+                # ── Capture ───────────────────────────────────────────────
+                if outcome == "caught" and wild_poke is not None:
+                    wild_poke.ot = self.player.name   # OT = nom du joueur
+                    wild_poke.hp = wild_poke.maxhp    # soigner à la capture
+                    wild_poke.status = ""
+                    result = self.player.inv.receive_pokemon(wild_poke)
+                    dest   = "équipe" if result == "party" else "PC"
+                    _log.info("Pokemon capturé → %s (%s)", wild_poke.dbSymbol, dest)
+
+                # ── Sync équipe (HP, XP, PP…) ────────────────────────────
                 self.player.inv.sync_party()
-                outcome    = self.battle_screen.outcome
-                wild_poke  = self.battle_screen._manager.wild_pokemon if self.battle_screen._manager else None
-                # Le Pokémon disparaît seulement s'il a perdu des PV
-                # (si plein PV = fuite joueur sans dégâts, ou victoire sauvage)
-                wild_took_damage = bool(
-                    wild_poke and wild_poke.hp < wild_poke.maxhp
-                )
-                if outcome == "won" or wild_took_damage:
+
+                # ── Despawn du Pokémon sauvage ───────────────────────────
+                wild_took_damage = bool(wild_poke and wild_poke.hp < wild_poke.maxhp)
+                if outcome in ("won", "caught") or wild_took_damage:
                     self.wild_pokemon_manager.on_despawned({"wpid": self._battle_wpid})
                 elif self._battle_entity:
                     self._battle_entity.frozen = False  # reste sur la carte
+
                 self._battle_wpid    = None
                 self._battle_entity  = None
                 self.battle_screen   = None
@@ -716,8 +761,8 @@ class Game:
                     self.inv_hud.toggle()
                     self.player.can_move = True
 
-            # Appliquer le résultat du refresh API si le thread a terminé
-            if self._inv_pending_refresh:
+            # Appliquer le résultat du refresh API seulement s'il n'y a pas de sync en cours
+            if self._inv_pending_refresh and self.player.inv._pending_syncs == 0:
                 self._inv_pending_refresh = False
                 if self.inv_hud.active:
                     self.inv_hud.load_from_inventory(self.player.inv.bag)

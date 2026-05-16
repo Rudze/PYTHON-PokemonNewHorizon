@@ -13,11 +13,31 @@ from typing import Callable
 import pygame
 
 from code.shared.config.items import ITEMS, INVENTORY_MAX_SLOTS
+from code.client.config import SPRITES_DIR, SPRITES_BATTLE_DIR
+
+_ICONS_DIR = SPRITES_DIR / "icons"
+
+# Couleurs des types
+_TYPE_COLORS: dict[str, tuple] = {
+    "normal": (168, 167, 122), "fire": (238, 129, 48),  "water": (99, 144, 240),
+    "electric": (247, 208, 44), "grass": (122, 199, 76), "ice": (150, 217, 214),
+    "fighting": (194, 46, 40), "poison": (163, 62, 161), "ground": (226, 191, 101),
+    "flying": (169, 143, 243), "psychic": (249, 85, 135), "bug": (166, 185, 26),
+    "rock": (182, 161, 100), "ghost": (115, 87, 151),   "dragon": (111, 53, 252),
+    "dark": (112, 87, 70),   "steel": (183, 183, 206),  "fairy": (214, 133, 173),
+}
+_TYPE_FR: dict[str, str] = {
+    "normal": "Normal", "fire": "Feu", "water": "Eau", "electric": "Electrik",
+    "grass": "Plante", "ice": "Glace", "fighting": "Combat", "poison": "Poison",
+    "ground": "Sol", "flying": "Vol", "psychic": "Psy", "bug": "Insecte",
+    "rock": "Roche", "ghost": "Spectre", "dragon": "Dragon", "dark": "Ténèbres",
+    "steel": "Acier", "fairy": "Fée",
+}
 
 # ---------------------------------------------------------------------------
 # Constantes visuelles
 # ---------------------------------------------------------------------------
-SLOTS_PER_ROW  = INVENTORY_MAX_SLOTS // 2   # 10 par rangée
+SLOTS_PER_ROW  = INVENTORY_MAX_SLOTS // 3   # 7 par rangée
 
 SLOT_RADIUS    = 28     # rayon du cercle de slot (px) — doublé
 SLOT_BORDER    = 2      # épaisseur du contour
@@ -29,12 +49,13 @@ ARC_RADIUS     = 520
 # Arc de 50° → espacement horizontal ≈ 9 px entre les bords des cercles.
 # Avec 8 slots : pas angulaire = 50/7 ≈ 7.14°,
 # distance centre-à-centre = 2×520×sin(3.57°) ≈ 65 px, gap = 65-56 = 9 px.
-ARC_START_DEG  = 65.0
-ARC_END_DEG    = 115.0
+ARC_START_DEG  = 68.0
+ARC_END_DEG    = 112.0
 
-# Séparation verticale ≈ même gap : (row_out - row_in) × 720 ≈ 65 px → gap ≈ 9 px.
-_ROW_OUT_PCT   = 0.22
-_ROW_IN_PCT    = 0.13
+# 3 rangées espacées pour garder ~9 px de gap entre les bords des cercles (H=720).
+_ROW_OUT_PCT   = 0.30   # rangée la plus haute
+_ROW_MID_PCT   = 0.21   # rangée centrale
+_ROW_IN_PCT    = 0.12   # rangée la plus proche du joueur
 
 # Couleurs
 C_SLOT         = (255, 255, 255)       # blanc — normal
@@ -76,18 +97,34 @@ class InventoryHUD:
         self.active    = False           # affiché seulement si True
         self._selected = 0
 
-        self.on_slot_swap: Callable[[int, int], None] | None = None
+        self.on_slot_swap:   Callable[[int, int], None] | None = None
+        self.on_party_swap:  Callable[[int, int], None] | None = None
 
         self._drag_from: int | None = None
         self._drag_pos  = (0, 0)
         self._prev_btn  = False
+        self._prev_rbtn = False          # suivi clic droit précédent
+
+        # Drag-and-drop équipe
+        self._party_drag_from: int | None = None
+        self._party_drag_pos   = (0, 0)
+        self._prev_lbtn_party  = False
 
         self._textures: dict[str, pygame.Surface] = {}
+        self._poke_icons: dict[str, list[pygame.Surface]] = {}  # cache icônes
+
+        # Menu contextuel (clic droit sur un slot)
+        self._ctx_pkmn    = None          # Pokémon ciblé
+        self._ctx_rect: pygame.Rect | None = None   # position du menu
+
         self._font_qty:     pygame.font.Font | None = None
         self._font_name:    pygame.font.Font | None = None
         self._font_party:   pygame.font.Font | None = None
         self._font_party_s: pygame.font.Font | None = None
         self._built = False
+
+        # Exposé à game.py : pkmn sur lequel le joueur a fait clic droit
+        self.stats_request = None
 
     # ------------------------------------------------------------------
     # API publique
@@ -138,13 +175,19 @@ class InventoryHUD:
 
         _, H    = self.screen.get_size()
         row_out = int(H * _ROW_OUT_PCT)
+        row_mid = int(H * _ROW_MID_PCT)
         row_in  = int(H * _ROW_IN_PCT)
 
-        positions = self._all_positions(cx, cy, row_out, row_in)
+        positions = self._all_positions(cx, cy, row_out, row_mid, row_in)
         self._handle_drag(positions)
         self._draw(positions, cx, cy, row_out, money)
         if party is not None:
             self._draw_party(party)
+
+    def handle_event(self, event: pygame.event.Event, party: list | None = None) -> None:
+        """Consomme les événements liés à l'inventaire (Escape ferme, etc.)."""
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            self.toggle()
 
     # --- Inventaire -------------------------------------------------------
 
@@ -235,12 +278,13 @@ class InventoryHUD:
         ]
 
     def _all_positions(
-        self, cx: int, cy: int, row_out: int, row_in: int
+        self, cx: int, cy: int, row_out: int, row_mid: int, row_in: int
     ) -> list[tuple[int, int]]:
-        """Retourne les 16 positions : 8 rangée ext. + 8 rangée int."""
+        """Retourne les 21 positions : 7 rangée ext. + 7 rangée moy. + 7 rangée int."""
         return (
-            self._arc_positions(cx, cy, row_out)   # slots 0-7
-            + self._arc_positions(cx, cy, row_in)  # slots 8-15
+            self._arc_positions(cx, cy, row_out)   # slots 0-6
+            + self._arc_positions(cx, cy, row_mid)  # slots 7-13
+            + self._arc_positions(cx, cy, row_in)   # slots 14-20
         )
 
     # ------------------------------------------------------------------
@@ -251,7 +295,7 @@ class InventoryHUD:
         mouse = pygame.mouse.get_pos()
         btn   = pygame.mouse.get_pressed()[0]
 
-        if btn and not self._prev_btn:
+        if btn and not self._prev_btn and self._party_drag_from is None:
             for i, pos in enumerate(positions):
                 if math.dist(mouse, pos) <= SLOT_RADIUS:
                     self._selected = i
@@ -281,12 +325,32 @@ class InventoryHUD:
     # Rendu
     # ------------------------------------------------------------------
 
+    def _draw_arc_background(self, disp: pygame.Surface, positions: list[tuple[int, int]]) -> None:
+        """Fond blanc unique en blob — cercles superposés qui suivent la courbe de l'arc."""
+        if not positions:
+            return
+        pad = 10
+        r   = SLOT_RADIUS + pad
+        xs  = [p[0] for p in positions]
+        ys  = [p[1] for p in positions]
+        x1  = min(xs) - r - 1
+        y1  = min(ys) - r - 1
+        x2  = max(xs) + r + 1
+        y2  = max(ys) + r + 1
+        w, h = x2 - x1, y2 - y1
+        bg  = pygame.Surface((w, h), pygame.SRCALPHA)
+        for pos in positions:
+            pygame.draw.circle(bg, (255, 255, 255, 230), (pos[0] - x1, pos[1] - y1), r)
+        disp.blit(bg, (x1, y1))
+
     def _draw(
         self, positions: list[tuple[int, int]], cx: int, cy: int,
         row_out: int, money: int
     ) -> None:
         disp  = self.screen.get_display()
         mouse = pygame.mouse.get_pos()
+
+        self._draw_arc_background(disp, positions)
 
         for i, pos in enumerate(positions):
             slot       = self.slots[i]
@@ -352,70 +416,172 @@ class InventoryHUD:
             disp.blit(mt,  (mx + pad, my + pad // 2))
 
     # ------------------------------------------------------------------
-    # Colonne équipe (gauche de l'écran)
+    # Colonne équipe (gauche de l'écran) — icône seule, 6 slots fixes
     # ------------------------------------------------------------------
 
+    _SLOT_W   = 56
+    _SLOT_H   = 56
+    _SLOT_GAP = 4
+    _SLOT_MX  = 8
+    _N_SLOTS  = 6
+
+    def _poke_icon_frames(self, pkmn) -> list[pygame.Surface]:
+        """Charge et met en cache les 2 frames d'animation de l'icône (128×64 → 2×40×40)."""
+        pid   = getattr(pkmn, "id", None)
+        shiny = getattr(pkmn, "shiny", "")
+        if pid is None:
+            return []
+        suffix = "s" if shiny else "n"
+        key    = f"{pid}-b-{suffix}"
+        if key in self._poke_icons:
+            return self._poke_icons[key]
+        path = _ICONS_DIR / f"{key}.png"
+        if not path.exists():
+            path = _ICONS_DIR / f"{pid}-b-n.png"
+        frames: list[pygame.Surface] = []
+        if path.exists():
+            try:
+                sheet = pygame.image.load(str(path)).convert_alpha()
+                sw, sh = sheet.get_size()
+                fw = sw // 2   # largeur d'une frame (64 px)
+                for i in range(2):
+                    sub = sheet.subsurface(pygame.Rect(i * fw, 0, fw, sh))
+                    sub = pygame.transform.smoothscale(sub, (40, 40))
+                    frames.append(sub)
+            except Exception:
+                pass
+        self._poke_icons[key] = frames
+        return frames
+
     def _draw_party(self, party: list) -> None:
-        if not party:
-            return
+        disp = self.screen.get_display()
+        W, H = self.screen.get_size()
 
-        disp        = self.screen.get_display()
-        W, H        = self.screen.get_size()
-        CARD_W      = 120
-        CARD_H      = 68
-        CARD_GAP    = 6
-        MARGIN_X    = 8
-        BAR_H       = 8
-        BAR_W       = CARD_W - 20
+        CARD_W = self._SLOT_W
+        CARD_H = self._SLOT_H
+        GAP    = self._SLOT_GAP
+        MX     = self._SLOT_MX
 
-        total_h = len(party) * CARD_H + (len(party) - 1) * CARD_GAP
+        total_h = self._N_SLOTS * CARD_H + (self._N_SLOTS - 1) * GAP
         start_y = max(8, (H - total_h) // 2)
 
-        for i, pkmn in enumerate(party):
-            cx = MARGIN_X
-            cy = start_y + i * (CARD_H + CARD_GAP)
+        mouse  = pygame.mouse.get_pos()
+        lbtn   = pygame.mouse.get_pressed()[0]
+        rbtn   = pygame.mouse.get_pressed()[2]
 
-            # Fond semi-transparent
+        # ── Drag-and-drop équipe ───────────────────────────────────────
+        l_press  = lbtn and not self._prev_lbtn_party
+        l_release = not lbtn and self._prev_lbtn_party
+
+        if l_press and self._party_drag_from is None and self._drag_from is None:
+            for i in range(min(self._N_SLOTS, len(party))):
+                sx = W - MX - CARD_W
+                sy = start_y + i * (CARD_H + GAP)
+                if party[i] is not None and pygame.Rect(sx, sy, CARD_W, CARD_H).collidepoint(mouse):
+                    self._party_drag_from = i
+                    self._ctx_pkmn = None   # annule le menu contextuel
+                    break
+
+        if lbtn:
+            self._party_drag_pos = mouse
+
+        if l_release and self._party_drag_from is not None:
+            for i in range(min(self._N_SLOTS, len(party))):
+                sx = W - MX - CARD_W
+                sy = start_y + i * (CARD_H + GAP)
+                if i != self._party_drag_from and pygame.Rect(sx, sy, CARD_W, CARD_H).collidepoint(mouse):
+                    src = self._party_drag_from
+                    party[src], party[i] = party[i], party[src]
+                    if self.on_party_swap:
+                        self.on_party_swap(src, i)
+                    break
+            self._party_drag_from = None
+
+        self._prev_lbtn_party = lbtn
+
+        # ── Clic droit (seulement hors drag) ──────────────────────────
+        r_click = rbtn and not self._prev_rbtn and self._party_drag_from is None
+        self._prev_rbtn = rbtn
+
+        # ── Dessin des slots ───────────────────────────────────────────
+        for i in range(self._N_SLOTS):
+            sx = W - MX - CARD_W
+            sy = start_y + i * (CARD_H + GAP)
+
+            pkmn   = party[i] if i < len(party) else None
+            is_ko  = pkmn is not None and getattr(pkmn, "hp", 1) <= 0
+            is_src = (i == self._party_drag_from)
+
+            # Fond
             bg = pygame.Surface((CARD_W, CARD_H), pygame.SRCALPHA)
-            is_ko = getattr(pkmn, "hp", 1) <= 0
-            bg.fill((30, 30, 50, 200) if not is_ko else (50, 20, 20, 200))
-            disp.blit(bg, (cx, cy))
-            border_col = (80, 80, 180) if not is_ko else (160, 60, 60)
-            pygame.draw.rect(disp, border_col, (cx, cy, CARD_W, CARD_H), 1, border_radius=5)
+            if pkmn is None:
+                bg.fill((55, 55, 55, 120))
+            elif is_src:
+                bg.fill((80, 100, 80, 160))    # légèrement vert pendant le drag
+            elif is_ko:
+                bg.fill((90, 40, 40, 200))
+            else:
+                bg.fill((75, 75, 75, 200))
+            disp.blit(bg, (sx, sy))
 
-            # Nom (dbSymbol humanisé)
-            name   = getattr(pkmn, "dbSymbol", "???").replace("_", " ").capitalize()
-            level  = getattr(pkmn, "level",  1)
-            hp     = max(0, getattr(pkmn, "hp",    0))
-            maxhp  = max(1, getattr(pkmn, "maxhp", 1))
-            ratio  = hp / maxhp
+            # Bordure — surbrillance si la cible du drag passe dessus
+            slot_rect  = pygame.Rect(sx, sy, CARD_W, CARD_H)
+            is_target  = (self._party_drag_from is not None
+                          and i != self._party_drag_from
+                          and slot_rect.collidepoint(mouse))
+            if is_target:
+                border_col = (100, 200, 100)
+            elif pkmn is None:
+                border_col = (120, 120, 120)
+            elif is_ko:
+                border_col = (200, 80, 80)
+            else:
+                border_col = (200, 200, 200)
+            pygame.draw.rect(disp, border_col, (sx, sy, CARD_W, CARD_H),
+                             2 if is_target else 1, border_radius=6)
 
+            if pkmn is None or is_src:
+                continue
+
+            # Icône — frame 0 au survol, frame 1 par défaut
+            frames = self._poke_icon_frames(pkmn)
+            if frames:
+                hovered = slot_rect.collidepoint(mouse) and self._party_drag_from is None
+                frame   = frames[0 if hovered and len(frames) > 1 else (1 if len(frames) > 1 else 0)]
+                ir = frame.get_rect(center=(sx + CARD_W // 2, sy + CARD_H // 2))
+                disp.blit(frame, ir)
+
+            if r_click and slot_rect.collidepoint(mouse):
+                self._ctx_pkmn = pkmn
+                self._ctx_rect = pygame.Rect(sx - 94, sy, 90, 30)
+
+        # ── Ghost du Pokémon draggué ───────────────────────────────────
+        if self._party_drag_from is not None and self._party_drag_from < len(party):
+            pkmn = party[self._party_drag_from]
+            if pkmn:
+                frames = self._poke_icon_frames(pkmn)
+                if frames:
+                    ghost = frames[0].copy()
+                    ghost.set_alpha(180)
+                    disp.blit(ghost, ghost.get_rect(center=self._party_drag_pos))
+
+        # ── Menu contextuel ────────────────────────────────────────────
+        if self._ctx_pkmn is not None and self._ctx_rect is not None:
+            r = self._ctx_rect
+            bg2 = pygame.Surface((r.width, r.height), pygame.SRCALPHA)
+            bg2.fill((72, 72, 72, 235))
+            disp.blit(bg2, r.topleft)
+            pygame.draw.rect(disp, (200, 200, 200), r, 1, border_radius=4)
             if self._font_party:
-                nt = self._font_party.render(name[:14], True, (230, 230, 230))
-                disp.blit(nt, (cx + 8, cy + 6))
-
-            if self._font_party_s:
-                lt = self._font_party_s.render(f"Nv.{level}", True, (180, 180, 180))
-                disp.blit(lt, (cx + 8, cy + 22))
-
-            # Barre HP
-            bar_x = cx + 10
-            bar_y = cy + CARD_H - BAR_H - 10
-            pygame.draw.rect(disp, (40, 40, 60), (bar_x, bar_y, BAR_W, BAR_H), border_radius=3)
-            if ratio > 0:
-                if ratio > 0.5:
-                    bar_col = (50, 200, 70)
-                elif ratio > 0.2:
-                    bar_col = (230, 180, 30)
-                else:
-                    bar_col = (220, 50, 50)
-                filled = max(1, int(BAR_W * ratio))
-                pygame.draw.rect(disp, bar_col, (bar_x, bar_y, filled, BAR_H), border_radius=3)
-
-            if self._font_party_s:
-                hp_txt = f"{hp}/{maxhp}"
-                ht = self._font_party_s.render(hp_txt, True, (160, 160, 160))
-                disp.blit(ht, (bar_x + BAR_W - ht.get_width(), bar_y - ht.get_height() - 1))
+                lt = self._font_party.render("Résumé", True, (220, 220, 255))
+                disp.blit(lt, lt.get_rect(center=r.center))
+            if lbtn and r.collidepoint(mouse):
+                self.stats_request = self._ctx_pkmn
+                self._ctx_pkmn = None
+                self._ctx_rect = None
+            elif lbtn and not r.collidepoint(mouse):
+                self._ctx_pkmn = None
+                self._ctx_rect = None
 
     def _draw_icon(
         self,
@@ -443,3 +609,4 @@ class InventoryHUD:
         y = pos[1] + SLOT_RADIUS - txt.get_height() - 2
         disp.blit(shadow, (x + 1, y + 1))
         disp.blit(txt,    (x,     y))
+
